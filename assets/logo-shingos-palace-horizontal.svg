@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 320" role="img" aria-labelledby="title desc">
+  <title id="title">Shingo's Palace refined horizontal logo</title>
+  <desc id="desc">Horizontal boutique logo preserving the original aqua circle, paw, and heart.</desc>
+  <rect width="1180" height="320" rx="40" fill="#fff"/>
+  <g transform="translate(66 42)">
+    <circle cx="118" cy="118" r="116" fill="#35a9a2"/>
+    <circle cx="118" cy="118" r="102" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-dasharray="8 9.5" opacity=".9"/>
+    <ellipse cx="118" cy="101" rx="18" ry="16" fill="#fff"/>
+    <ellipse cx="85" cy="109" rx="17" ry="14.5" fill="#fff" transform="rotate(-22 85 109)"/>
+    <ellipse cx="151" cy="109" rx="17" ry="14.5" fill="#fff" transform="rotate(22 151 109)"/>
+    <ellipse cx="96" cy="73" rx="15" ry="18.5" fill="#fff" transform="rotate(-9 96 73)"/>
+    <ellipse cx="140" cy="73" rx="15" ry="18.5" fill="#fff" transform="rotate(9 140 73)"/>
+    <path fill="#fff" d="M118 119c30 0 54 22 54 48 0 19-13 31-31 29-10-1-15-6-23-6s-13 5-23 6c-18 2-31-10-31-29 0-26 24-48 54-48z"/>
+    <path fill="#35a9a2" d="M118 168c-3-3-17-13-17-24 0-8 6-14 14-14 6 0 10 3 13 8 3-5 7-8 13-8 8 0 14 6 14 14 0 11-14 21-17 24l-10 9-10-9z" transform="translate(-10 2.5) scale(1.07)"/>
+  </g>
+  <g transform="translate(344 98)">
+    <text x="0" y="58" fill="#25312f" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="66" font-weight="800" letter-spacing="1.4">Shingo's Palace</text>
+    <text x="4" y="111" fill="#35a9a2" font-family="Avenir Next, Helvetica Neue, Arial, sans-serif" font-size="22" font-weight="850" letter-spacing="8">BOUTIQUE PET HOTEL</text>
+  </g>
+</svg>

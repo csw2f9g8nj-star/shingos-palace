@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Shingo's Palace refined icon</title>
+  <desc id="desc">Aqua circular paw icon with subtle heart.</desc>
+  <rect width="512" height="512" fill="#fff"/>
+  <circle cx="256" cy="256" r="230" fill="#35a9a2"/>
+  <circle cx="256" cy="256" r="204" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-dasharray="15 17" opacity=".9"/>
+  <g transform="translate(0 6)">
+    <ellipse cx="256" cy="218" rx="31" ry="28" fill="#fff"/>
+    <ellipse cx="194" cy="232" rx="30" ry="26" fill="#fff" transform="rotate(-22 194 232)"/>
+    <ellipse cx="318" cy="232" rx="30" ry="26" fill="#fff" transform="rotate(22 318 232)"/>
+    <ellipse cx="216" cy="166" rx="26" ry="32" fill="#fff" transform="rotate(-9 216 166)"/>
+    <ellipse cx="296" cy="166" rx="26" ry="32" fill="#fff" transform="rotate(9 296 166)"/>
+    <path fill="#fff" d="M256 253c50 0 90 36 90 80 0 32-22 51-52 48-16-2-24-9-38-9s-22 7-38 9c-30 3-52-16-52-48 0-44 40-80 90-80z"/>
+    <path fill="#35a9a2" d="M256 337c-5-6-29-21-29-40 0-14 10-24 24-24 9 0 17 5 21 13 5-8 12-13 21-13 14 0 24 10 24 24 0 19-24 34-29 40l-16 15-16-15z" transform="translate(-16 4) scale(1.06)"/>
+  </g>
+</svg>
