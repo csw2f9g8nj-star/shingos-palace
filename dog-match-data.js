@@ -16,6 +16,9 @@ window.dogMatchData = {
       age: "Adult",
       size: "Small",
       energyLevel: 2,
+      swimmingLevel: 1,
+      fetchLevel: 1,
+      filters: ["small", "calm"],
       photos: ["assets/gallery-budders.jpeg"],
       personality: {
         en: "Gentle, observant, and happiest with calm companionship.",
@@ -34,9 +37,18 @@ window.dogMatchData = {
         es: "Ideal con perros pequeños o medianos que respetan el espacio y prefieren juego suave.",
       },
       bestFriends: ["Murci", "Poolside Guest"],
+      usuallyHangsOutWith: ["Murci", "Poolside Guest"],
       carlaObservations: {
         en: "Budders relaxes quickly when introductions are slow and the group energy stays soft.",
         es: "Budders se relaja rápido cuando las presentaciones son lentas y la energía del grupo se mantiene suave.",
+      },
+      profileDetails: {
+        en: "Budders is the kind of guest who reminds everyone that friendship does not need to be loud. He does best with calm energy, gentle greetings, and people who understand his rhythm.",
+        es: "Budders es el tipo de huésped que recuerda que la amistad no necesita ser ruidosa. Se siente mejor con energía tranquila, saludos suaves y personas que entienden su ritmo.",
+      },
+      funFacts: {
+        en: ["Prefers soft introductions", "Enjoys quiet company", "Settles best near calm friends"],
+        es: ["Prefiere presentaciones suaves", "Disfruta la compañía tranquila", "Se relaja mejor cerca de amigos calmos"],
       },
       recommendedWith: ["murci", "poolside-guest"],
     },
@@ -47,6 +59,9 @@ window.dogMatchData = {
       age: "Adult",
       size: "Medium",
       energyLevel: 3,
+      swimmingLevel: 3,
+      fetchLevel: 2,
+      filters: ["medium", "calm", "loves-swimming"],
       photos: ["assets/gallery-pool-dogs.jpeg"],
       personality: {
         en: "Relaxed, observant, and comfortable in the outdoor routine.",
@@ -65,9 +80,18 @@ window.dogMatchData = {
         es: "Compatible con perros que disfrutan estar cerca sin buscar juego constante.",
       },
       bestFriends: ["Budders", "Pool Crew"],
+      usuallyHangsOutWith: ["Budders", "Pool Crew"],
       carlaObservations: {
         en: "This guest shows the value of giving dogs space to rest near the activity instead of forcing interaction.",
         es: "Este huésped muestra el valor de darles espacio para descansar cerca de la actividad sin forzar interacción.",
+      },
+      profileDetails: {
+        en: "This profile is ideal for dogs who enjoy being part of the environment without needing constant action. Poolside time, shade, and quiet companionship are part of the match.",
+        es: "Este perfil es ideal para perros que disfrutan ser parte del ambiente sin necesitar acción constante. La pileta, la sombra y la compañía tranquila son parte del match.",
+      },
+      funFacts: {
+        en: ["Likes staying close to the action", "Enjoys poolside breaks", "Does well with gentle friends"],
+        es: ["Le gusta estar cerca de la acción", "Disfruta descansos junto a la pileta", "Se lleva bien con amigos suaves"],
       },
       recommendedWith: ["budders", "pool-crew"],
     },
@@ -78,6 +102,9 @@ window.dogMatchData = {
       age: "Senior",
       size: "Small",
       energyLevel: 1,
+      swimmingLevel: 1,
+      fetchLevel: 1,
+      filters: ["small", "calm"],
       photos: ["assets/murci-resident-host.png"],
       personality: {
         en: "Tender, wise, and deeply bonded with trusted people.",
@@ -96,9 +123,18 @@ window.dogMatchData = {
         es: "Ideal con perros muy suaves y huéspedes de baja energía que respetan límites de perros pequeños.",
       },
       bestFriends: ["Budders"],
+      usuallyHangsOutWith: ["Budders"],
       carlaObservations: {
         en: "Murci helps show which dogs can stay calm and respectful around tiny companions.",
         es: "Murci ayuda a observar qué perros pueden mantenerse tranquilos y respetuosos con compañeros pequeños.",
+      },
+      profileDetails: {
+        en: "Murci is a resident host, so his profile helps Carla understand which guests can share space respectfully with smaller, senior companions.",
+        es: "Murci es anfitrión residente, por eso su perfil ayuda a Carla a entender qué huéspedes pueden compartir espacio con respeto junto a compañeros pequeños y senior.",
+      },
+      funFacts: {
+        en: ["Resident host dog", "Knows every corner of the Palace", "Excellent small-dog energy reader"],
+        es: ["Perro anfitrión residente", "Conoce cada rincón del Palace", "Lee muy bien la energía de perros pequeños"],
       },
       recommendedWith: ["budders"],
     },
@@ -109,6 +145,9 @@ window.dogMatchData = {
       age: "Adult",
       size: "Small to medium",
       energyLevel: 4,
+      swimmingLevel: 5,
+      fetchLevel: 3,
+      filters: ["small", "medium", "high-energy", "loves-swimming"],
       photos: ["assets/pool-time-featured.png"],
       personality: {
         en: "Social, sunny, and playful when the day includes water and yard time.",
@@ -127,9 +166,18 @@ window.dogMatchData = {
         es: "Ideal con perros juguetones que disfrutan estar afuera y pueden calmarse con guía.",
       },
       bestFriends: ["Poolside Guest", "Yard Friends"],
+      usuallyHangsOutWith: ["Poolside Guest", "Yard Friends"],
       carlaObservations: {
         en: "This group shows how much better play feels when dogs have space, supervision, and natural breaks.",
         es: "Este grupo muestra cómo el juego mejora cuando los perros tienen espacio, supervisión y pausas naturales.",
+      },
+      profileDetails: {
+        en: "The pool crew brings sunny energy to the yard. These dogs enjoy water, movement, and supervised social time with natural breaks between play.",
+        es: "El grupo de pileta trae energía alegre al patio. Estos perros disfrutan el agua, el movimiento y el tiempo social supervisado con pausas naturales entre juegos.",
+      },
+      funFacts: {
+        en: ["Most confident around water", "Loves sunny yard routines", "Best with supervised play breaks"],
+        es: ["Muy confiado cerca del agua", "Ama las rutinas de patio con sol", "Funciona mejor con pausas supervisadas"],
       },
       recommendedWith: ["poolside-guest", "yard-friends"],
     },
@@ -140,6 +188,9 @@ window.dogMatchData = {
       age: "Adult",
       size: "Medium",
       energyLevel: 4,
+      swimmingLevel: 2,
+      fetchLevel: 4,
+      filters: ["medium", "high-energy", "loves-fetch"],
       photos: ["assets/hero-pool.jpeg"],
       personality: {
         en: "Curious, active, and happiest with room to move.",
@@ -158,9 +209,18 @@ window.dogMatchData = {
         es: "Buen match para perros de energía media-alta que disfrutan movimiento amistoso sin presión.",
       },
       bestFriends: ["Pool Crew"],
+      usuallyHangsOutWith: ["Pool Crew"],
       carlaObservations: {
         en: "Yard friends need space, water breaks, and watchful matching so excitement stays healthy.",
         es: "Los amigos de patio necesitan espacio, pausas de agua y matching atento para que la emoción se mantenga sana.",
+      },
+      profileDetails: {
+        en: "Yard friends are happiest when they can move freely, explore, and play in a group that matches their excitement without overwhelming them.",
+        es: "Los amigos de patio son más felices cuando pueden moverse con libertad, explorar y jugar en un grupo que acompaña su entusiasmo sin sobrepasarlos.",
+      },
+      funFacts: {
+        en: ["Loves open-yard movement", "Enjoys chase games", "Needs good water breaks"],
+        es: ["Ama moverse en el patio", "Disfruta los juegos de correr", "Necesita buenas pausas de agua"],
       },
       recommendedWith: ["pool-crew"],
     },
