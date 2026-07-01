@@ -52,6 +52,7 @@ const friendsTranslations = {
       "loves-fetch": "Loves Fetch",
     },
     sizeValues: {
+      "Extra Small": "Extra Small",
       Small: "Small",
       Medium: "Medium",
       Large: "Large",
@@ -111,6 +112,7 @@ const friendsTranslations = {
       "loves-fetch": "Ama la pelota",
     },
     sizeValues: {
+      "Extra Small": "Extra pequeño",
       Small: "Pequeño",
       Medium: "Mediano",
       Large: "Grande",
