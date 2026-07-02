@@ -166,7 +166,7 @@ h2,
 
 .hero {
   position: relative;
-  min-height: min(900px, calc(100svh - 96px));
+  min-height: min(980px, calc(100svh - 40px));
   margin-top: 22px;
   overflow: hidden;
   border-radius: 42px;
@@ -192,6 +192,13 @@ h2,
   animation: cinematicDrift 18s ease-in-out infinite alternate;
 }
 
+.hero-media > img.hero-shingo-portrait {
+  object-position: 50% 45%;
+  transform: none;
+  filter: none;
+  animation: none;
+}
+
 .hero-media::after {
   content: "";
   position: absolute;
@@ -199,8 +206,8 @@ h2,
   z-index: 1;
   background:
     radial-gradient(circle at 78% 28%, rgba(255, 224, 178, 0.12), transparent 35%),
-    linear-gradient(90deg, rgba(22, 29, 26, 0.74) 0%, rgba(22, 29, 26, 0.48) 42%, rgba(22, 29, 26, 0.035) 72%, transparent 100%),
-    linear-gradient(180deg, rgba(22, 29, 26, 0.02) 0%, rgba(22, 29, 26, 0.46) 100%);
+    linear-gradient(90deg, rgba(22, 29, 26, 0.34) 0%, rgba(22, 29, 26, 0.24) 42%, rgba(22, 29, 26, 0.04) 72%, transparent 100%),
+    linear-gradient(180deg, rgba(22, 29, 26, 0.02) 0%, rgba(22, 29, 26, 0.26) 100%);
 }
 
 .hero-overlay {
@@ -2865,6 +2872,11 @@ textarea {
 
   .hero {
     min-height: auto;
+  }
+
+  .hero-media > img.hero-shingo-portrait {
+    object-position: 42% 42%;
+    transform: none;
   }
 
   .hero-copy {
