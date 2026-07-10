@@ -140,6 +140,42 @@ h2,
   gap: 14px;
 }
 
+.social-links {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(39, 50, 47, 0.12);
+  border-radius: 50%;
+  color: var(--ink);
+  background: rgba(255, 252, 246, 0.62);
+  transition: transform 180ms ease, opacity 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.social-icon:hover {
+  transform: scale(1.04);
+  opacity: 0.76;
+  border-color: rgba(39, 50, 47, 0.22);
+  background: rgba(255, 250, 241, 0.9);
+}
+
+.social-icon svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .lang-switch {
   display: inline-flex;
   padding: 4px;
@@ -1562,6 +1598,13 @@ a.action-tile {
   filter: brightness(1.025) saturate(1.02) contrast(1.02);
 }
 
+.friends-hero-image img.friends-club-hero-photo {
+  object-fit: contain;
+  object-position: center center;
+  background: #142019;
+  filter: none;
+}
+
 .match-section {
   margin: clamp(72px, 10vw, 140px) 0 0;
 }
@@ -2679,6 +2722,14 @@ textarea {
   width: auto;
 }
 
+.required-checkbox {
+  align-items: flex-start;
+}
+
+.required-checkbox span {
+  line-height: 1.45;
+}
+
 .full {
   grid-column: 1 / -1;
 }
@@ -2688,6 +2739,12 @@ textarea {
   color: #fffaf1;
   background: var(--charcoal);
   box-shadow: 0 16px 36px rgba(39, 50, 47, 0.18);
+}
+
+.submit-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+  transform: none;
 }
 
 .status-line {
@@ -2875,7 +2932,7 @@ textarea {
   }
 
   .hero-media > img.hero-shingo-portrait {
-    object-position: 42% 42%;
+    object-position: 50% 42%;
     transform: none;
   }
 
@@ -2957,6 +3014,10 @@ textarea {
     min-height: 440px;
   }
 
+  .owner-photo-placeholder img {
+    object-position: center 50%;
+  }
+
   .booking-summary {
     position: static;
   }
@@ -2971,7 +3032,7 @@ textarea {
 
 @media (max-width: 760px) {
   .page-shell {
-    padding: 12px;
+    padding: 10px;
   }
 
   .topbar,
@@ -2994,12 +3055,25 @@ textarea {
   }
 
   .hero {
+    min-height: 760px;
     border-radius: 30px;
   }
 
+  .hero-media > img.hero-shingo-portrait {
+    height: 56%;
+    object-fit: cover;
+    object-position: 50% 28%;
+  }
+
+  .hero-media::after {
+    background:
+      linear-gradient(180deg, rgba(22, 29, 26, 0.04) 0%, rgba(22, 29, 26, 0.03) 36%, rgba(22, 29, 26, 0.48) 56%, rgba(22, 29, 26, 0.86) 100%),
+      linear-gradient(90deg, rgba(22, 29, 26, 0.16) 0%, rgba(22, 29, 26, 0.04) 52%, transparent 100%);
+  }
+
   .why-section {
-    margin: 18px 0;
-    padding: 44px 18px;
+    margin: 16px 0;
+    padding: 38px 18px;
     border-radius: 28px;
   }
 
@@ -3019,15 +3093,20 @@ textarea {
   }
 
   .owner-section {
-    gap: 34px;
-    margin: 18px 0;
+    gap: 28px;
+    margin: 16px 0;
     padding: 18px;
     border-radius: 28px;
   }
 
   .owner-photo-placeholder {
-    min-height: 360px;
+    min-height: 420px;
+    aspect-ratio: 4 / 5;
     border-radius: 22px;
+  }
+
+  .owner-photo-placeholder img {
+    object-position: center 43%;
   }
 
   .owner-copy {
@@ -3035,8 +3114,8 @@ textarea {
   }
 
   .residents-section {
-    margin: 52px 0;
-    padding: 44px 18px;
+    margin: 44px 0;
+    padding: 38px 18px;
     border-radius: 28px;
   }
 
@@ -3058,8 +3137,8 @@ textarea {
   }
 
   .daily-crew-section {
-    margin: 52px 0;
-    padding: 44px 0;
+    margin: 44px 0;
+    padding: 38px 0;
   }
 
   .daily-crew-grid {
@@ -3076,8 +3155,8 @@ textarea {
   }
 
   .adoption-section {
-    margin: 52px 0;
-    padding: 44px 18px;
+    margin: 44px 0;
+    padding: 38px 18px;
     border-radius: 28px;
   }
 
@@ -3102,7 +3181,7 @@ textarea {
 
   .home-story-section {
     gap: 28px;
-    margin: 52px 0;
+    margin: 44px 0;
     padding: 14px 14px 34px;
     border-radius: 28px;
   }
@@ -3125,8 +3204,8 @@ textarea {
   }
 
   .home-gallery-section {
-    margin: 18px 0;
-    padding: 44px 18px;
+    margin: 16px 0;
+    padding: 38px 18px;
     border-radius: 28px;
   }
 
@@ -3137,8 +3216,8 @@ textarea {
   }
 
   .service-area-strip {
-    margin: 18px 0;
-    padding: 44px 24px;
+    margin: 16px 0;
+    padding: 38px 22px;
     border-radius: 28px;
   }
 
@@ -3257,15 +3336,16 @@ textarea {
   }
 
   .hero-copy {
-    min-height: auto;
-    justify-content: flex-start;
-    gap: 20px;
-    padding: 330px 22px 30px;
+    min-height: 760px;
+    justify-content: flex-end;
+    gap: 16px;
+    padding: 300px 18px 24px;
   }
 
   h1 {
-    font-size: clamp(2.75rem, 12vw, 4.2rem);
-    line-height: 0.98;
+    max-width: 100%;
+    font-size: clamp(2.16rem, 8.9vw, 3rem);
+    line-height: 1.03;
   }
 
   .intro {
@@ -3275,15 +3355,22 @@ textarea {
   }
 
   .hero-subtext {
-    font-size: 1.02rem;
-    line-height: 1.7;
+    max-width: 34rem;
+    font-size: 0.96rem;
+    line-height: 1.55;
+    letter-spacing: 0.02em;
   }
 
   .hero-cta-row,
-  .hero-actions,
   .quick-links {
     display: grid;
     grid-template-columns: 1fr;
+  }
+
+  .hero-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
   }
 
   .hero-cta,
@@ -3292,12 +3379,37 @@ textarea {
   }
 
   .hero-cta {
-    min-height: 60px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 56px;
+    padding: 0 20px;
+    text-align: center;
   }
 
-  .hero-meta {
-    display: grid;
-    grid-template-columns: 1fr;
+  .action-tile {
+    min-height: 58px;
+    align-content: center;
+    padding: 12px 13px;
+    text-align: center;
+  }
+
+  .action-tile span {
+    font-size: 1.02rem;
+  }
+
+  .action-tile small {
+    font-size: 0.7rem;
+  }
+
+  .hero-cta-row {
+    gap: 10px;
+    margin-top: 2px;
+  }
+
+  .hero-meta,
+  .quick-links {
+    display: none;
   }
 
   .booking-fields,
@@ -3305,14 +3417,108 @@ textarea {
     grid-template-columns: 1fr;
   }
 
+  .modal {
+    width: min(100%, calc(100vw - 16px));
+    max-height: calc(100svh - 16px);
+  }
+
   .modal-card {
-    padding: 28px 20px;
-    border-radius: 28px;
+    max-height: calc(100svh - 16px);
+    overflow-y: auto;
+    padding: 24px 16px;
+    border-radius: 24px;
+    overscroll-behavior: contain;
+  }
+
+  .modal-card > h2 {
+    margin-bottom: 22px;
+    padding-right: 42px;
+    font-size: clamp(2rem, 9vw, 2.65rem);
+    line-height: 1.04;
   }
 
   .modal-close {
-    top: 14px;
-    right: 14px;
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .booking-layout {
+    gap: 16px;
+    margin-top: 18px;
+  }
+
+  .booking-form {
+    gap: 12px;
+  }
+
+  .booking-step,
+  .booking-summary {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .booking-step-head {
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .booking-step-head > span {
+    width: 30px;
+    height: 30px;
+    font-size: 0.74rem;
+  }
+
+  .booking-step-head h3 {
+    font-size: 1.12rem;
+  }
+
+  .booking-step-head p {
+    font-size: 0.84rem;
+    line-height: 1.38;
+  }
+
+  .booking-fields {
+    gap: 10px;
+  }
+
+  label {
+    gap: 6px;
+    font-size: 0.86rem;
+  }
+
+  input,
+  select,
+  textarea {
+    min-height: 48px;
+    padding: 12px 13px;
+    border-radius: 15px;
+    font-size: 16px;
+  }
+
+  textarea {
+    min-height: 96px;
+  }
+
+  .checkbox-line {
+    align-items: flex-start;
+    padding: 12px 13px;
+    border-radius: 15px;
+    line-height: 1.42;
+  }
+
+  .checkbox-line input {
+    margin-top: 3px;
+    flex: 0 0 auto;
+  }
+
+  .submit-button {
+    min-height: 54px;
+  }
+
+  .summary-line {
+    padding: 12px 0;
   }
 
   .gallery-card,
@@ -3327,5 +3533,121 @@ textarea {
 
   .review-card {
     min-height: auto;
+  }
+}
+
+@media (max-width: 430px) {
+  .brand img {
+    width: 54px;
+    height: 54px;
+  }
+
+  .brand-text strong {
+    font-size: 1rem;
+  }
+
+  .toolbar {
+    gap: 10px;
+  }
+
+  .social-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .lang-button {
+    min-width: 42px;
+  }
+
+  .hero {
+    min-height: 700px;
+  }
+
+  .hero-media > img.hero-shingo-portrait {
+    height: 54%;
+    object-position: 50% 25%;
+  }
+
+  .hero-copy {
+    min-height: 700px;
+    padding: 276px 16px 22px;
+  }
+
+  h1 {
+    max-width: 100%;
+    font-size: clamp(2rem, 8.9vw, 2.55rem);
+  }
+
+  .hero-subtext {
+    font-size: 0.9rem;
+    line-height: 1.48;
+  }
+
+  .owner-photo-placeholder {
+    min-height: 390px;
+    aspect-ratio: 3 / 4;
+  }
+
+  h2 {
+    font-size: clamp(2.05rem, 10.5vw, 3.1rem);
+  }
+}
+
+@media (max-width: 375px) {
+  .page-shell {
+    padding: 8px;
+  }
+
+  .topbar {
+    padding: 12px;
+  }
+
+  .hero {
+    min-height: 680px;
+    border-radius: 26px;
+  }
+
+  .hero-media > img.hero-shingo-portrait {
+    height: 52%;
+    object-position: 50% 23%;
+  }
+
+  .hero-copy {
+    min-height: 680px;
+    gap: 13px;
+    padding: 255px 14px 20px;
+  }
+
+  h1 {
+    font-size: clamp(1.9rem, 8.8vw, 2.22rem);
+  }
+
+  .hero-subtext {
+    font-size: 0.86rem;
+  }
+
+  .hero-cta {
+    min-height: 52px;
+  }
+
+  .action-tile {
+    min-height: 58px;
+  }
+
+  .owner-photo-placeholder {
+    min-height: 360px;
+  }
+
+  .modal {
+    width: calc(100vw - 10px);
+  }
+
+  .modal-card {
+    padding: 22px 13px;
+  }
+
+  .booking-step,
+  .booking-summary {
+    padding: 15px;
   }
 }

@@ -25,7 +25,7 @@
         "name": "Shingo's Palace",
         "description": "Luxury dog boarding and daycare in a safe, cage-free home environment with a large fenced yard, pool time, personalized care, and daily updates.",
         "telephone": "+1-785-757-9475",
-        "email": "shingospalace@gmail.com",
+        "email": "info@shingospalace.com",
         "address": {
           "@type": "PostalAddress",
           "addressLocality": "Margate",
@@ -40,7 +40,8 @@
           "North Lauderdale, Florida"
         ],
         "sameAs": [
-          "https://instagram.com/Shingos_Palace",
+          "https://instagram.com/Shingos_palace",
+          "https://tiktok.com/@shingos_palace",
           "https://www.rover.com/sit/carlam33121"
         ]
       }
@@ -62,7 +63,22 @@
             <button class="lang-button active" data-lang="en" type="button" onclick="window.setSiteLanguage('en')">EN</button>
             <button class="lang-button" data-lang="es" type="button" onclick="window.setSiteLanguage('es')">ES</button>
           </div>
-          <a class="mini-contact" href="mailto:shingospalace@gmail.com">shingospalace@gmail.com</a>
+          <div class="social-links header-social" aria-label="Social media links">
+            <a class="social-icon" href="https://instagram.com/Shingos_palace" target="_blank" rel="noreferrer" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="4" y="4" width="16" height="16" rx="5" />
+                <circle cx="12" cy="12" r="3.4" />
+                <circle cx="17.2" cy="6.8" r="0.8" />
+              </svg>
+            </a>
+            <a class="social-icon" href="https://tiktok.com/@shingos_palace" target="_blank" rel="noreferrer" aria-label="TikTok">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M14 4v9.25a4.75 4.75 0 1 1-4.75-4.75" />
+                <path d="M14 4c.55 3.2 2.35 5.05 5.2 5.45" />
+              </svg>
+            </a>
+          </div>
+          <a class="mini-contact" href="mailto:info@shingospalace.com">info@shingospalace.com</a>
         </div>
       </header>
 
@@ -132,9 +148,9 @@
             </div>
           </div>
           <div class="quick-links">
-            <a href="mailto:shingospalace@gmail.com">shingospalace@gmail.com</a>
+            <a href="mailto:info@shingospalace.com">info@shingospalace.com</a>
             <a href="tel:7857579475">7857579475</a>
-            <a href="https://instagram.com/Shingos_Palace" target="_blank" rel="noreferrer">@Shingos_Palace</a>
+            <a href="https://instagram.com/Shingos_palace" target="_blank" rel="noreferrer">@Shingos_palace</a>
           </div>
         </section>
       </main>
@@ -471,9 +487,23 @@
           <span data-i18n="footerLine">Boarding, day care, drop-ins, cat care, and dog walking.</span>
         </div>
         <div class="footer-links">
-          <a href="mailto:shingospalace@gmail.com">shingospalace@gmail.com</a>
+          <a href="mailto:info@shingospalace.com">info@shingospalace.com</a>
           <a href="tel:7857579475">7857579475</a>
-          <a href="https://instagram.com/Shingos_Palace" target="_blank" rel="noreferrer">@Shingos_Palace</a>
+          <div class="social-links footer-social" aria-label="Social media links">
+            <a class="social-icon" href="https://instagram.com/Shingos_palace" target="_blank" rel="noreferrer" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="4" y="4" width="16" height="16" rx="5" />
+                <circle cx="12" cy="12" r="3.4" />
+                <circle cx="17.2" cy="6.8" r="0.8" />
+              </svg>
+            </a>
+            <a class="social-icon" href="https://tiktok.com/@shingos_palace" target="_blank" rel="noreferrer" aria-label="TikTok">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M14 4v9.25a4.75 4.75 0 1 1-4.75-4.75" />
+                <path d="M14 4c.55 3.2 2.35 5.05 5.2 5.45" />
+              </svg>
+            </a>
+          </div>
         </div>
       </footer>
     </div>
@@ -605,31 +635,38 @@
         <h2 data-i18n="bookingHeading">Request a Meet & Greet.</h2>
 
         <div class="booking-layout">
-          <form class="booking-form" id="bookingForm">
+          <form class="booking-form" id="bookingForm" method="POST" data-formspree-endpoint="">
+            <input type="hidden" name="_subject" value="New Shingo's Palace booking request" />
+            <input type="hidden" name="source" value="Shingo's Palace website" />
+            <input type="hidden" name="estimatedTotal" id="estimatedTotalField" value="" />
             <section class="booking-step full">
               <div class="booking-step-head">
                 <span>01</span>
                 <div>
-                  <h3 data-i18n="bookingStepContact">Contact and pet</h3>
-                  <p data-i18n="bookingStepContactHelp">Tell us who is booking and who we are caring for.</p>
+                  <h3 data-i18n="bookingStepContact">Owner information</h3>
+                  <p data-i18n="bookingStepContactHelp">Tell us who is booking and how to reach you.</p>
                 </div>
               </div>
               <div class="booking-fields">
                 <label>
-                  <span data-i18n="fieldName">Your name</span>
-                  <input name="name" type="text" required />
+                  <span data-i18n="fieldFirstName">First Name</span>
+                  <input name="firstName" type="text" autocomplete="given-name" required />
+                </label>
+                <label>
+                  <span data-i18n="fieldLastName">Last Name</span>
+                  <input name="lastName" type="text" autocomplete="family-name" required />
                 </label>
                 <label>
                   <span data-i18n="fieldEmail">Email</span>
-                  <input name="email" type="email" required />
+                  <input name="email" type="email" autocomplete="email" required />
                 </label>
                 <label>
-                  <span data-i18n="fieldPhone">Phone</span>
-                  <input name="phone" type="tel" required />
+                  <span data-i18n="fieldPhone">Phone Number</span>
+                  <input name="phone" type="tel" autocomplete="tel" required />
                 </label>
-                <label>
-                  <span data-i18n="fieldPet">Pet name</span>
-                  <input name="pet" type="text" required />
+                <label class="wide-field">
+                  <span data-i18n="fieldEmergencyContact">Emergency Contact</span>
+                  <input name="emergencyContact" type="text" required />
                 </label>
               </div>
             </section>
@@ -638,8 +675,139 @@
               <div class="booking-step-head">
                 <span>02</span>
                 <div>
+                  <h3 data-i18n="bookingStepDog">Dog information</h3>
+                  <p data-i18n="bookingStepDogHelp">Share health, behavior, and comfort details so we can care for your dog safely.</p>
+                </div>
+              </div>
+              <div class="booking-fields">
+                <label>
+                  <span data-i18n="fieldPet">Dog's Name</span>
+                  <input name="dogName" type="text" required />
+                </label>
+                <label>
+                  <span data-i18n="fieldBreed">Breed</span>
+                  <input name="breed" type="text" required />
+                </label>
+                <label>
+                  <span data-i18n="fieldAge">Age</span>
+                  <input name="age" type="text" required />
+                </label>
+                <label>
+                  <span data-i18n="fieldWeight">Weight</span>
+                  <input name="weight" type="text" required />
+                </label>
+                <label>
+                  <span data-i18n="fieldSex">Sex</span>
+                  <select name="sex" required>
+                    <option value="" data-i18n="optionSelect">Select</option>
+                    <option value="Female" data-i18n="optionFemale">Female</option>
+                    <option value="Male" data-i18n="optionMale">Male</option>
+                  </select>
+                </label>
+                <label>
+                  <span data-i18n="fieldSpayedNeutered">Spayed / Neutered</span>
+                  <select name="spayedNeutered" required>
+                    <option value="" data-i18n="optionSelect">Select</option>
+                    <option value="Yes" data-i18n="optionYes">Yes</option>
+                    <option value="No" data-i18n="optionNo">No</option>
+                  </select>
+                </label>
+                <label>
+                  <span data-i18n="fieldVaccinations">Vaccinations up to date?</span>
+                  <select name="vaccinationsUpToDate" required>
+                    <option value="" data-i18n="optionSelect">Select</option>
+                    <option value="Yes" data-i18n="optionYes">Yes</option>
+                    <option value="No" data-i18n="optionNo">No</option>
+                  </select>
+                </label>
+                <label>
+                  <span data-i18n="fieldGoodCats">Good with cats?</span>
+                  <select name="goodWithCats" required>
+                    <option value="" data-i18n="optionSelect">Select</option>
+                    <option value="Yes" data-i18n="optionYes">Yes</option>
+                    <option value="No" data-i18n="optionNo">No</option>
+                    <option value="Unknown" data-i18n="optionUnknown">Unknown</option>
+                  </select>
+                </label>
+                <label>
+                  <span data-i18n="fieldGoodSmallDogs">Good with small dogs?</span>
+                  <select name="goodWithSmallDogs" required>
+                    <option value="" data-i18n="optionSelect">Select</option>
+                    <option value="Yes" data-i18n="optionYes">Yes</option>
+                    <option value="No" data-i18n="optionNo">No</option>
+                    <option value="Unknown" data-i18n="optionUnknown">Unknown</option>
+                  </select>
+                </label>
+                <label>
+                  <span data-i18n="fieldCanSwim">Can swim?</span>
+                  <select name="canSwim" required>
+                    <option value="" data-i18n="optionSelect">Select</option>
+                    <option value="Yes" data-i18n="optionYes">Yes</option>
+                    <option value="No" data-i18n="optionNo">No</option>
+                    <option value="Unknown" data-i18n="optionUnknown">Unknown</option>
+                  </select>
+                </label>
+                <label class="wide-field">
+                  <span data-i18n="fieldMedications">Medications</span>
+                  <textarea name="medications" rows="3"></textarea>
+                </label>
+                <label class="wide-field">
+                  <span data-i18n="fieldAllergies">Allergies</span>
+                  <textarea name="allergies" rows="3"></textarea>
+                </label>
+                <label class="wide-field">
+                  <span data-i18n="fieldBehavioralConcerns">Behavioral concerns</span>
+                  <textarea name="behavioralConcerns" rows="3"></textarea>
+                </label>
+                <label class="wide-field">
+                  <span data-i18n="fieldFavoriteActivities">Favorite activities</span>
+                  <textarea name="favoriteActivities" rows="3"></textarea>
+                </label>
+                <label class="wide-field">
+                  <span data-i18n="fieldFeedingInstructions">Feeding instructions</span>
+                  <textarea name="feedingInstructions" rows="3"></textarea>
+                </label>
+                <label class="wide-field">
+                  <span data-i18n="fieldSleepingRoutine">Sleeping routine</span>
+                  <textarea name="sleepingRoutine" rows="3"></textarea>
+                </label>
+              </div>
+            </section>
+
+            <section class="booking-step full">
+              <div class="booking-step-head">
+                <span>03</span>
+                <div>
+                  <h3 data-i18n="bookingStepVet">Veterinarian information</h3>
+                  <p data-i18n="bookingStepVetHelp">This helps us act quickly and responsibly if your dog ever needs care.</p>
+                </div>
+              </div>
+              <div class="booking-fields">
+                <label>
+                  <span data-i18n="fieldVetClinic">Veterinary Clinic</span>
+                  <input name="veterinaryClinic" type="text" required />
+                </label>
+                <label>
+                  <span data-i18n="fieldVetName">Veterinarian Name</span>
+                  <input name="veterinarianName" type="text" required />
+                </label>
+                <label>
+                  <span data-i18n="fieldVetPhone">Clinic Phone Number</span>
+                  <input name="clinicPhone" type="tel" required />
+                </label>
+                <label>
+                  <span data-i18n="fieldVetAddress">Clinic Address (optional)</span>
+                  <input name="clinicAddress" type="text" />
+                </label>
+              </div>
+            </section>
+
+            <section class="booking-step full">
+              <div class="booking-step-head">
+                <span>04</span>
+                <div>
                   <h3 data-i18n="bookingStepService">Service details</h3>
-                  <p data-i18n="bookingStepServiceHelp">Choose the care type, date, time, and service area.</p>
+                  <p data-i18n="bookingStepServiceHelp">Choose the care type, dates, times, and service area.</p>
                 </div>
               </div>
               <div class="booking-fields">
@@ -647,26 +815,25 @@
                   <span data-i18n="fieldService">Service</span>
                   <select name="service" id="serviceSelect">
                     <option value="boarding" data-i18n="optionBoarding">Boarding</option>
-                    <option value="puppy" data-i18n="optionPuppy">Puppies</option>
-                    <option value="daycare" data-i18n="optionDaycare">Day Care - 1 Day</option>
-                    <option value="daycarePackage" data-i18n="optionDaycarePackage">Day Care - Week</option>
-                    <option value="spaBath" data-i18n="optionSpaBath">Spa Bath</option>
-                    <option value="fullGroom" data-i18n="optionFullGroom">Full Grooming Spa</option>
-                    <option value="dropin" data-i18n="optionDropin">Drop-In Visits Daily</option>
-                    <option value="dropinWeekly" data-i18n="optionDropinWeekly">Drop-In Visits Weekly</option>
-                    <option value="catstay" data-i18n="optionCatStay">Cat Stay</option>
-                    <option value="walking" data-i18n="optionWalking">Dog Walking Daily</option>
-                    <option value="walkingWeekly" data-i18n="optionWalkingWeekly">Dog Walking Weekly</option>
-                    <option value="pickup" data-i18n="optionPickup">Pick Up / Drop Off</option>
+                    <option value="daycare" data-i18n="optionDaycare">Daycare</option>
+                    <option value="meetGreet" data-i18n="optionMeetGreet">Meet & Greet</option>
                   </select>
                 </label>
                 <label>
-                  <span data-i18n="fieldDate">Start date</span>
-                  <input name="date" type="date" required />
+                  <span data-i18n="fieldDropoffDate">Drop-off date</span>
+                  <input name="dropoffDate" id="dropoffDate" type="date" required />
                 </label>
                 <label>
-                  <span data-i18n="fieldTime">Start time</span>
-                  <input name="time" type="time" required />
+                  <span data-i18n="fieldPickupDate">Pick-up date</span>
+                  <input name="pickupDate" id="pickupDate" type="date" required />
+                </label>
+                <label>
+                  <span data-i18n="fieldArrivalTime">Arrival time</span>
+                  <input name="arrivalTime" type="time" required />
+                </label>
+                <label>
+                  <span data-i18n="fieldDepartureTime">Departure time</span>
+                  <input name="departureTime" type="time" required />
                 </label>
                 <label>
                   <span data-i18n="fieldArea">Area</span>
@@ -682,17 +849,17 @@
                 </label>
                 <label>
                   <span data-i18n="fieldUnits">Nights, days, or visits</span>
-                  <input name="units" id="unitsInput" type="number" min="1" value="1" />
+                  <input name="units" id="unitsInput" type="number" min="1" value="1" readonly />
                 </label>
               </div>
             </section>
 
             <section class="booking-step full">
               <div class="booking-step-head">
-                <span>03</span>
+                <span>05</span>
                 <div>
-                  <h3 data-i18n="bookingStepExtras">Extras and notes</h3>
-                  <p data-i18n="bookingStepExtrasHelp">Add extra pets, special timing, and anything we should know.</p>
+                  <h3 data-i18n="bookingStepExtras">Additional notes</h3>
+                  <p data-i18n="bookingStepExtrasHelp">Share anything else that would help us prepare a calm, safe stay.</p>
                 </div>
               </div>
               <div class="booking-fields">
@@ -716,10 +883,14 @@
                   <span data-i18n="fieldNotes">Notes</span>
                   <textarea name="notes" rows="4"></textarea>
                 </label>
+                <label class="checkbox-line required-checkbox wide-field">
+                  <input name="emergencyAuthorization" id="emergencyAuthorization" type="checkbox" required />
+                  <span data-i18n="fieldEmergencyAuthorization">I authorize Shingo's Palace to seek veterinary care in case of an emergency if I cannot be reached. I understand that all veterinary expenses are my responsibility.</span>
+                </label>
               </div>
             </section>
 
-            <button class="submit-button full" id="bookingSubmit" type="button" data-i18n="bookingSubmit">
+            <button class="submit-button full" id="bookingSubmit" type="submit" data-i18n="bookingSubmit">
               Send booking request
             </button>
             <p class="status-line full" id="bookingStatus"></p>

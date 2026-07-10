@@ -201,21 +201,49 @@ const translations = {
       "Families mention warmth, communication, photos, and the peace of knowing their pets feel at home.",
     reviewsLink: "View Rover profile",
     bookingHeading: "Request a Meet & Greet.",
-    bookingStepContact: "Your details",
-    bookingStepContactHelp: "A quick way to introduce you and your pet.",
-    bookingStepService: "Preferred stay",
-    bookingStepServiceHelp: "Choose the service, date, time, and area.",
-    bookingStepExtras: "Care notes",
-    bookingStepExtrasHelp: "Share extra pets, timing, temperament, or special care needs.",
-    bookingStepPayment: "Estimate",
-    bookingStepPaymentHelp: "Final availability and custom details are confirmed personally.",
+    bookingStepContact: "Owner information",
+    bookingStepContactHelp: "Tell us who is booking and how to reach you.",
+    bookingStepDog: "Dog information",
+    bookingStepDogHelp: "Share health, behavior, and comfort details so we can care for your dog safely.",
+    bookingStepVet: "Veterinarian information",
+    bookingStepVetHelp: "This helps us act quickly and responsibly if your dog ever needs care.",
+    bookingStepService: "Booking information",
+    bookingStepServiceHelp: "Choose the care type, dates, times, and service area.",
+    bookingStepExtras: "Additional notes",
+    bookingStepExtrasHelp: "Share anything else that would help us prepare a calm, safe stay.",
+    fieldFirstName: "First Name",
+    fieldLastName: "Last Name",
     fieldName: "Your name",
     fieldEmail: "Email",
-    fieldPhone: "Phone",
-    fieldPet: "Pet name",
+    fieldPhone: "Phone Number",
+    fieldEmergencyContact: "Emergency Contact",
+    fieldPet: "Dog's Name",
+    fieldBreed: "Breed",
+    fieldAge: "Age",
+    fieldWeight: "Weight",
+    fieldSex: "Sex",
+    fieldSpayedNeutered: "Spayed / Neutered",
+    fieldVaccinations: "Vaccinations up to date?",
+    fieldGoodCats: "Good with cats?",
+    fieldGoodSmallDogs: "Good with small dogs?",
+    fieldCanSwim: "Can swim?",
+    fieldMedications: "Medications",
+    fieldAllergies: "Allergies",
+    fieldBehavioralConcerns: "Behavioral concerns",
+    fieldFavoriteActivities: "Favorite activities",
+    fieldFeedingInstructions: "Feeding instructions",
+    fieldSleepingRoutine: "Sleeping routine",
+    fieldVetClinic: "Veterinary Clinic",
+    fieldVetName: "Veterinarian Name",
+    fieldVetPhone: "Clinic Phone Number",
+    fieldVetAddress: "Clinic Address (optional)",
     fieldService: "Service",
     fieldDate: "Start date",
     fieldTime: "Start time",
+    fieldDropoffDate: "Drop-off date",
+    fieldPickupDate: "Pick-up date",
+    fieldArrivalTime: "Arrival time",
+    fieldDepartureTime: "Departure time",
     fieldArea: "Area",
     fieldUnits: "Nights, days, or visits",
     fieldDogs: "Additional dogs",
@@ -223,10 +251,17 @@ const translations = {
     fieldAfterHours: "After-hours booking",
     fieldLongStay: "Long stay request",
     fieldNotes: "Notes",
+    fieldEmergencyAuthorization:
+      "I authorize Shingo's Palace to seek veterinary care in case of an emergency if I cannot be reached. I understand that all veterinary expenses are my responsibility.",
     fieldCard: "Cardholder",
     fieldCardNumber: "Card number",
     fieldExpiry: "Expiry",
-    bookingSubmit: "Request Meet & Greet",
+    bookingSubmit: "Send booking request",
+    bookingSending: "Sending your request...",
+    bookingSuccess: "Thank you! We have received your request and will contact you shortly.",
+    bookingConfigMissing: "Formspree is almost ready. Add the Formspree endpoint to start receiving requests.",
+    bookingError: "Something went wrong. Please try again or email info@shingospalace.com.",
+    bookingRequired: "Please complete the required fields and emergency authorization before submitting.",
     summaryLabel: "Estimate",
     summaryBase: "Base",
     summaryDogs: "Additional dogs",
@@ -237,9 +272,16 @@ const translations = {
     customQuote: "Custom quote",
     paymentNote: "This is an estimate. Final availability, transportation, and grooming quotes are confirmed personally.",
     optionBoarding: "Boarding",
+    optionSelect: "Select",
+    optionFemale: "Female",
+    optionMale: "Male",
+    optionYes: "Yes",
+    optionNo: "No",
+    optionUnknown: "Unknown",
     optionPuppy: "Puppies",
-    optionDaycare: "Day Care - 1 Day",
+    optionDaycare: "Daycare",
     optionDaycarePackage: "Day Care - Week",
+    optionMeetGreet: "Meet & Greet",
     optionSpaBath: "Spa Bath",
     optionFullGroom: "Full Grooming Spa",
     optionDropin: "Drop-In Visits Daily",
@@ -260,8 +302,6 @@ const translations = {
     galleryCaptionTwo: "Gentle welcomes and familiar routines.",
     galleryCaptionThree: "Soft, attentive care for every personality.",
     galleryCaptionFour: "Fresh air, play, and peaceful transitions.",
-    bookingMessage:
-      "Meet & Greet request ready for {pet}. Estimated total {total}. Your information is saved in this demo so availability and next steps can be coordinated.",
     reviewService: "Service",
   },
   es: {
@@ -286,7 +326,7 @@ const translations = {
     bookTitle: "Reservar",
     bookHint: "Solicitud de Meet & Greet",
     storyTitle: "Nuestra historia",
-    storyHint: "Por que Shingo's Palace",
+    storyHint: "Por qué Shingo's Palace",
     galleryTitle: "Galería",
     galleryHint: "Perros, gatos, pileta y patio",
     dogMatchTitle: "Dog Match",
@@ -466,21 +506,49 @@ const translations = {
       "Las familias hablan de calidez, comunicación, fotos y la tranquilidad de saber que sus mascotas se sienten en casa.",
     reviewsLink: "Ver perfil de Rover",
     bookingHeading: "Solicita un Meet & Greet.",
-    bookingStepContact: "Tus datos",
-    bookingStepContactHelp: "Una forma simple de presentarte y presentar a tu mascota.",
-    bookingStepService: "Estadía preferida",
-    bookingStepServiceHelp: "Elegí el servicio, fecha, hora y zona.",
-    bookingStepExtras: "Notas de cuidado",
-    bookingStepExtrasHelp: "Contanos sobre mascotas extra, horarios, temperamento o cuidados especiales.",
-    bookingStepPayment: "Estimado",
-    bookingStepPaymentHelp: "La disponibilidad final y detalles personalizados se confirman directamente.",
+    bookingStepContact: "Información del dueño",
+    bookingStepContactHelp: "Contanos quién reserva y cómo podemos contactarte.",
+    bookingStepDog: "Información del perro",
+    bookingStepDogHelp: "Compartí detalles de salud, comportamiento y comodidad para cuidarlo con seguridad.",
+    bookingStepVet: "Información veterinaria",
+    bookingStepVetHelp: "Esto nos ayuda a actuar rápido y responsablemente si tu perro necesita atención.",
+    bookingStepService: "Información de la reserva",
+    bookingStepServiceHelp: "Elegí el tipo de cuidado, fechas, horarios y zona.",
+    bookingStepExtras: "Notas adicionales",
+    bookingStepExtrasHelp: "Compartí cualquier detalle que nos ayude a preparar una estadía tranquila y segura.",
+    fieldFirstName: "Nombre",
+    fieldLastName: "Apellido",
     fieldName: "Tu nombre",
     fieldEmail: "Correo",
-    fieldPhone: "Teléfono",
-    fieldPet: "Nombre de la mascota",
+    fieldPhone: "Número de teléfono",
+    fieldEmergencyContact: "Contacto de emergencia",
+    fieldPet: "Nombre del perro",
+    fieldBreed: "Raza",
+    fieldAge: "Edad",
+    fieldWeight: "Peso",
+    fieldSex: "Sexo",
+    fieldSpayedNeutered: "Castrado / esterilizada",
+    fieldVaccinations: "¿Vacunas al día?",
+    fieldGoodCats: "¿Se lleva bien con gatos?",
+    fieldGoodSmallDogs: "¿Se lleva bien con perros pequeños?",
+    fieldCanSwim: "¿Sabe nadar?",
+    fieldMedications: "Medicamentos",
+    fieldAllergies: "Alergias",
+    fieldBehavioralConcerns: "Detalles de comportamiento",
+    fieldFavoriteActivities: "Actividades favoritas",
+    fieldFeedingInstructions: "Instrucciones de comida",
+    fieldSleepingRoutine: "Rutina de descanso",
+    fieldVetClinic: "Clínica veterinaria",
+    fieldVetName: "Nombre del veterinario",
+    fieldVetPhone: "Teléfono de la clínica",
+    fieldVetAddress: "Dirección de la clínica (opcional)",
     fieldService: "Servicio",
     fieldDate: "Fecha de inicio",
     fieldTime: "Hora de inicio",
+    fieldDropoffDate: "Fecha de drop-off",
+    fieldPickupDate: "Fecha de pick-up",
+    fieldArrivalTime: "Horario de llegada",
+    fieldDepartureTime: "Horario de salida",
     fieldArea: "Zona",
     fieldUnits: "Noches, días o visitas",
     fieldDogs: "Perros adicionales",
@@ -488,10 +556,17 @@ const translations = {
     fieldAfterHours: "Reserva fuera de horario",
     fieldLongStay: "Solicitud de estadía larga",
     fieldNotes: "Notas",
+    fieldEmergencyAuthorization:
+      "Autorizo a Shingo's Palace a buscar atención veterinaria en caso de emergencia si no pueden contactarme. Entiendo que todos los gastos veterinarios son mi responsabilidad.",
     fieldCard: "Titular",
     fieldCardNumber: "Número de tarjeta",
     fieldExpiry: "Vencimiento",
-    bookingSubmit: "Solicitar Meet & Greet",
+    bookingSubmit: "Enviar solicitud",
+    bookingSending: "Enviando tu solicitud...",
+    bookingSuccess: "¡Gracias! Recibimos tu solicitud y te contactaremos pronto.",
+    bookingConfigMissing: "Formspree está casi listo. Agregá el endpoint de Formspree para empezar a recibir solicitudes.",
+    bookingError: "Algo salió mal. Intentá de nuevo o escribinos a info@shingospalace.com.",
+    bookingRequired: "Por favor completá los campos requeridos y la autorización de emergencia antes de enviar.",
     summaryLabel: "Estimado",
     summaryBase: "Base",
     summaryDogs: "Perros adicionales",
@@ -502,9 +577,16 @@ const translations = {
     customQuote: "Cotización personalizada",
     paymentNote: "Este es un estimado. La disponibilidad final, transporte y grooming se confirman personalmente.",
     optionBoarding: "Boarding",
+    optionSelect: "Seleccionar",
+    optionFemale: "Hembra",
+    optionMale: "Macho",
+    optionYes: "Sí",
+    optionNo: "No",
+    optionUnknown: "No sé",
     optionPuppy: "Cachorros",
-    optionDaycare: "Daycare - 1 día",
+    optionDaycare: "Daycare",
     optionDaycarePackage: "Daycare - semana",
+    optionMeetGreet: "Meet & Greet",
     optionSpaBath: "Spa Bath",
     optionFullGroom: "Full Grooming Spa",
     optionDropin: "Drop-In Visits diario",
@@ -525,29 +607,19 @@ const translations = {
     galleryCaptionTwo: "Bienvenidas tranquilas y rutinas familiares.",
     galleryCaptionThree: "Cuidado atento para cada personalidad.",
     galleryCaptionFour: "Aire libre, juego y transiciones en paz.",
-    bookingMessage:
-      "La solicitud de Meet & Greet para {pet} está lista. El total estimado es {total}. Tu información queda guardada en esta demo para coordinar disponibilidad y próximos pasos.",
     reviewService: "Servicio",
   },
 };
 
 const serviceRates = {
   boarding: 50,
-  puppy: 60,
   daycare: 35,
-  daycarePackage: 150,
-  spaBath: 30,
-  fullGroom: 0,
-  dropin: 25,
-  dropinWeekly: 100,
-  catstay: 30,
-  walking: 18,
-  walkingWeekly: 75,
-  pickup: 10,
+  meetGreet: 0,
 };
 
 const additionalDogRate = 35;
 const additionalCatRate = 20;
+const FORMSPREE_ENDPOINT = "";
 
 const reviews = [
   {
@@ -689,14 +761,18 @@ const homeGallery = document.querySelector("#homeGallery");
 const langButtons = document.querySelectorAll(".lang-button");
 const modalButtons = document.querySelectorAll("[data-modal]");
 const closeButtons = document.querySelectorAll(".modal-close");
+const bookingForm = document.querySelector("#bookingForm");
 const serviceSelect = document.querySelector("#serviceSelect");
 const unitsInput = document.querySelector("#unitsInput");
+const dropoffDateInput = document.querySelector("#dropoffDate");
+const pickupDateInput = document.querySelector("#pickupDate");
 const additionalDogsInput = document.querySelector("#additionalDogs");
 const additionalCatsInput = document.querySelector("#additionalCats");
 const afterHoursInput = document.querySelector("#afterHours");
 const longStayInput = document.querySelector("#longStay");
 const bookingSubmit = document.querySelector("#bookingSubmit");
 const bookingStatus = document.querySelector("#bookingStatus");
+const estimatedTotalField = document.querySelector("#estimatedTotalField");
 
 let currentLang = localStorage.getItem("shingos-language") || "en";
 
@@ -805,24 +881,44 @@ function currency(amount) {
   return `$${amount}`;
 }
 
+function calculateBookingUnits() {
+  if (!dropoffDateInput?.value || !pickupDateInput?.value) {
+    return 1;
+  }
+
+  const start = new Date(`${dropoffDateInput.value}T00:00:00`);
+  const end = new Date(`${pickupDateInput.value}T00:00:00`);
+  const diffDays = Math.round((end - start) / (1000 * 60 * 60 * 24));
+
+  return Math.max(1, diffDays || 1);
+}
+
 function updateSummary() {
-  const service = serviceRates[serviceSelect.value];
-  const isCustomQuote = serviceSelect.value === "fullGroom";
-  const units = Math.max(1, Number(unitsInput.value) || 1);
-  const extraDogs = Math.max(0, Number(additionalDogsInput.value) || 0);
-  const extraCats = Math.max(0, Number(additionalCatsInput.value) || 0);
+  if (!serviceSelect || !unitsInput) return 0;
+
+  const serviceKey = serviceSelect.value;
+  const service = serviceRates[serviceKey] ?? 0;
+  const isCustomQuote = serviceKey === "meetGreet";
+  const units = calculateBookingUnits();
+  const extraDogs = Math.max(0, Number(additionalDogsInput?.value) || 0);
+  const extraCats = Math.max(0, Number(additionalCatsInput?.value) || 0);
   const base = isCustomQuote ? 0 : service * units;
   const dogs = isCustomQuote ? 0 : extraDogs * additionalDogRate * units;
   const cats = isCustomQuote ? 0 : extraCats * additionalCatRate * units;
-  const after = !isCustomQuote && afterHoursInput.checked ? service : 0;
+  const after = !isCustomQuote && afterHoursInput?.checked ? service : 0;
   const total = base + dogs + cats + after;
 
+  unitsInput.value = units;
   document.querySelector("#summaryBase").textContent = isCustomQuote ? t("customQuote") : currency(base);
   document.querySelector("#summaryDogs").textContent = currency(dogs);
   document.querySelector("#summaryCats").textContent = currency(cats);
   document.querySelector("#summaryAfter").textContent = currency(after);
   document.querySelector("#summaryTotal").textContent = isCustomQuote ? t("customQuote") : currency(total);
-  document.querySelector("#summaryLongStay").textContent = longStayInput.checked ? t("summaryLongStay") : "";
+  document.querySelector("#summaryLongStay").textContent = longStayInput?.checked ? t("summaryLongStay") : "";
+
+  if (estimatedTotalField) {
+    estimatedTotalField.value = isCustomQuote ? t("customQuote") : currency(total);
+  }
 
   return total;
 }
@@ -845,20 +941,57 @@ closeButtons.forEach((button) => {
   });
 });
 
-serviceSelect.addEventListener("change", updateSummary);
-unitsInput.addEventListener("input", updateSummary);
-additionalDogsInput.addEventListener("input", updateSummary);
-additionalCatsInput.addEventListener("input", updateSummary);
-afterHoursInput.addEventListener("change", updateSummary);
-longStayInput.addEventListener("change", updateSummary);
+serviceSelect?.addEventListener("change", updateSummary);
+dropoffDateInput?.addEventListener("change", updateSummary);
+pickupDateInput?.addEventListener("change", updateSummary);
+additionalDogsInput?.addEventListener("input", updateSummary);
+additionalCatsInput?.addEventListener("input", updateSummary);
+afterHoursInput?.addEventListener("change", updateSummary);
+longStayInput?.addEventListener("change", updateSummary);
 
-bookingSubmit.addEventListener("click", () => {
-  const pet = document.querySelector('input[name="pet"]').value || "your pet";
+bookingForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  bookingStatus.textContent = "";
+
+  if (!bookingForm.checkValidity()) {
+    bookingForm.reportValidity();
+    bookingStatus.textContent = t("bookingRequired");
+    return;
+  }
+
   updateSummary();
-  const totalText = document.querySelector("#summaryTotal").textContent;
-  bookingStatus.textContent = t("bookingMessage")
-    .replace("{pet}", pet)
-    .replace("{total}", totalText);
+
+  const endpoint = bookingForm.dataset.formspreeEndpoint || FORMSPREE_ENDPOINT;
+  if (!endpoint) {
+    bookingStatus.textContent = t("bookingConfigMissing");
+    return;
+  }
+
+  bookingSubmit.disabled = true;
+  bookingSubmit.textContent = t("bookingSending");
+
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      body: new FormData(bookingForm),
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Form submission failed");
+    }
+
+    bookingForm.reset();
+    updateSummary();
+    bookingStatus.textContent = t("bookingSuccess");
+  } catch (error) {
+    bookingStatus.textContent = t("bookingError");
+  } finally {
+    bookingSubmit.disabled = false;
+    bookingSubmit.textContent = t("bookingSubmit");
+  }
 });
 
 applyLanguage();
