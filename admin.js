@@ -8,6 +8,7 @@ const adminLoginForm = document.querySelector("#adminLoginForm");
 const adminLoginStatus = document.querySelector("#adminLoginStatus");
 const adminStatus = document.querySelector("#adminStatus");
 const adminDogsEl = document.querySelector("#adminDogs");
+const adminMeetGreetsEl = document.querySelector("#adminMeetGreets");
 const adminTemplate = document.querySelector("#adminDogTemplate");
 const adminSearch = document.querySelector("#adminSearch");
 const adminRefresh = document.querySelector("#adminRefresh");
@@ -58,10 +59,23 @@ function formatOwner(owner) {
   return `${name || "Owner"} · ${owner.email || "No email"} · ${owner.phone || "No phone"}`;
 }
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function safeText(value, fallback = "") {
+  return escapeHtml(value || fallback);
+}
+
 function renderSection(title, lines) {
   const cleanLines = lines.filter(Boolean);
-  if (!cleanLines.length) return `<h3>${title}</h3><p>No records yet.</p>`;
-  return `<h3>${title}</h3><ul>${cleanLines.map((line) => `<li>${line}</li>`).join("")}</ul>`;
+  if (!cleanLines.length) return `<h3>${escapeHtml(title)}</h3><p>No records yet.</p>`;
+  return `<h3>${escapeHtml(title)}</h3><ul>${cleanLines.map((line) => `<li>${line}</li>`).join("")}</ul>`;
 }
 
 function recordList(records) {
@@ -69,12 +83,16 @@ function recordList(records) {
   return records.map((record) => {
     const date = record.upload_date ? new Date(record.upload_date).toLocaleDateString() : "No date";
     const expires = record.expiration_date ? ` · Expires ${record.expiration_date}` : "";
-    const label = record.original_filename || `Record v${record.version || 1}`;
+    const label = safeText(record.original_filename, `Record v${record.version || 1}`);
     const link = record.signed_url
-      ? `<a class="admin-record-link" href="${record.signed_url}" target="_blank" rel="noopener">Preview / Download</a>`
+      ? `<a class="admin-record-link" href="${escapeHtml(record.signed_url)}" target="_blank" rel="noopener">Preview / Download</a>`
       : "Signed URL unavailable";
-    return `<strong>${label}</strong><br>${record.document_status || "submitted"} · Uploaded ${date}${expires}<br>${link}`;
+    return `<strong>${label}</strong><br>${safeText(record.document_status, "submitted")} · Uploaded ${escapeHtml(date)}${safeText(expires)}<br>${link}`;
   });
+}
+
+function dogNameById(dogId) {
+  return adminDogs.find((dog) => dog.id === dogId)?.name || "another dog";
 }
 
 function noteList(notes) {
@@ -84,20 +102,49 @@ function noteList(notes) {
     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
     .map((note) => {
       const date = new Date(note.created_at).toLocaleString();
-      return `<strong>${note.category || "Note"}</strong> · ${date}<br>${note.note_text}`;
+      const relatedDog = note.related_dog_id ? `<br>Related dog: ${safeText(dogNameById(note.related_dog_id))}` : "";
+      return `<strong>${safeText(note.category, "Note")}</strong> · ${escapeHtml(date)}<br>${safeText(note.note_text)}${relatedDog}`;
     });
 }
 
 function compatibilityList(dog) {
   const items = [...(dog.compatibility_as_first || []), ...(dog.compatibility_as_second || [])];
   if (!items.length) return ["No compatibility notes yet."];
-  return items.map((item) => `<strong>${item.status}</strong><br>${item.notes || "No extra notes."}`);
+  return items.map((item) => {
+    const relatedDogId = item.dog_one_id === dog.id ? item.dog_two_id : item.dog_one_id;
+    return `<strong>${safeText(item.status)}</strong> with ${safeText(dogNameById(relatedDogId))}<br>${safeText(item.notes, "No extra notes.")}`;
+  });
+}
+
+function renderMeetGreets(requests) {
+  if (!adminMeetGreetsEl) return;
+
+  if (!requests?.length) {
+    adminMeetGreetsEl.innerHTML = "<p>No Meet & Greet requests yet.</p>";
+    return;
+  }
+
+  adminMeetGreetsEl.innerHTML = requests
+    .map((request) => {
+      const created = request.created_at ? new Date(request.created_at).toLocaleString() : "No date";
+      return `
+        <article class="admin-request-card">
+          <strong>${safeText(request.owner_name, "Owner")} · ${safeText(request.dog_name, "Dog")}</strong>
+          <span>${safeText(request.email, "No email")} · ${safeText(request.phone, "No phone")}</span>
+          <span>${safeText(request.preferred_day, "No day")} at ${safeText(request.preferred_time, "No time")}</span>
+          <span>Status: ${safeText(request.status, "new_request")}</span>
+          ${request.message ? `<p>${safeText(request.message)}</p>` : ""}
+          <span>Submitted ${escapeHtml(created)}</span>
+        </article>
+      `;
+    })
+    .join("");
 }
 
 function populateDogOptions(select, currentDogId) {
   select.innerHTML = adminDogs
     .filter((dog) => dog.id !== currentDogId)
-    .map((dog) => `<option value="${dog.id}">${dog.name || "Unnamed dog"}</option>`)
+    .map((dog) => `<option value="${escapeHtml(dog.id)}">${safeText(dog.name, "Unnamed dog")}</option>`)
     .join("");
 }
 
@@ -125,19 +172,19 @@ function renderDogs() {
     node.querySelector("h2").textContent = dog.name || "Unnamed dog";
     node.querySelector(".admin-owner").textContent = formatOwner(dog.owner);
     node.querySelector(".admin-contact").innerHTML = renderSection("Owner", [
-      dog.owner?.emergency_contact ? `Emergency contact: ${dog.owner.emergency_contact}` : "",
+      dog.owner?.emergency_contact ? `Emergency contact: ${safeText(dog.owner.emergency_contact)}` : "",
     ]);
     node.querySelector(".admin-vet").innerHTML = renderSection("Veterinarian", [
-      dog.veterinary_clinic ? `Clinic: ${dog.veterinary_clinic}` : "",
-      dog.veterinarian_name ? `Vet: ${dog.veterinarian_name}` : "",
-      dog.clinic_phone ? `Phone: ${dog.clinic_phone}` : "",
-      dog.clinic_address ? `Address: ${dog.clinic_address}` : "",
+      dog.veterinary_clinic ? `Clinic: ${safeText(dog.veterinary_clinic)}` : "",
+      dog.veterinarian_name ? `Vet: ${safeText(dog.veterinarian_name)}` : "",
+      dog.clinic_phone ? `Phone: ${safeText(dog.clinic_phone)}` : "",
+      dog.clinic_address ? `Address: ${safeText(dog.clinic_address)}` : "",
     ]);
     node.querySelector(".admin-bookings").innerHTML = renderSection(
       "Reservation history",
       (dog.bookings || []).map(
         (booking) =>
-          `${booking.service} · ${booking.dropoff_date || "No date"} → ${booking.pickup_date || "No date"} · ${booking.status}`,
+          `${safeText(booking.service)} · ${safeText(booking.dropoff_date, "No date")} → ${safeText(booking.pickup_date, "No date")} · ${safeText(booking.status)}`,
       ),
     );
     node.querySelector(".admin-records").innerHTML = renderSection("Vaccination records", recordList(dog.vaccination_records));
@@ -148,7 +195,7 @@ function renderDogs() {
     const relatedNoteDogSelect = noteForm.querySelector("select[name='relatedDogId']");
     relatedNoteDogSelect.innerHTML = `<option value="">None</option>${adminDogs
       .filter((item) => item.id !== dog.id)
-      .map((item) => `<option value="${item.id}">${item.name || "Unnamed dog"}</option>`)
+      .map((item) => `<option value="${escapeHtml(item.id)}">${safeText(item.name, "Unnamed dog")}</option>`)
       .join("")}`;
     noteForm.addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -207,8 +254,12 @@ function renderDogs() {
 
 async function loadDogs() {
   setStatus(adminStatus, "Loading private records...");
-  const payload = await apiFetch("/api/admin/dogs");
-  adminDogs = payload.dogs || [];
+  const [dogsPayload, meetGreetsPayload] = await Promise.all([
+    apiFetch("/api/admin/dogs"),
+    apiFetch("/api/admin/meet-greets"),
+  ]);
+  adminDogs = dogsPayload.dogs || [];
+  renderMeetGreets(meetGreetsPayload.requests || []);
   renderDogs();
   setStatus(adminStatus, "");
 }

@@ -974,7 +974,17 @@ const mobileSummaryToggle = document.querySelector("#mobileSummaryToggle");
 
 let currentLang = localStorage.getItem("shingos-language") || "en";
 let currentBookingStep = 1;
-const allowedVaccinationTypes = new Set(["application/pdf", "image/jpeg", "image/jpg", "image/png", "image/heic", "image/heif"]);
+const allowedVaccinationTypes = new Set([
+  "application/pdf",
+  "image/jpeg",
+  "image/jpg",
+  "image/pjpeg",
+  "image/png",
+  "image/heic",
+  "image/heif",
+  "application/octet-stream",
+  "",
+]);
 const allowedVaccinationExtensions = new Set(["pdf", "jpg", "jpeg", "png", "heic", "heif"]);
 const maxVaccinationFileSize = 10 * 1024 * 1024;
 
@@ -1162,7 +1172,7 @@ function validateVaccinationFiles() {
 
   const invalidType = files.find((file) => {
     const extension = file.name.split(".").pop()?.toLowerCase() || "";
-    return !allowedVaccinationTypes.has(file.type) || !allowedVaccinationExtensions.has(extension);
+    return !allowedVaccinationExtensions.has(extension) || !allowedVaccinationTypes.has(file.type || "");
   });
 
   if (invalidType) {

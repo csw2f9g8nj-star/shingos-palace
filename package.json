@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "vercel dev",
-    "check": "node -c api/booking-request.js && node -c api/meet-greet.js && node -c api/admin/config.js && node -c api/admin/dogs.js && node -c api/admin/vaccination-records.js && node -c api/admin/notes.js && node -c api/admin/compatibility.js && node -c api/_utils/supabase.js && node -c api/_utils/forms.js"
+    "check": "node -c api/booking-request.js && node -c api/meet-greet.js && node -c api/admin/config.js && node -c api/admin/dogs.js && node -c api/admin/meet-greets.js && node -c api/admin/vaccination-records.js && node -c api/admin/notes.js && node -c api/admin/compatibility.js && node -c api/_utils/supabase.js && node -c api/_utils/forms.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",

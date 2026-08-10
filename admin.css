@@ -75,6 +75,60 @@
   gap: 18px;
 }
 
+.admin-panel {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 22px;
+  padding: 20px;
+  border: 1px solid rgba(39, 50, 47, 0.08);
+  border-radius: 28px;
+  background: rgba(255, 252, 246, 0.7);
+}
+
+.admin-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.admin-panel h2 {
+  margin: 0 0 6px;
+  color: var(--charcoal);
+  font-size: 1.35rem;
+}
+
+.admin-panel p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.admin-request-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.admin-request-card {
+  display: grid;
+  gap: 8px;
+  padding: 15px;
+  border: 1px solid rgba(39, 50, 47, 0.08);
+  border-radius: 20px;
+  background: rgba(168, 185, 165, 0.11);
+}
+
+.admin-request-card strong {
+  color: var(--charcoal);
+}
+
+.admin-request-card span,
+.admin-request-card p {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
 .admin-dog-card {
   display: grid;
   gap: 18px;
@@ -176,6 +230,10 @@
   }
 
   .admin-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-request-list {
     grid-template-columns: 1fr;
   }
 }

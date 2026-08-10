@@ -5,9 +5,12 @@ const ALLOWED_MIME_TYPES = new Set([
   "application/pdf",
   "image/jpeg",
   "image/jpg",
+  "image/pjpeg",
   "image/png",
   "image/heic",
   "image/heif",
+  "application/octet-stream",
+  "",
 ]);
 
 const ALLOWED_EXTENSIONS = new Set(["pdf", "jpg", "jpeg", "png", "heic", "heif"]);
@@ -87,7 +90,11 @@ function validateUploadFile(file) {
   const extension = getFileExtension(file);
   const mimeType = file.mimetype || file.type || "";
 
-  if (!ALLOWED_EXTENSIONS.has(extension) || !ALLOWED_MIME_TYPES.has(mimeType)) {
+  if (!ALLOWED_EXTENSIONS.has(extension)) {
+    return "Only PDF, JPG, JPEG, PNG, HEIC, or HEIF files are accepted.";
+  }
+
+  if (mimeType && !ALLOWED_MIME_TYPES.has(mimeType)) {
     return "Only PDF, JPG, JPEG, PNG, HEIC, or HEIF files are accepted.";
   }
 
