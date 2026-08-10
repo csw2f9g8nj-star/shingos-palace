@@ -317,7 +317,7 @@ const translations = {
     bookingSubmit: "Continue to Payment",
     bookingSending: "Sending your request...",
     bookingSuccess: "Thank you! We have received your request and will contact you shortly.",
-    bookingConfigMissing: "Booking is almost ready. Please try again shortly.",
+    bookingConfigMissing: "Booking connection is unavailable. Please try again shortly.",
     bookingError: "Something went wrong. Please try again or email info@shingospalace.com.",
     bookingRequired: "Please complete the required fields and emergency authorization before submitting.",
     summaryLabel: "Reservation summary",
@@ -697,7 +697,7 @@ const translations = {
     bookingSubmit: "Continuar al pago",
     bookingSending: "Enviando tu solicitud...",
     bookingSuccess: "¡Gracias! Recibimos tu solicitud y te contactaremos pronto.",
-    bookingConfigMissing: "La reserva está casi lista. Intentá nuevamente en unos minutos.",
+    bookingConfigMissing: "La conexión de reservas no está disponible. Intentá nuevamente en unos minutos.",
     bookingError: "Algo salió mal. Intentá de nuevo o escribinos a info@shingospalace.com.",
     bookingRequired: "Por favor completá los campos requeridos y la autorización de emergencia antes de enviar.",
     summaryLabel: "Resumen de reserva",
@@ -786,7 +786,8 @@ const occupiedSpots = {
 const additionalDogRate = 35;
 const additionalCatRate = 20;
 const depositRate = 0.25;
-const FORMSPREE_ENDPOINT = "";
+const BOOKING_ENDPOINT = "/api/booking-request";
+const MEET_GREET_ENDPOINT = "/api/meet-greet";
 
 const reviews = [
   {
@@ -1436,7 +1437,7 @@ meetGreetForm?.addEventListener("submit", async (event) => {
     return;
   }
 
-  const endpoint = meetGreetForm.getAttribute("action") || meetGreetForm.dataset.formspreeEndpoint || FORMSPREE_ENDPOINT;
+  const endpoint = meetGreetForm.getAttribute("action") || MEET_GREET_ENDPOINT;
   if (!endpoint) {
     meetGreetStatus.textContent = t("bookingConfigMissing");
     return;
@@ -1475,7 +1476,7 @@ bookingForm?.addEventListener("submit", async (event) => {
 
   updateSummary();
 
-  const endpoint = bookingForm.getAttribute("action") || bookingForm.dataset.formspreeEndpoint || FORMSPREE_ENDPOINT;
+  const endpoint = bookingForm.getAttribute("action") || BOOKING_ENDPOINT;
   if (!endpoint) {
     bookingStatus.textContent = t("bookingConfigMissing");
     return;

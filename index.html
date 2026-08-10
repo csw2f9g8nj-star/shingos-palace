@@ -636,8 +636,7 @@
           See if we have space before completing a full reservation request.
         </p>
 
-        <form class="booking-form quick-flow-form" id="availabilityForm" method="POST" data-formspree-endpoint="">
-          <input type="hidden" name="_subject" value="New Shingo's Palace availability request" />
+        <form class="booking-form quick-flow-form" id="availabilityForm" method="POST">
           <input type="hidden" name="source" value="Shingo's Palace availability checker" />
           <section class="booking-step full compact-step">
             <div class="booking-fields">
@@ -701,7 +700,6 @@
         </p>
 
         <form class="booking-form quick-flow-form" id="meetGreetForm" method="POST" action="/api/meet-greet">
-          <input type="hidden" name="_subject" value="New Shingo's Palace Meet & Greet request" />
           <input type="hidden" name="source" value="Shingo's Palace Meet & Greet form" />
           <section class="booking-step full compact-step">
             <div class="booking-fields">
@@ -765,7 +763,6 @@
 
         <div class="booking-layout">
           <form class="booking-form" id="bookingForm" method="POST" action="/api/booking-request" enctype="multipart/form-data">
-            <input type="hidden" name="_subject" value="New Shingo's Palace booking request" />
             <input type="hidden" name="source" value="Shingo's Palace website" />
             <input type="hidden" name="estimatedTotal" id="estimatedTotalField" value="" />
             <input type="hidden" name="depositDueToday" id="depositDueField" value="" />

@@ -2846,6 +2846,14 @@ h2 {
   display: none;
 }
 
+.wizard-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fffaf1;
+  background: var(--charcoal);
+}
+
 .booking-step-muted {
   background: rgba(168, 185, 165, 0.12);
 }
@@ -3816,14 +3824,23 @@ textarea {
     gap: 6px;
   }
 
-  .booking-wizard-actions,
-  .wizard-submit {
+  .booking-wizard-actions {
     position: sticky;
     bottom: 92px;
     z-index: 6;
     margin-top: 8px;
     padding: 8px 0 0;
     background: linear-gradient(180deg, rgba(255, 250, 241, 0), rgba(255, 250, 241, 0.96) 30%);
+  }
+
+  .wizard-submit {
+    position: sticky;
+    bottom: 92px;
+    z-index: 6;
+    margin-top: 8px;
+    padding: 0 22px;
+    color: #fffaf1;
+    background: var(--sage-deep);
   }
 
   .booking-wizard-actions .ghost-button,
