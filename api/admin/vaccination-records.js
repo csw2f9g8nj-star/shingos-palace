@@ -2,6 +2,7 @@ const fs = require("fs/promises");
 const {
   getAdminClient,
   getSupabaseConfig,
+  getUploadContentType,
   handleApiError,
   normalizeField,
   requireAdminUser,
@@ -64,11 +65,12 @@ async function handler(req, res) {
         `${Date.now()}-${index + 1}.${extension}`,
       ].join("/");
       const buffer = await fs.readFile(file.filepath);
+      const contentType = getUploadContentType(file);
 
       const { error: storageError } = await supabase.storage
         .from(config.bucket)
         .upload(path, buffer, {
-          contentType: file.mimetype,
+          contentType,
           upsert: false,
         });
       if (storageError) throw storageError;
@@ -81,7 +83,7 @@ async function handler(req, res) {
           storage_bucket: config.bucket,
           storage_path: path,
           original_filename: file.originalFilename,
-          mime_type: file.mimetype,
+          mime_type: contentType,
           file_size: file.size,
           document_status: "updated",
           expiration_date: expirationDate,

@@ -2,13 +2,36 @@ const fs = require("fs/promises");
 const {
   getAdminClient,
   getSupabaseConfig,
+  getUploadContentType,
   handleApiError,
   normalizeField,
+  publicApiError,
   sanitizePathPart,
   sendJson,
   validateUploadFile,
 } = require("./_utils/supabase");
 const { parseMultipartForm, toFileArray } = require("./_utils/forms");
+
+async function insertSingle(supabase, table, payload, message) {
+  const { data, error } = await supabase.from(table).insert(payload).select().single();
+  if (error) {
+    throw publicApiError(message, 500, `${table}_insert_failed`);
+  }
+
+  return data;
+}
+
+async function removeCreatedRecords(supabase, created) {
+  const cleanupTasks = [];
+  if (created.storagePaths?.length) {
+    cleanupTasks.push(supabase.storage.from(created.bucket).remove(created.storagePaths));
+  }
+  if (created.bookingId) cleanupTasks.push(supabase.from("bookings").delete().eq("id", created.bookingId));
+  if (created.dogId) cleanupTasks.push(supabase.from("dogs").delete().eq("id", created.dogId));
+  if (created.ownerId) cleanupTasks.push(supabase.from("owners").delete().eq("id", created.ownerId));
+
+  await Promise.allSettled(cleanupTasks);
+}
 
 async function handler(req, res) {
   if (req.method !== "POST") {
@@ -21,6 +44,13 @@ async function handler(req, res) {
     const config = getSupabaseConfig();
     const { fields, files } = await parseMultipartForm(req);
     const records = toFileArray(files.vaccinationRecords);
+    const created = {
+      bucket: config.bucket,
+      ownerId: "",
+      dogId: "",
+      bookingId: "",
+      storagePaths: [],
+    };
 
     if (!records.length) {
       sendJson(res, 400, {
@@ -92,73 +122,89 @@ async function handler(req, res) {
       return;
     }
 
-    const { data: owner, error: ownerError } = await supabase
-      .from("owners")
-      .insert(ownerPayload)
-      .select()
-      .single();
-    if (ownerError) throw ownerError;
+    try {
+      const owner = await insertSingle(
+        supabase,
+        "owners",
+        ownerPayload,
+        "We could not save the owner information. Please check the Supabase service key and owners table.",
+      );
+      created.ownerId = owner.id;
 
-    const { data: dog, error: dogError } = await supabase
-      .from("dogs")
-      .insert({ ...dogPayload, owner_id: owner.id })
-      .select()
-      .single();
-    if (dogError) throw dogError;
+      const dog = await insertSingle(
+        supabase,
+        "dogs",
+        { ...dogPayload, owner_id: owner.id },
+        "We could not save the dog profile. Please check the dogs table in Supabase.",
+      );
+      created.dogId = dog.id;
 
-    const { data: booking, error: bookingError } = await supabase
-      .from("bookings")
-      .insert({ ...bookingPayload, owner_id: owner.id, dog_id: dog.id })
-      .select()
-      .single();
-    if (bookingError) throw bookingError;
+      const booking = await insertSingle(
+        supabase,
+        "bookings",
+        { ...bookingPayload, owner_id: owner.id, dog_id: dog.id },
+        "We could not save the booking request. Please check the bookings table in Supabase.",
+      );
+      created.bookingId = booking.id;
 
-    const uploadedRecords = [];
-    for (const [index, file] of records.entries()) {
-      const extension = (file.originalFilename || "").split(".").pop()?.toLowerCase() || "upload";
-      const path = [
-        sanitizePathPart(owner.email),
-        sanitizePathPart(dog.name),
-        booking.id,
-        `${Date.now()}-${index + 1}.${extension}`,
-      ].join("/");
-      const buffer = await fs.readFile(file.filepath);
+      const uploadedRecords = [];
+      for (const [index, file] of records.entries()) {
+        const extension = (file.originalFilename || "").split(".").pop()?.toLowerCase() || "upload";
+        const path = [
+          sanitizePathPart(owner.email),
+          sanitizePathPart(dog.name),
+          booking.id,
+          `${Date.now()}-${index + 1}.${extension}`,
+        ].join("/");
+        const buffer = await fs.readFile(file.filepath);
+        const contentType = getUploadContentType(file);
 
-      const { error: storageError } = await supabase.storage
-        .from(config.bucket)
-        .upload(path, buffer, {
-          contentType: file.mimetype,
-          upsert: false,
-        });
-      if (storageError) throw storageError;
+        const { error: storageError } = await supabase.storage
+          .from(config.bucket)
+          .upload(path, buffer, {
+            contentType,
+            upsert: false,
+          });
+        if (storageError) {
+          throw publicApiError(
+            "We could not upload the vaccination record. Please confirm the private vaccination-records bucket exists in Supabase.",
+            500,
+            "vaccination_upload_failed",
+          );
+        }
+        created.storagePaths.push(path);
 
-      const { data: record, error: recordError } = await supabase
-        .from("vaccination_records")
-        .insert({
-          owner_id: owner.id,
-          dog_id: dog.id,
-          booking_id: booking.id,
-          storage_bucket: config.bucket,
-          storage_path: path,
-          original_filename: file.originalFilename,
-          mime_type: file.mimetype,
-          file_size: file.size,
-          document_status: "submitted",
-          version: 1,
-        })
-        .select()
-        .single();
-      if (recordError) throw recordError;
-      uploadedRecords.push(record);
+        const record = await insertSingle(
+          supabase,
+          "vaccination_records",
+          {
+            owner_id: owner.id,
+            dog_id: dog.id,
+            booking_id: booking.id,
+            storage_bucket: config.bucket,
+            storage_path: path,
+            original_filename: file.originalFilename,
+            mime_type: contentType,
+            file_size: file.size,
+            document_status: "submitted",
+            version: 1,
+          },
+          "We uploaded the vaccination file, but could not save its private record. Please check the vaccination_records table.",
+        );
+        uploadedRecords.push(record);
+      }
+
+      sendJson(res, 200, {
+        ok: true,
+        message: "Thank you! We have received your request and will contact you shortly.",
+        bookingId: booking.id,
+        dogId: dog.id,
+        recordsUploaded: uploadedRecords.length,
+      });
+    } catch (error) {
+      await removeCreatedRecords(supabase, created);
+      throw error;
     }
-
-    sendJson(res, 200, {
-      ok: true,
-      message: "Thank you! We have received your request and will contact you shortly.",
-      bookingId: booking.id,
-      dogId: dog.id,
-      recordsUploaded: uploadedRecords.length,
-    });
   } catch (error) {
     handleApiError(res, error);
   }

@@ -33,6 +33,43 @@ function getSupabaseConfig() {
   };
 }
 
+function decodeJwtPayload(token) {
+  try {
+    const payload = String(token || "").split(".")[1];
+    if (!payload) return null;
+    const normalized = payload.replace(/-/g, "+").replace(/_/g, "/");
+    const decoded = Buffer.from(normalized, "base64").toString("utf8");
+    return JSON.parse(decoded);
+  } catch (error) {
+    return null;
+  }
+}
+
+function getUploadContentType(file) {
+  const mimeType = file.mimetype || file.type || "";
+  if (mimeType && mimeType !== "application/octet-stream") return mimeType;
+
+  const extension = getFileExtension(file);
+  const fallbackTypes = {
+    pdf: "application/pdf",
+    jpg: "image/jpeg",
+    jpeg: "image/jpeg",
+    png: "image/png",
+    heic: "image/heic",
+    heif: "image/heif",
+  };
+
+  return fallbackTypes[extension] || "application/octet-stream";
+}
+
+function publicApiError(message, statusCode = 500, code = "api_error") {
+  const error = new Error(message);
+  error.statusCode = statusCode;
+  error.publicMessage = message;
+  error.code = code;
+  return error;
+}
+
 function requireServerConfig() {
   const config = getSupabaseConfig();
   const missing = [];
@@ -41,9 +78,20 @@ function requireServerConfig() {
   if (!config.adminEmail) missing.push("ADMIN_EMAIL");
 
   if (missing.length) {
-    const error = new Error(`Missing environment variables: ${missing.join(", ")}`);
-    error.statusCode = 500;
-    throw error;
+    throw publicApiError(
+      `Booking connection is missing required Vercel environment variables: ${missing.join(", ")}.`,
+      500,
+      "missing_env",
+    );
+  }
+
+  const secretPayload = decodeJwtPayload(config.secretKey);
+  if (secretPayload?.role && secretPayload.role !== "service_role") {
+    throw publicApiError(
+      "Supabase server key is not configured correctly. Please use the service_role key for SUPABASE_SECRET_KEY or SUPABASE_SERVICE_ROLE_KEY.",
+      500,
+      "invalid_service_key",
+    );
   }
 
   return config;
@@ -134,9 +182,18 @@ async function requireAdminUser(req, supabase) {
 
 function handleApiError(res, error) {
   const statusCode = error.statusCode || 500;
+  console.error("[Shingo's Palace API]", {
+    statusCode,
+    code: error.code,
+    message: error.message,
+    details: error.details,
+    hint: error.hint,
+  });
+
   sendJson(res, statusCode, {
     ok: false,
-    error: statusCode === 500 ? "Something went wrong. Please try again." : error.message,
+    error: error.publicMessage || (statusCode === 500 ? "Something went wrong. Please try again." : error.message),
+    code: error.code,
     detail: process.env.NODE_ENV === "development" ? error.message : undefined,
   });
 }
@@ -147,6 +204,8 @@ module.exports = {
   ALLOWED_EXTENSIONS,
   getSupabaseConfig,
   getAdminClient,
+  getUploadContentType,
+  publicApiError,
   sendJson,
   normalizeField,
   sanitizePathPart,
