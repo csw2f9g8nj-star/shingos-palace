@@ -1,0 +1,16 @@
+{
+  "name": "shingos-palace",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "vercel dev",
+    "check": "node -c api/booking-request.js && node -c api/meet-greet.js && node -c api/admin/config.js && node -c api/admin/dogs.js && node -c api/admin/vaccination-records.js && node -c api/admin/notes.js && node -c api/admin/compatibility.js && node -c api/_utils/supabase.js && node -c api/_utils/forms.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "formidable": "^3.5.1"
+  },
+  "devDependencies": {
+    "vercel": "^37.4.2"
+  }
+}

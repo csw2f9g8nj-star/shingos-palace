@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Shingo's Palace Admin</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="admin.css" />
+  </head>
+  <body class="admin-body">
+    <main class="admin-shell">
+      <section class="admin-login-card" id="adminLogin">
+        <img src="assets/logo-shingos-palace-header.svg" alt="Shingo's Palace" />
+        <p class="modal-kicker">Private Admin</p>
+        <h1>Shingo's Palace Records</h1>
+        <p>
+          Secure access for vaccination records, private dog notes, reservation history, and compatibility warnings.
+        </p>
+        <form id="adminLoginForm" class="admin-form">
+          <label>
+            <span>Email</span>
+            <input id="adminEmail" type="email" autocomplete="email" required />
+          </label>
+          <label>
+            <span>Password</span>
+            <input id="adminPassword" type="password" autocomplete="current-password" required />
+          </label>
+          <button class="submit-button" type="submit">Sign In</button>
+          <p class="status-line" id="adminLoginStatus"></p>
+        </form>
+      </section>
+
+      <section class="admin-dashboard" id="adminDashboard" hidden>
+        <header class="admin-header">
+          <div>
+            <p class="modal-kicker">Private Admin</p>
+            <h1>Dog Profiles</h1>
+            <p>Vaccination records and internal notes are private and never shown on the public website.</p>
+          </div>
+          <button class="ghost-button" id="adminSignOut" type="button">Sign Out</button>
+        </header>
+
+        <div class="admin-toolbar">
+          <label>
+            <span>Search dog or owner</span>
+            <input id="adminSearch" type="search" placeholder="Search records..." />
+          </label>
+          <button class="ghost-button" id="adminRefresh" type="button">Refresh</button>
+        </div>
+
+        <div class="admin-grid" id="adminDogs"></div>
+        <p class="status-line" id="adminStatus"></p>
+      </section>
+    </main>
+
+    <template id="adminDogTemplate">
+      <article class="admin-dog-card">
+        <div class="admin-dog-head">
+          <div class="admin-dog-avatar"></div>
+          <div>
+            <h2></h2>
+            <p class="admin-owner"></p>
+          </div>
+        </div>
+        <div class="admin-card-section admin-contact"></div>
+        <div class="admin-card-section admin-vet"></div>
+        <div class="admin-card-section admin-bookings"></div>
+        <div class="admin-card-section admin-records"></div>
+        <div class="admin-card-section admin-compatibility"></div>
+        <div class="admin-card-section admin-notes"></div>
+        <form class="admin-note-form admin-form">
+          <h3>Add private note</h3>
+          <label>
+            <span>Tag</span>
+            <select name="category">
+              <option>Great with dogs</option>
+              <option>Slow introduction</option>
+              <option>Keep separated</option>
+              <option>Resource guarding</option>
+              <option>Medication</option>
+              <option>Special diet</option>
+              <option>Good with cats</option>
+              <option>Pool supervision</option>
+              <option>Escape risk</option>
+            </select>
+          </label>
+          <label>
+            <span>Related dog (optional)</span>
+            <select name="relatedDogId"></select>
+          </label>
+          <label>
+            <span>Note</span>
+            <textarea name="noteText" rows="3" required></textarea>
+          </label>
+          <button class="ghost-button" type="submit">Save Note</button>
+          <p class="status-line"></p>
+        </form>
+        <form class="admin-compatibility-form admin-form">
+          <h3>Add compatibility note</h3>
+          <label>
+            <span>Related dog</span>
+            <select name="dogTwoId" required></select>
+          </label>
+          <label>
+            <span>Status</span>
+            <select name="status" required>
+              <option value="Compatible">Compatible</option>
+              <option value="Supervised interaction only">Supervised interaction only</option>
+              <option value="Keep separated">Keep separated</option>
+            </select>
+          </label>
+          <label>
+            <span>Notes</span>
+            <textarea name="notes" rows="3"></textarea>
+          </label>
+          <button class="ghost-button" type="submit">Save Compatibility</button>
+          <p class="status-line"></p>
+        </form>
+        <form class="admin-upload-form admin-form">
+          <h3>Replace / add vaccination record</h3>
+          <label>
+            <span>Expiration date</span>
+            <input name="expirationDate" type="date" />
+          </label>
+          <label>
+            <span>Vaccination Records</span>
+            <input
+              name="vaccinationRecords"
+              type="file"
+              accept=".pdf,.jpg,.jpeg,.png,.heic,.heif,application/pdf,image/jpeg,image/png,image/heic,image/heif"
+              multiple
+              required
+            />
+          </label>
+          <button class="ghost-button" type="submit">Upload Updated Records</button>
+          <p class="status-line"></p>
+        </form>
+      </article>
+    </template>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="admin.js"></script>
+  </body>
+</html>

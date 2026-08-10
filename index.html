@@ -98,11 +98,14 @@
           </p>
 
           <div class="hero-cta-row">
-            <button class="hero-cta hero-cta-primary" data-modal="bookingModal" type="button" data-i18n="requestAvailability">
-              Request Availability
+            <button class="hero-cta hero-cta-primary" data-modal="availabilityModal" type="button" data-i18n="checkAvailability">
+              Check Availability
             </button>
-            <button class="hero-cta hero-cta-secondary" data-modal="bookingModal" type="button" data-i18n="meetGreet">
+            <button class="hero-cta hero-cta-secondary" data-modal="meetGreetModal" type="button" data-i18n="meetGreet">
               Meet & Greet
+            </button>
+            <button class="hero-cta hero-cta-secondary" data-modal="bookingModal" type="button" data-i18n="bookNow">
+              Book Now
             </button>
           </div>
 
@@ -114,10 +117,6 @@
             <button class="action-tile" data-modal="reviewsModal" type="button" onclick="window.openSiteModal('reviewsModal')">
               <span data-i18n="reviewsTitle">Reviews</span>
               <small data-i18n="reviewsHint">Real Rover feedback</small>
-            </button>
-            <button class="action-tile" data-modal="bookingModal" type="button">
-              <span data-i18n="bookTitle">Book</span>
-              <small data-i18n="bookHint">Meet & greet request</small>
             </button>
             <button class="action-tile" data-modal="storyModal" type="button">
               <span data-i18n="storyTitle">Our Story</span>
@@ -628,18 +627,150 @@
       </div>
     </dialog>
 
+    <dialog class="modal" id="availabilityModal">
+      <div class="modal-card flow-modal">
+        <button class="modal-close" type="button" aria-label="Close" onclick="window.closeSiteModal(this)">×</button>
+        <p class="modal-kicker" data-i18n="availabilityTitle">Check Availability</p>
+        <h2 data-i18n="availabilityHeading">Check your dates first.</h2>
+        <p class="flow-intro" data-i18n="availabilityIntro">
+          See if we have space before completing a full reservation request.
+        </p>
+
+        <form class="booking-form quick-flow-form" id="availabilityForm" method="POST" data-formspree-endpoint="">
+          <input type="hidden" name="_subject" value="New Shingo's Palace availability request" />
+          <input type="hidden" name="source" value="Shingo's Palace availability checker" />
+          <section class="booking-step full compact-step">
+            <div class="booking-fields">
+              <label class="wide-field">
+                <span data-i18n="fieldService">Service</span>
+                <select name="service" id="availabilityService" required>
+                  <option value="boarding" data-i18n="optionBoarding">Boarding</option>
+                  <option value="daycare" data-i18n="optionDaycare">Daycare</option>
+                  <option value="walking" data-i18n="optionWalking">Walking</option>
+                  <option value="grooming" data-i18n="optionGrooming">Grooming</option>
+                </select>
+              </label>
+              <div class="booking-fields stay-grid wide-field">
+                <label>
+                  <span data-i18n="fieldDropoffDate">Drop-off date</span>
+                  <input name="dropoffDate" id="availabilityDropoffDate" type="date" required />
+                </label>
+                <label>
+                  <span data-i18n="fieldPickupDate">Pick-up date</span>
+                  <input name="pickupDate" id="availabilityPickupDate" type="date" required />
+                </label>
+              </div>
+              <label>
+                <span data-i18n="fieldNumberDogs">Number of dogs</span>
+                <input name="numberOfDogs" id="availabilityDogs" type="number" min="1" max="10" value="1" required />
+              </label>
+              <label>
+                <span data-i18n="fieldDogSize">Dog size</span>
+                <select name="dogSize" id="availabilitySize" required>
+                  <option value="small" data-i18n="optionSmall">Small</option>
+                  <option value="medium" data-i18n="optionMedium">Medium</option>
+                  <option value="large" data-i18n="optionLarge">Large</option>
+                </select>
+              </label>
+            </div>
+          </section>
+
+          <div class="availability-result" id="availabilityResult" aria-live="polite">
+            <strong id="availabilityStatus" data-i18n="availabilityEmpty">Select your dates to check availability.</strong>
+            <p id="availabilityMessage" data-i18n="availabilityEmptyHelp">Availability appears instantly once your dates are selected.</p>
+            <div class="availability-actions" id="availabilityActions" hidden>
+              <button class="submit-button" id="availabilityBookButton" type="button" data-modal="bookingModal" data-i18n="continueBooking">Continue to Booking</button>
+              <button class="ghost-button" type="button" id="waitlistButton" data-i18n="joinWaitlist">Join Waitlist</button>
+            </div>
+          </div>
+          <p class="status-line full" id="availabilityStatusLine"></p>
+        </form>
+      </div>
+    </dialog>
+
+    <dialog class="modal" id="meetGreetModal">
+      <div class="modal-card flow-modal">
+        <button class="modal-close" type="button" aria-label="Close" onclick="window.closeSiteModal(this)">×</button>
+        <p class="modal-kicker" data-i18n="meetGreet">Meet & Greet</p>
+        <h2 data-i18n="meetGreetHeading">Schedule a visit.</h2>
+        <p class="flow-intro" data-i18n="meetGreetIntro">
+          Meet & Greet is a property visit, not a booking. Come meet us and see if Shingo's Palace is the right fit.
+        </p>
+        <p class="flow-note" data-i18n="meetGreetAppointmentNote">
+          Meet & Greets are private visits by appointment and usually take about 15–20 minutes.
+        </p>
+
+        <form class="booking-form quick-flow-form" id="meetGreetForm" method="POST" action="/api/meet-greet">
+          <input type="hidden" name="_subject" value="New Shingo's Palace Meet & Greet request" />
+          <input type="hidden" name="source" value="Shingo's Palace Meet & Greet form" />
+          <section class="booking-step full compact-step">
+            <div class="booking-fields">
+              <label>
+                <span data-i18n="fieldOwnerName">Owner name</span>
+                <input name="ownerName" type="text" autocomplete="name" required />
+              </label>
+              <label>
+                <span data-i18n="fieldPhone">Phone Number</span>
+                <input name="phone" type="tel" autocomplete="tel" required />
+              </label>
+              <label>
+                <span data-i18n="fieldEmail">Email</span>
+                <input name="email" type="email" autocomplete="email" required />
+              </label>
+              <label>
+                <span data-i18n="fieldPet">Dog's Name</span>
+                <input name="dogName" type="text" required />
+              </label>
+              <label>
+                <span data-i18n="fieldPreferredDay">Preferred day</span>
+                <input name="preferredDay" type="date" required />
+              </label>
+              <label>
+                <span data-i18n="fieldPreferredTime">Preferred time</span>
+                <input name="preferredTime" type="time" required />
+              </label>
+              <label class="wide-field">
+                <span data-i18n="fieldOptionalMessage">Optional message</span>
+                <textarea name="message" rows="4"></textarea>
+              </label>
+            </div>
+          </section>
+          <button class="submit-button full" id="meetGreetSubmit" type="submit" data-i18n="meetGreetSubmit">
+            Schedule Meet & Greet
+          </button>
+          <p class="status-line full" id="meetGreetStatus"></p>
+        </form>
+      </div>
+    </dialog>
+
     <dialog class="modal" id="bookingModal">
       <div class="modal-card wide-modal">
         <button class="modal-close" type="button" aria-label="Close" onclick="window.closeSiteModal(this)">×</button>
-        <p class="modal-kicker" data-i18n="bookTitle">Book</p>
-        <h2 data-i18n="bookingHeading">Request a Meet & Greet.</h2>
+        <p class="modal-kicker" data-i18n="bookNow">Book Now</p>
+        <h2 data-i18n="bookingHeading">Complete your reservation request.</h2>
+        <div class="booking-assistant">
+          <div>
+            <strong data-i18n="bookingAssistantTitle">Not sure if we have availability?</strong>
+            <p data-i18n="bookingAssistantText">Check your dates before completing your booking request.</p>
+          </div>
+          <button class="ghost-button" data-modal="availabilityModal" type="button" data-i18n="checkAvailability">Check Availability</button>
+        </div>
+        <ol class="booking-progress" aria-label="Booking progress">
+          <li class="active" data-booking-nav="1" data-i18n="progressOwner">Owner</li>
+          <li data-booking-nav="2" data-i18n="progressPet">Dog</li>
+          <li data-booking-nav="3" data-i18n="progressVet">Veterinarian</li>
+          <li data-booking-nav="4" data-i18n="progressStay">Stay</li>
+          <li data-booking-nav="5" data-i18n="progressReviewPayment">Review & Payment</li>
+        </ol>
 
         <div class="booking-layout">
-          <form class="booking-form" id="bookingForm" method="POST" data-formspree-endpoint="">
+          <form class="booking-form" id="bookingForm" method="POST" action="/api/booking-request" enctype="multipart/form-data">
             <input type="hidden" name="_subject" value="New Shingo's Palace booking request" />
             <input type="hidden" name="source" value="Shingo's Palace website" />
             <input type="hidden" name="estimatedTotal" id="estimatedTotalField" value="" />
-            <section class="booking-step full">
+            <input type="hidden" name="depositDueToday" id="depositDueField" value="" />
+            <input type="hidden" name="remainingBalance" id="remainingBalanceField" value="" />
+            <section class="booking-step full active" data-booking-step="1">
               <div class="booking-step-head">
                 <span>01</span>
                 <div>
@@ -671,7 +802,7 @@
               </div>
             </section>
 
-            <section class="booking-step full">
+            <section class="booking-step full" data-booking-step="2">
               <div class="booking-step-head">
                 <span>02</span>
                 <div>
@@ -774,7 +905,7 @@
               </div>
             </section>
 
-            <section class="booking-step full">
+            <section class="booking-step full" data-booking-step="3">
               <div class="booking-step-head">
                 <span>03</span>
                 <div>
@@ -799,10 +930,28 @@
                   <span data-i18n="fieldVetAddress">Clinic Address (optional)</span>
                   <input name="clinicAddress" type="text" />
                 </label>
+                <label class="wide-field upload-field">
+                  <span data-i18n="fieldVaccinationRecords">Vaccination Records</span>
+                  <input
+                    name="vaccinationRecords"
+                    id="vaccinationRecords"
+                    type="file"
+                    accept=".pdf,.jpg,.jpeg,.png,.heic,.heif,application/pdf,image/jpeg,image/png,image/heic,image/heif"
+                    multiple
+                    required
+                  />
+                  <small data-i18n="vaccinationRecordsHelp">
+                    A current vaccination record is required before a reservation can be confirmed.
+                  </small>
+                  <div class="upload-progress" id="vaccinationUploadProgress" hidden>
+                    <span id="vaccinationUploadBar"></span>
+                  </div>
+                  <p class="upload-status" id="vaccinationUploadStatus" aria-live="polite"></p>
+                </label>
               </div>
             </section>
 
-            <section class="booking-step full">
+            <section class="booking-step full" data-booking-step="4">
               <div class="booking-step-head">
                 <span>04</span>
                 <div>
@@ -816,25 +965,28 @@
                   <select name="service" id="serviceSelect">
                     <option value="boarding" data-i18n="optionBoarding">Boarding</option>
                     <option value="daycare" data-i18n="optionDaycare">Daycare</option>
-                    <option value="meetGreet" data-i18n="optionMeetGreet">Meet & Greet</option>
+                    <option value="walking" data-i18n="optionWalking">Walking</option>
+                    <option value="grooming" data-i18n="optionGrooming">Grooming</option>
                   </select>
                 </label>
-                <label>
-                  <span data-i18n="fieldDropoffDate">Drop-off date</span>
-                  <input name="dropoffDate" id="dropoffDate" type="date" required />
-                </label>
-                <label>
-                  <span data-i18n="fieldPickupDate">Pick-up date</span>
-                  <input name="pickupDate" id="pickupDate" type="date" required />
-                </label>
-                <label>
-                  <span data-i18n="fieldArrivalTime">Arrival time</span>
-                  <input name="arrivalTime" type="time" required />
-                </label>
-                <label>
-                  <span data-i18n="fieldDepartureTime">Departure time</span>
-                  <input name="departureTime" type="time" required />
-                </label>
+                <div class="booking-fields stay-grid wide-field">
+                  <label>
+                    <span data-i18n="fieldDropoffDate">Drop-off date</span>
+                    <input name="dropoffDate" id="dropoffDate" type="date" required />
+                  </label>
+                  <label>
+                    <span data-i18n="fieldArrivalTime">Arrival time</span>
+                    <input name="arrivalTime" type="time" required />
+                  </label>
+                  <label>
+                    <span data-i18n="fieldPickupDate">Pick-up date</span>
+                    <input name="pickupDate" id="pickupDate" type="date" required />
+                  </label>
+                  <label>
+                    <span data-i18n="fieldDepartureTime">Departure time</span>
+                    <input name="departureTime" type="time" required />
+                  </label>
+                </div>
                 <label>
                   <span data-i18n="fieldArea">Area</span>
                   <select name="area">
@@ -854,12 +1006,12 @@
               </div>
             </section>
 
-            <section class="booking-step full">
+            <section class="booking-step full" data-booking-step="5">
               <div class="booking-step-head">
                 <span>05</span>
                 <div>
-                  <h3 data-i18n="bookingStepExtras">Additional notes</h3>
-                  <p data-i18n="bookingStepExtrasHelp">Share anything else that would help us prepare a calm, safe stay.</p>
+                  <h3 data-i18n="bookingStepReview">Review & Payment</h3>
+                  <p data-i18n="bookingStepReviewHelp">Review your estimate, add final notes, and authorize emergency care.</p>
                 </div>
               </div>
               <div class="booking-fields">
@@ -890,33 +1042,77 @@
               </div>
             </section>
 
-            <button class="submit-button full" id="bookingSubmit" type="submit" data-i18n="bookingSubmit">
-              Send booking request
+            <div class="booking-wizard-actions full">
+              <button class="ghost-button" id="bookingPrev" type="button" data-i18n="wizardBack">Back</button>
+              <button class="submit-button" id="bookingNext" type="button" data-i18n="wizardContinue">Continue</button>
+            </div>
+
+            <button class="mobile-booking-summary full" id="mobileSummaryToggle" type="button" aria-live="polite" aria-expanded="false">
+              <div class="mobile-summary-primary">
+                <span data-i18n="summaryService">Service</span>
+                <strong id="mobileSummaryService">Boarding</strong>
+              </div>
+              <div class="mobile-summary-primary">
+                <span data-i18n="summaryStay">Stay</span>
+                <strong id="mobileSummaryNights">1 night</strong>
+              </div>
+              <div class="mobile-summary-primary total">
+                <span data-i18n="summaryTotal">Estimated total</span>
+                <strong id="mobileSummaryTotal">$50</strong>
+              </div>
+              <div class="mobile-summary-detail">
+                <span data-i18n="summaryDeposit">Deposit due today</span>
+                <strong id="mobileSummaryDeposit">$13</strong>
+              </div>
+              <div class="mobile-summary-detail">
+                <span data-i18n="summaryRemaining">Remaining balance</span>
+                <strong id="mobileSummaryRemaining">$37</strong>
+              </div>
+            </button>
+
+            <button class="submit-button full wizard-submit" id="bookingSubmit" type="submit" data-i18n="bookingSubmit">
+              Continue to Payment
             </button>
             <p class="status-line full" id="bookingStatus"></p>
           </form>
 
           <aside class="booking-summary">
-            <p class="summary-kicker" data-i18n="summaryLabel">Estimate</p>
+            <p class="summary-kicker" data-i18n="summaryLabel">Reservation summary</p>
             <div class="summary-line">
-              <span data-i18n="summaryBase">Base</span>
-              <strong id="summaryBase">$45</strong>
+              <span data-i18n="summaryService">Service</span>
+              <strong id="summaryService">Boarding</strong>
             </div>
             <div class="summary-line">
-              <span data-i18n="summaryDogs">Additional dogs</span>
-              <strong id="summaryDogs">$0</strong>
+              <span data-i18n="summaryGuests">Guests</span>
+              <strong id="summaryDogCount">1</strong>
             </div>
             <div class="summary-line">
-              <span data-i18n="summaryCats">Additional cats</span>
-              <strong id="summaryCats">$0</strong>
+              <span data-i18n="summaryDates">Dates</span>
+              <strong id="summaryDates">Select dates</strong>
             </div>
             <div class="summary-line">
-              <span data-i18n="summaryAfter">After hours</span>
-              <strong id="summaryAfter">$0</strong>
+              <span data-i18n="summaryNights">Nights</span>
+              <strong id="summaryNights">1 night</strong>
+            </div>
+            <div class="summary-line">
+              <span data-i18n="summaryAfterFee">After-hours fee</span>
+              <strong id="summaryAfterFee">$0</strong>
+            </div>
+            <div class="summary-line">
+              <span data-i18n="summaryAdditionalPets">Additional pets</span>
+              <strong id="summaryAdditionalPets">$0</strong>
             </div>
             <div class="summary-line total-line">
               <span data-i18n="summaryTotal">Estimated total</span>
-              <strong id="summaryTotal">$45</strong>
+              <strong id="summaryTotal">$50</strong>
+            </div>
+            <div class="summary-line">
+              <span data-i18n="summaryDeposit">Deposit due today</span>
+              <strong id="summaryDepositDesktop">$13</strong>
+            </div>
+            <div class="summary-line">
+              <span data-i18n="summaryRemaining">Remaining balance</span>
+              <strong id="summaryRemainingDesktop">$37</strong>
             </div>
             <p class="summary-longstay" id="summaryLongStay" data-i18n="summaryLongStay"></p>
             <p data-i18n="paymentNote">

@@ -11,15 +11,17 @@ const translations = {
     stripThree: "Cat visits",
     heroNoteOne: "Calm home environment",
     heroNoteTwo: "Pool time, soft routines, and daily attention",
-    requestAvailability: "Request Availability",
+    requestAvailability: "Check Availability",
+    checkAvailability: "Check Availability",
     meetGreet: "Meet & Greet",
+    bookNow: "Book Now",
     explorePricing: "View Pricing",
     servicesTitle: "Services",
     servicesHint: "Pricing and availability",
     reviewsTitle: "Reviews",
     reviewsHint: "Real Rover feedback",
     bookTitle: "Book",
-    bookHint: "Meet & greet request",
+    bookHint: "Full reservation request",
     storyTitle: "Our Story",
     storyHint: "Why Shingo's Palace",
     galleryTitle: "Gallery",
@@ -200,7 +202,44 @@ const translations = {
     reviewsSummary:
       "Families mention warmth, communication, photos, and the peace of knowing their pets feel at home.",
     reviewsLink: "View Rover profile",
-    bookingHeading: "Request a Meet & Greet.",
+    availabilityTitle: "Check Availability",
+    availabilityHeading: "Check your dates first.",
+    availabilityIntro: "See if we have space before completing a full reservation request.",
+    fieldNumberDogs: "Number of dogs",
+    fieldDogSize: "Dog size",
+    optionSmall: "Small",
+    optionMedium: "Medium",
+    optionLarge: "Large",
+    availabilityEmpty: "Select your dates to check availability.",
+    availabilityEmptyHelp: "Availability appears instantly once your dates are selected.",
+    availabilityAvailable: "Available",
+    availabilityLimited: "Only 1 spot left",
+    availabilityFull: "Fully booked",
+    availabilitySpots: "spots remaining",
+    availabilitySpot: "spot remaining",
+    availabilityAvailableMessage: "Great news!",
+    availabilityHostMessage: "We'd love to host your dog.",
+    availabilitySuitesMessage: "We currently have {count} suites available for your selected dates.",
+    availabilityContinueMessage: "Continue to complete your reservation.",
+    availabilityLimitedMessage: "This date is almost full. We recommend booking soon.",
+    availabilityFullMessage: "Unfortunately we're fully booked for those dates.",
+    joinWaitlist: "Join Waitlist",
+    continueBookNow: "Book Now",
+    continueBooking: "Continue to Booking",
+    waitlistNote: "We can add you to the waitlist and contact you if space opens.",
+    waitlistSuccess: "Waitlist noted. Please send your contact details through Meet & Greet or Book Now so we can follow up.",
+    meetGreetHeading: "Schedule a visit.",
+    meetGreetIntro: "Meet & Greet is a property visit, not a booking. Come meet us and see if Shingo's Palace is the right fit.",
+    meetGreetAppointmentNote: "Meet & Greets are private visits by appointment and usually take about 15–20 minutes.",
+    fieldOwnerName: "Owner name",
+    fieldPreferredDay: "Preferred day",
+    fieldPreferredTime: "Preferred time",
+    fieldOptionalMessage: "Optional message",
+    meetGreetSubmit: "Schedule Meet & Greet",
+    meetGreetSuccess: "Thank you! We have received your Meet & Greet request and will contact you shortly.",
+    bookingHeading: "Complete your reservation request.",
+    bookingAssistantTitle: "Not sure if we have availability?",
+    bookingAssistantText: "Check your dates before completing your booking request.",
     bookingStepContact: "Owner information",
     bookingStepContactHelp: "Tell us who is booking and how to reach you.",
     bookingStepDog: "Dog information",
@@ -211,6 +250,17 @@ const translations = {
     bookingStepServiceHelp: "Choose the care type, dates, times, and service area.",
     bookingStepExtras: "Additional notes",
     bookingStepExtrasHelp: "Share anything else that would help us prepare a calm, safe stay.",
+    bookingStepReview: "Review & Payment",
+    bookingStepReviewHelp: "Review your estimate, add final notes, and authorize emergency care.",
+    progressOwner: "Owner",
+    progressPet: "Dog",
+    progressVet: "Veterinarian",
+    progressStay: "Stay",
+    progressReview: "Review",
+    progressReviewPayment: "Review & Payment",
+    progressPayment: "Payment",
+    wizardBack: "Back",
+    wizardContinue: "Continue",
     fieldFirstName: "First Name",
     fieldLastName: "Last Name",
     fieldName: "Your name",
@@ -237,6 +287,14 @@ const translations = {
     fieldVetName: "Veterinarian Name",
     fieldVetPhone: "Clinic Phone Number",
     fieldVetAddress: "Clinic Address (optional)",
+    fieldVaccinationRecords: "Vaccination Records",
+    vaccinationRecordsHelp: "A current vaccination record is required before a reservation can be confirmed.",
+    vaccinationUploadReady: "Vaccination record ready to upload.",
+    vaccinationUploadMultipleReady: "vaccination records ready to upload.",
+    vaccinationUploadProgress: "Uploading vaccination records...",
+    vaccinationUploadSuccess: "Vaccination records uploaded securely.",
+    vaccinationUploadTypeError: "Only PDF, JPG, JPEG, PNG, HEIC, or HEIF files are accepted.",
+    vaccinationUploadSizeError: "Each vaccination record must be 10MB or smaller.",
     fieldService: "Service",
     fieldDate: "Start date",
     fieldTime: "Start time",
@@ -256,18 +314,33 @@ const translations = {
     fieldCard: "Cardholder",
     fieldCardNumber: "Card number",
     fieldExpiry: "Expiry",
-    bookingSubmit: "Send booking request",
+    bookingSubmit: "Continue to Payment",
     bookingSending: "Sending your request...",
     bookingSuccess: "Thank you! We have received your request and will contact you shortly.",
-    bookingConfigMissing: "Formspree is almost ready. Add the Formspree endpoint to start receiving requests.",
+    bookingConfigMissing: "Booking is almost ready. Please try again shortly.",
     bookingError: "Something went wrong. Please try again or email info@shingospalace.com.",
     bookingRequired: "Please complete the required fields and emergency authorization before submitting.",
-    summaryLabel: "Estimate",
+    summaryLabel: "Reservation summary",
     summaryBase: "Base",
+    summaryDogCount: "Number of dogs",
+    summaryDates: "Dates",
+    summaryDatesEmpty: "Select dates",
+    summaryAfterFee: "After-hours fee",
+    summaryAdditionalPets: "Additional pets",
     summaryDogs: "Additional dogs",
     summaryCats: "Additional cats",
     summaryAfter: "After hours",
     summaryTotal: "Estimated total",
+    summaryService: "Service",
+    summaryNights: "Nights",
+    summaryStay: "Stay",
+    summaryGuests: "Guests",
+    summaryDeposit: "Deposit due today",
+    summaryRemaining: "Remaining balance",
+    oneNight: "1 night",
+    multipleNights: "nights",
+    oneDog: "1 dog",
+    multipleDogs: "dogs",
     summaryLongStay: "Long stays receive a custom quote after reviewing dates, pet type, and care needs.",
     customQuote: "Custom quote",
     paymentNote: "This is an estimate. Final availability, transportation, and grooming quotes are confirmed personally.",
@@ -282,6 +355,8 @@ const translations = {
     optionDaycare: "Daycare",
     optionDaycarePackage: "Day Care - Week",
     optionMeetGreet: "Meet & Greet",
+    optionWalking: "Walking",
+    optionGrooming: "Grooming",
     optionSpaBath: "Spa Bath",
     optionFullGroom: "Full Grooming Spa",
     optionDropin: "Drop-In Visits Daily",
@@ -316,15 +391,17 @@ const translations = {
     stripThree: "Visitas para gatos",
     heroNoteOne: "Ambiente tranquilo de hogar",
     heroNoteTwo: "Pileta, rutinas suaves y atención diaria",
-    requestAvailability: "Consultar disponibilidad",
+    requestAvailability: "Ver disponibilidad",
+    checkAvailability: "Ver disponibilidad",
     meetGreet: "Meet & Greet",
+    bookNow: "Reservar ahora",
     explorePricing: "Ver precios",
     servicesTitle: "Servicios",
     servicesHint: "Precios y disponibilidad",
     reviewsTitle: "Reviews",
     reviewsHint: "Comentarios reales de Rover",
     bookTitle: "Reservar",
-    bookHint: "Solicitud de Meet & Greet",
+    bookHint: "Solicitud de reserva completa",
     storyTitle: "Nuestra historia",
     storyHint: "Por qué Shingo's Palace",
     galleryTitle: "Galería",
@@ -505,7 +582,44 @@ const translations = {
     reviewsSummary:
       "Las familias hablan de calidez, comunicación, fotos y la tranquilidad de saber que sus mascotas se sienten en casa.",
     reviewsLink: "Ver perfil de Rover",
-    bookingHeading: "Solicita un Meet & Greet.",
+    availabilityTitle: "Ver disponibilidad",
+    availabilityHeading: "Primero revisá tus fechas.",
+    availabilityIntro: "Confirmá si tenemos espacio antes de completar una solicitud de reserva.",
+    fieldNumberDogs: "Cantidad de perros",
+    fieldDogSize: "Tamaño del perro",
+    optionSmall: "Pequeño",
+    optionMedium: "Mediano",
+    optionLarge: "Grande",
+    availabilityEmpty: "Seleccioná tus fechas para ver disponibilidad.",
+    availabilityEmptyHelp: "La disponibilidad aparece al instante cuando elegís las fechas.",
+    availabilityAvailable: "Disponible",
+    availabilityLimited: "Queda solo 1 lugar",
+    availabilityFull: "Completo",
+    availabilitySpots: "lugares disponibles",
+    availabilitySpot: "lugar disponible",
+    availabilityAvailableMessage: "¡Buenas noticias!",
+    availabilityHostMessage: "Nos encantaría recibir a tu perro.",
+    availabilitySuitesMessage: "Actualmente tenemos {count} suites disponibles para las fechas seleccionadas.",
+    availabilityContinueMessage: "Continuá para completar tu reserva.",
+    availabilityLimitedMessage: "Esta fecha está casi completa. Recomendamos reservar pronto.",
+    availabilityFullMessage: "Lamentablemente estamos completos para esas fechas.",
+    joinWaitlist: "Unirme a lista de espera",
+    continueBookNow: "Reservar ahora",
+    continueBooking: "Continuar con la reserva",
+    waitlistNote: "Podemos agregarte a la lista de espera y contactarte si se abre un lugar.",
+    waitlistSuccess: "Lista de espera registrada. Enviá tus datos por Meet & Greet o Reservar ahora para que podamos contactarte.",
+    meetGreetHeading: "Agendá una visita.",
+    meetGreetIntro: "Meet & Greet es una visita a la propiedad, no una reserva. Vení a conocernos y ver si Shingo's Palace es el lugar ideal.",
+    meetGreetAppointmentNote: "Los Meet & Greets son visitas privadas con cita previa y suelen durar unos 15–20 minutos.",
+    fieldOwnerName: "Nombre del dueño",
+    fieldPreferredDay: "Día preferido",
+    fieldPreferredTime: "Horario preferido",
+    fieldOptionalMessage: "Mensaje opcional",
+    meetGreetSubmit: "Agendar Meet & Greet",
+    meetGreetSuccess: "¡Gracias! Recibimos tu solicitud de Meet & Greet y te contactaremos pronto.",
+    bookingHeading: "Completá tu solicitud de reserva.",
+    bookingAssistantTitle: "¿No sabés si tenemos disponibilidad?",
+    bookingAssistantText: "Revisá tus fechas antes de completar la solicitud de reserva.",
     bookingStepContact: "Información del dueño",
     bookingStepContactHelp: "Contanos quién reserva y cómo podemos contactarte.",
     bookingStepDog: "Información del perro",
@@ -516,6 +630,17 @@ const translations = {
     bookingStepServiceHelp: "Elegí el tipo de cuidado, fechas, horarios y zona.",
     bookingStepExtras: "Notas adicionales",
     bookingStepExtrasHelp: "Compartí cualquier detalle que nos ayude a preparar una estadía tranquila y segura.",
+    bookingStepReview: "Revisión y pago",
+    bookingStepReviewHelp: "Revisá el estimado, agregá notas finales y autorizá atención veterinaria de emergencia.",
+    progressOwner: "Dueño",
+    progressPet: "Perro",
+    progressVet: "Veterinario",
+    progressStay: "Estadía",
+    progressReview: "Revisión",
+    progressReviewPayment: "Revisión y pago",
+    progressPayment: "Pago",
+    wizardBack: "Atrás",
+    wizardContinue: "Continuar",
     fieldFirstName: "Nombre",
     fieldLastName: "Apellido",
     fieldName: "Tu nombre",
@@ -542,6 +667,14 @@ const translations = {
     fieldVetName: "Nombre del veterinario",
     fieldVetPhone: "Teléfono de la clínica",
     fieldVetAddress: "Dirección de la clínica (opcional)",
+    fieldVaccinationRecords: "Registros de vacunación",
+    vaccinationRecordsHelp: "Se requiere un registro de vacunación vigente antes de confirmar una reserva.",
+    vaccinationUploadReady: "Registro de vacunación listo para subir.",
+    vaccinationUploadMultipleReady: "registros de vacunación listos para subir.",
+    vaccinationUploadProgress: "Subiendo registros de vacunación...",
+    vaccinationUploadSuccess: "Registros de vacunación subidos de forma segura.",
+    vaccinationUploadTypeError: "Solo se aceptan archivos PDF, JPG, JPEG, PNG, HEIC o HEIF.",
+    vaccinationUploadSizeError: "Cada registro de vacunación debe pesar 10MB o menos.",
     fieldService: "Servicio",
     fieldDate: "Fecha de inicio",
     fieldTime: "Hora de inicio",
@@ -561,18 +694,33 @@ const translations = {
     fieldCard: "Titular",
     fieldCardNumber: "Número de tarjeta",
     fieldExpiry: "Vencimiento",
-    bookingSubmit: "Enviar solicitud",
+    bookingSubmit: "Continuar al pago",
     bookingSending: "Enviando tu solicitud...",
     bookingSuccess: "¡Gracias! Recibimos tu solicitud y te contactaremos pronto.",
-    bookingConfigMissing: "Formspree está casi listo. Agregá el endpoint de Formspree para empezar a recibir solicitudes.",
+    bookingConfigMissing: "La reserva está casi lista. Intentá nuevamente en unos minutos.",
     bookingError: "Algo salió mal. Intentá de nuevo o escribinos a info@shingospalace.com.",
     bookingRequired: "Por favor completá los campos requeridos y la autorización de emergencia antes de enviar.",
-    summaryLabel: "Estimado",
+    summaryLabel: "Resumen de reserva",
     summaryBase: "Base",
+    summaryDogCount: "Cantidad de perros",
+    summaryDates: "Fechas",
+    summaryDatesEmpty: "Seleccioná fechas",
+    summaryAfterFee: "Cargo fuera de horario",
+    summaryAdditionalPets: "Mascotas adicionales",
     summaryDogs: "Perros adicionales",
     summaryCats: "Gatos extra",
     summaryAfter: "Fuera de horario",
     summaryTotal: "Total estimado",
+    summaryService: "Servicio",
+    summaryNights: "Noches",
+    summaryStay: "Estadía",
+    summaryGuests: "Huéspedes",
+    summaryDeposit: "Depósito hoy",
+    summaryRemaining: "Saldo restante",
+    oneNight: "1 noche",
+    multipleNights: "noches",
+    oneDog: "1 perro",
+    multipleDogs: "perros",
     summaryLongStay: "Las estadías largas reciben una cotización personalizada según fechas, tipo de mascota y cuidados necesarios.",
     customQuote: "Cotización personalizada",
     paymentNote: "Este es un estimado. La disponibilidad final, transporte y grooming se confirman personalmente.",
@@ -587,6 +735,8 @@ const translations = {
     optionDaycare: "Daycare",
     optionDaycarePackage: "Daycare - semana",
     optionMeetGreet: "Meet & Greet",
+    optionWalking: "Paseo",
+    optionGrooming: "Baño y grooming",
     optionSpaBath: "Spa Bath",
     optionFullGroom: "Full Grooming Spa",
     optionDropin: "Drop-In Visits diario",
@@ -614,11 +764,28 @@ const translations = {
 const serviceRates = {
   boarding: 50,
   daycare: 35,
-  meetGreet: 0,
+  walking: 18,
+  grooming: 30,
+};
+
+const availabilityCapacity = {
+  boarding: 10,
+  daycare: 8,
+  walking: 4,
+  grooming: 3,
+};
+
+// Temporary local capacity snapshot. Later this can be replaced by an admin calendar or database.
+const occupiedSpots = {
+  boarding: 5,
+  daycare: 4,
+  walking: 1,
+  grooming: 1,
 };
 
 const additionalDogRate = 35;
 const additionalCatRate = 20;
+const depositRate = 0.25;
 const FORMSPREE_ENDPOINT = "";
 
 const reviews = [
@@ -772,9 +939,44 @@ const afterHoursInput = document.querySelector("#afterHours");
 const longStayInput = document.querySelector("#longStay");
 const bookingSubmit = document.querySelector("#bookingSubmit");
 const bookingStatus = document.querySelector("#bookingStatus");
+const bookingSteps = document.querySelectorAll("[data-booking-step]");
+const bookingNavItems = document.querySelectorAll("[data-booking-nav]");
+const bookingPrev = document.querySelector("#bookingPrev");
+const bookingNext = document.querySelector("#bookingNext");
+const availabilityForm = document.querySelector("#availabilityForm");
+const availabilityService = document.querySelector("#availabilityService");
+const availabilityDropoffDate = document.querySelector("#availabilityDropoffDate");
+const availabilityPickupDate = document.querySelector("#availabilityPickupDate");
+const availabilityDogs = document.querySelector("#availabilityDogs");
+const availabilityResult = document.querySelector("#availabilityResult");
+const availabilityStatus = document.querySelector("#availabilityStatus");
+const availabilityMessage = document.querySelector("#availabilityMessage");
+const availabilityActions = document.querySelector("#availabilityActions");
+const availabilityBookButton = document.querySelector("#availabilityBookButton");
+const availabilityStatusLine = document.querySelector("#availabilityStatusLine");
+const waitlistButton = document.querySelector("#waitlistButton");
+const meetGreetForm = document.querySelector("#meetGreetForm");
+const meetGreetSubmit = document.querySelector("#meetGreetSubmit");
+const meetGreetStatus = document.querySelector("#meetGreetStatus");
 const estimatedTotalField = document.querySelector("#estimatedTotalField");
+const depositDueField = document.querySelector("#depositDueField");
+const remainingBalanceField = document.querySelector("#remainingBalanceField");
+const vaccinationRecordsInput = document.querySelector("#vaccinationRecords");
+const vaccinationUploadProgress = document.querySelector("#vaccinationUploadProgress");
+const vaccinationUploadBar = document.querySelector("#vaccinationUploadBar");
+const vaccinationUploadStatus = document.querySelector("#vaccinationUploadStatus");
+const mobileSummaryService = document.querySelector("#mobileSummaryService");
+const mobileSummaryNights = document.querySelector("#mobileSummaryNights");
+const mobileSummaryTotal = document.querySelector("#mobileSummaryTotal");
+const mobileSummaryDeposit = document.querySelector("#mobileSummaryDeposit");
+const mobileSummaryRemaining = document.querySelector("#mobileSummaryRemaining");
+const mobileSummaryToggle = document.querySelector("#mobileSummaryToggle");
 
 let currentLang = localStorage.getItem("shingos-language") || "en";
+let currentBookingStep = 1;
+const allowedVaccinationTypes = new Set(["application/pdf", "image/jpeg", "image/jpg", "image/png", "image/heic", "image/heif"]);
+const allowedVaccinationExtensions = new Set(["pdf", "jpg", "jpeg", "png", "heic", "heif"]);
+const maxVaccinationFileSize = 10 * 1024 * 1024;
 
 function t(key) {
   return translations[currentLang][key] || "";
@@ -795,7 +997,9 @@ function applyLanguage() {
 
   renderReviews();
   renderHomeGallery();
+  updateAvailability();
   updateSummary();
+  setBookingStep(currentBookingStep);
 }
 
 window.setSiteLanguage = (lang) => {
@@ -881,6 +1085,150 @@ function currency(amount) {
   return `$${amount}`;
 }
 
+function serviceLabel(serviceKey) {
+  const labels = {
+    boarding: t("optionBoarding"),
+    daycare: t("optionDaycare"),
+    walking: t("optionWalking"),
+    grooming: t("optionGrooming"),
+  };
+
+  return labels[serviceKey] || serviceKey;
+}
+
+function unitsLabel(units) {
+  if (units === 1) {
+    return t("oneNight");
+  }
+
+  return `${units} ${t("multipleNights")}`;
+}
+
+function dogsLabel(count) {
+  if (count === 1) {
+    return t("oneDog");
+  }
+
+  return `${count} ${t("multipleDogs")}`;
+}
+
+function datesLabel() {
+  if (!dropoffDateInput?.value || !pickupDateInput?.value) {
+    return t("summaryDatesEmpty");
+  }
+
+  return `${dropoffDateInput.value} → ${pickupDateInput.value}`;
+}
+
+function setBookingStep(step) {
+  const maxStep = bookingSteps.length || 5;
+  currentBookingStep = Math.min(Math.max(1, step), maxStep);
+
+  bookingSteps.forEach((section) => {
+    section.classList.toggle("active", Number(section.dataset.bookingStep) === currentBookingStep);
+  });
+
+  bookingNavItems.forEach((item) => {
+    const itemStep = Number(item.dataset.bookingNav);
+    item.classList.toggle("active", itemStep === currentBookingStep);
+    item.classList.toggle("complete", itemStep < currentBookingStep);
+  });
+
+  if (bookingPrev) bookingPrev.hidden = currentBookingStep === 1;
+  if (bookingNext) bookingNext.hidden = currentBookingStep === maxStep;
+  if (bookingSubmit) bookingSubmit.hidden = currentBookingStep !== maxStep;
+}
+
+function validateBookingStep(step) {
+  const section = document.querySelector(`[data-booking-step="${step}"]`);
+  if (!section) return true;
+
+  const fields = [...section.querySelectorAll("input, select, textarea")];
+  const invalidField = fields.find((field) => !field.checkValidity());
+  if (!invalidField) return true;
+
+  invalidField.reportValidity();
+  return false;
+}
+
+function validateVaccinationFiles() {
+  if (!vaccinationRecordsInput) return true;
+  const files = [...vaccinationRecordsInput.files];
+
+  vaccinationRecordsInput.setCustomValidity("");
+  if (!files.length) {
+    return vaccinationRecordsInput.checkValidity();
+  }
+
+  const invalidType = files.find((file) => {
+    const extension = file.name.split(".").pop()?.toLowerCase() || "";
+    return !allowedVaccinationTypes.has(file.type) || !allowedVaccinationExtensions.has(extension);
+  });
+
+  if (invalidType) {
+    vaccinationRecordsInput.setCustomValidity(t("vaccinationUploadTypeError"));
+    if (vaccinationUploadStatus) vaccinationUploadStatus.textContent = t("vaccinationUploadTypeError");
+    return false;
+  }
+
+  const oversized = files.find((file) => file.size > maxVaccinationFileSize);
+  if (oversized) {
+    vaccinationRecordsInput.setCustomValidity(t("vaccinationUploadSizeError"));
+    if (vaccinationUploadStatus) vaccinationUploadStatus.textContent = t("vaccinationUploadSizeError");
+    return false;
+  }
+
+  if (vaccinationUploadStatus) {
+    vaccinationUploadStatus.textContent =
+      files.length === 1 ? t("vaccinationUploadReady") : `${files.length} ${t("vaccinationUploadMultipleReady")}`;
+  }
+
+  return true;
+}
+
+function resetUploadProgress() {
+  if (vaccinationUploadProgress) vaccinationUploadProgress.hidden = true;
+  if (vaccinationUploadBar) vaccinationUploadBar.style.width = "0%";
+}
+
+function submitFormWithProgress(form, endpoint, statusElement, submitButton, successMessageKey) {
+  return new Promise((resolve, reject) => {
+    const request = new XMLHttpRequest();
+    request.open("POST", endpoint);
+    request.setRequestHeader("Accept", "application/json");
+
+    request.upload.addEventListener("progress", (event) => {
+      if (form !== bookingForm || !event.lengthComputable || !vaccinationUploadProgress || !vaccinationUploadBar) return;
+      vaccinationUploadProgress.hidden = false;
+      const percent = Math.round((event.loaded / event.total) * 100);
+      vaccinationUploadBar.style.width = `${percent}%`;
+      if (vaccinationUploadStatus) vaccinationUploadStatus.textContent = t("vaccinationUploadProgress");
+    });
+
+    request.addEventListener("load", () => {
+      let payload = {};
+      try {
+        payload = JSON.parse(request.responseText || "{}");
+      } catch (error) {
+        payload = {};
+      }
+
+      if (request.status >= 200 && request.status < 300 && payload.ok !== false) {
+        if (statusElement) statusElement.textContent = payload.message || t(successMessageKey);
+        if (vaccinationUploadStatus && form === bookingForm) vaccinationUploadStatus.textContent = t("vaccinationUploadSuccess");
+        resolve(payload);
+        return;
+      }
+
+      reject(new Error(payload.error || t("bookingError")));
+    });
+
+    request.addEventListener("error", () => reject(new Error(t("bookingError"))));
+    request.addEventListener("abort", () => reject(new Error(t("bookingError"))));
+    request.send(new FormData(form));
+  });
+}
+
 function calculateBookingUnits() {
   if (!dropoffDateInput?.value || !pickupDateInput?.value) {
     return 1;
@@ -893,12 +1241,61 @@ function calculateBookingUnits() {
   return Math.max(1, diffDays || 1);
 }
 
+function availabilityLabel(remaining) {
+  if (remaining === 1) {
+    return `${t("availabilityLimited")} · 1 ${t("availabilitySpot")}`;
+  }
+
+  return `${t("availabilityAvailable")} · ${remaining} ${t("availabilitySpots")}`;
+}
+
+function updateAvailability() {
+  if (!availabilityResult || !availabilityStatus || !availabilityMessage) return;
+
+  const hasDates = Boolean(availabilityDropoffDate?.value && availabilityPickupDate?.value);
+  availabilityResult.classList.remove("is-available", "is-limited", "is-full");
+
+  if (!hasDates) {
+    availabilityStatus.textContent = t("availabilityEmpty");
+    availabilityMessage.textContent = t("availabilityEmptyHelp");
+    if (availabilityActions) availabilityActions.hidden = true;
+    return;
+  }
+
+  const serviceKey = availabilityService?.value || "boarding";
+  const requestedDogs = Math.max(1, Number(availabilityDogs?.value) || 1);
+  const capacity = availabilityCapacity[serviceKey] ?? availabilityCapacity.boarding;
+  const occupied = occupiedSpots[serviceKey] ?? 0;
+  const remaining = Math.max(0, capacity - occupied - requestedDogs);
+
+  if (remaining <= 0) {
+    availabilityResult.classList.add("is-full");
+    availabilityStatus.textContent = `❌ ${t("availabilityFullMessage")}`;
+    availabilityMessage.textContent = t("waitlistNote");
+    if (availabilityActions) availabilityActions.hidden = false;
+    if (availabilityBookButton) availabilityBookButton.hidden = true;
+    if (waitlistButton) waitlistButton.hidden = false;
+    return;
+  }
+
+  availabilityResult.classList.add(remaining === 1 ? "is-limited" : "is-available");
+  availabilityStatus.textContent = `✅ ${t("availabilityAvailableMessage")}`;
+  availabilityMessage.textContent = [
+    t("availabilityHostMessage"),
+    t("availabilitySuitesMessage").replace("{count}", remaining),
+    remaining === 1 ? t("availabilityLimitedMessage") : t("availabilityContinueMessage"),
+  ].join(" ");
+  if (availabilityActions) availabilityActions.hidden = false;
+  if (availabilityBookButton) availabilityBookButton.hidden = false;
+  if (waitlistButton) waitlistButton.hidden = true;
+}
+
 function updateSummary() {
   if (!serviceSelect || !unitsInput) return 0;
 
   const serviceKey = serviceSelect.value;
   const service = serviceRates[serviceKey] ?? 0;
-  const isCustomQuote = serviceKey === "meetGreet";
+  const isCustomQuote = false;
   const units = calculateBookingUnits();
   const extraDogs = Math.max(0, Number(additionalDogsInput?.value) || 0);
   const extraCats = Math.max(0, Number(additionalCatsInput?.value) || 0);
@@ -907,17 +1304,53 @@ function updateSummary() {
   const cats = isCustomQuote ? 0 : extraCats * additionalCatRate * units;
   const after = !isCustomQuote && afterHoursInput?.checked ? service : 0;
   const total = base + dogs + cats + after;
+  const deposit = isCustomQuote ? 0 : Math.ceil(total * depositRate);
+  const remaining = Math.max(0, total - deposit);
+  const totalLabel = isCustomQuote ? t("customQuote") : currency(total);
+  const depositLabel = isCustomQuote ? t("customQuote") : currency(deposit);
+  const remainingLabel = isCustomQuote ? t("customQuote") : currency(remaining);
+  const totalDogs = extraDogs + 1;
+  const additionalPetsTotal = dogs + cats;
 
   unitsInput.value = units;
-  document.querySelector("#summaryBase").textContent = isCustomQuote ? t("customQuote") : currency(base);
-  document.querySelector("#summaryDogs").textContent = currency(dogs);
-  document.querySelector("#summaryCats").textContent = currency(cats);
-  document.querySelector("#summaryAfter").textContent = currency(after);
-  document.querySelector("#summaryTotal").textContent = isCustomQuote ? t("customQuote") : currency(total);
-  document.querySelector("#summaryLongStay").textContent = longStayInput?.checked ? t("summaryLongStay") : "";
+  const summaryService = document.querySelector("#summaryService");
+  const summaryDogCount = document.querySelector("#summaryDogCount");
+  const summaryDates = document.querySelector("#summaryDates");
+  const summaryNights = document.querySelector("#summaryNights");
+  const summaryAfterFee = document.querySelector("#summaryAfterFee");
+  const summaryAdditionalPets = document.querySelector("#summaryAdditionalPets");
+  const summaryTotal = document.querySelector("#summaryTotal");
+  const summaryDepositDesktop = document.querySelector("#summaryDepositDesktop");
+  const summaryRemainingDesktop = document.querySelector("#summaryRemainingDesktop");
+  const summaryLongStay = document.querySelector("#summaryLongStay");
+
+  if (summaryService) summaryService.textContent = serviceLabel(serviceKey);
+  if (summaryDogCount) summaryDogCount.textContent = dogsLabel(totalDogs);
+  if (summaryDates) summaryDates.textContent = datesLabel();
+  if (summaryNights) summaryNights.textContent = unitsLabel(units);
+  if (summaryAfterFee) summaryAfterFee.textContent = currency(after);
+  if (summaryAdditionalPets) summaryAdditionalPets.textContent = currency(additionalPetsTotal);
+  if (summaryTotal) summaryTotal.textContent = totalLabel;
+  if (summaryDepositDesktop) summaryDepositDesktop.textContent = depositLabel;
+  if (summaryRemainingDesktop) summaryRemainingDesktop.textContent = remainingLabel;
+  if (summaryLongStay) summaryLongStay.textContent = longStayInput?.checked ? t("summaryLongStay") : "";
+
+if (mobileSummaryService) mobileSummaryService.textContent = serviceLabel(serviceKey);
+  if (mobileSummaryNights) mobileSummaryNights.textContent = unitsLabel(units);
+  if (mobileSummaryTotal) mobileSummaryTotal.textContent = totalLabel;
+  if (mobileSummaryDeposit) mobileSummaryDeposit.textContent = depositLabel;
+  if (mobileSummaryRemaining) mobileSummaryRemaining.textContent = remainingLabel;
 
   if (estimatedTotalField) {
-    estimatedTotalField.value = isCustomQuote ? t("customQuote") : currency(total);
+    estimatedTotalField.value = totalLabel;
+  }
+
+  if (depositDueField) {
+    depositDueField.value = depositLabel;
+  }
+
+  if (remainingBalanceField) {
+    remainingBalanceField.value = remainingLabel;
   }
 
   return total;
@@ -948,6 +1381,70 @@ additionalDogsInput?.addEventListener("input", updateSummary);
 additionalCatsInput?.addEventListener("input", updateSummary);
 afterHoursInput?.addEventListener("change", updateSummary);
 longStayInput?.addEventListener("change", updateSummary);
+vaccinationRecordsInput?.addEventListener("change", () => {
+  resetUploadProgress();
+  validateVaccinationFiles();
+});
+bookingPrev?.addEventListener("click", () => {
+  setBookingStep(currentBookingStep - 1);
+});
+bookingNext?.addEventListener("click", () => {
+  if (!validateBookingStep(currentBookingStep)) return;
+  setBookingStep(currentBookingStep + 1);
+});
+bookingNavItems.forEach((item) => {
+  item.addEventListener("click", () => {
+    const targetStep = Number(item.dataset.bookingNav);
+    if (targetStep <= currentBookingStep || validateBookingStep(currentBookingStep)) {
+      setBookingStep(targetStep);
+    }
+  });
+});
+mobileSummaryToggle?.addEventListener("click", () => {
+  const isExpanded = mobileSummaryToggle.classList.toggle("expanded");
+  mobileSummaryToggle.setAttribute("aria-expanded", String(isExpanded));
+});
+availabilityService?.addEventListener("change", updateAvailability);
+availabilityDropoffDate?.addEventListener("change", updateAvailability);
+availabilityPickupDate?.addEventListener("change", updateAvailability);
+availabilityDogs?.addEventListener("input", updateAvailability);
+availabilityForm?.addEventListener("submit", (event) => {
+  event.preventDefault();
+  updateAvailability();
+});
+waitlistButton?.addEventListener("click", () => {
+  if (availabilityStatusLine) availabilityStatusLine.textContent = t("waitlistSuccess");
+});
+
+meetGreetForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  meetGreetStatus.textContent = "";
+
+  if (!meetGreetForm.checkValidity()) {
+    meetGreetForm.reportValidity();
+    meetGreetStatus.textContent = t("bookingRequired");
+    return;
+  }
+
+  const endpoint = meetGreetForm.getAttribute("action") || meetGreetForm.dataset.formspreeEndpoint || FORMSPREE_ENDPOINT;
+  if (!endpoint) {
+    meetGreetStatus.textContent = t("bookingConfigMissing");
+    return;
+  }
+
+  meetGreetSubmit.disabled = true;
+  meetGreetSubmit.textContent = t("bookingSending");
+
+  try {
+    await submitFormWithProgress(meetGreetForm, endpoint, meetGreetStatus, meetGreetSubmit, "meetGreetSuccess");
+    meetGreetForm.reset();
+  } catch (error) {
+    meetGreetStatus.textContent = error.message || t("bookingError");
+  } finally {
+    meetGreetSubmit.disabled = false;
+    meetGreetSubmit.textContent = t("meetGreetSubmit");
+  }
+});
 
 bookingForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -959,9 +1456,16 @@ bookingForm?.addEventListener("submit", async (event) => {
     return;
   }
 
+  if (!validateVaccinationFiles()) {
+    vaccinationRecordsInput?.reportValidity();
+    bookingStatus.textContent = vaccinationRecordsInput?.validationMessage || t("bookingRequired");
+    setBookingStep(3);
+    return;
+  }
+
   updateSummary();
 
-  const endpoint = bookingForm.dataset.formspreeEndpoint || FORMSPREE_ENDPOINT;
+  const endpoint = bookingForm.getAttribute("action") || bookingForm.dataset.formspreeEndpoint || FORMSPREE_ENDPOINT;
   if (!endpoint) {
     bookingStatus.textContent = t("bookingConfigMissing");
     return;
@@ -971,23 +1475,14 @@ bookingForm?.addEventListener("submit", async (event) => {
   bookingSubmit.textContent = t("bookingSending");
 
   try {
-    const response = await fetch(endpoint, {
-      method: "POST",
-      body: new FormData(bookingForm),
-      headers: {
-        Accept: "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error("Form submission failed");
-    }
-
+    await submitFormWithProgress(bookingForm, endpoint, bookingStatus, bookingSubmit, "bookingSuccess");
     bookingForm.reset();
+    vaccinationRecordsInput?.setCustomValidity("");
+    resetUploadProgress();
     updateSummary();
-    bookingStatus.textContent = t("bookingSuccess");
+    setBookingStep(1);
   } catch (error) {
-    bookingStatus.textContent = t("bookingError");
+    bookingStatus.textContent = error.message || t("bookingError");
   } finally {
     bookingSubmit.disabled = false;
     bookingSubmit.textContent = t("bookingSubmit");
