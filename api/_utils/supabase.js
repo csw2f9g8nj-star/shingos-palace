@@ -70,6 +70,13 @@ function publicApiError(message, statusCode = 500, code = "api_error") {
   return error;
 }
 
+function isPublishableOrAnonKey(key) {
+  const normalized = String(key || "").trim();
+  if (normalized.startsWith("sb_publishable_")) return true;
+  const payload = decodeJwtPayload(normalized);
+  return payload?.role === "anon";
+}
+
 function requireServerConfig() {
   const config = getSupabaseConfig();
   const missing = [];
@@ -82,6 +89,14 @@ function requireServerConfig() {
       `Booking connection is missing required Vercel environment variables: ${missing.join(", ")}.`,
       500,
       "missing_env",
+    );
+  }
+
+  if (isPublishableOrAnonKey(config.secretKey)) {
+    throw publicApiError(
+      "Supabase server key is not configured correctly. In Vercel, SUPABASE_SECRET_KEY or SUPABASE_SERVICE_ROLE_KEY must use the private service_role/secret key, not the anon or publishable key.",
+      500,
+      "invalid_service_key",
     );
   }
 
@@ -185,6 +200,8 @@ function handleApiError(res, error) {
   console.error("[Shingo's Palace API]", {
     statusCode,
     code: error.code,
+    supabaseCode: error.supabaseCode,
+    supabaseMessage: error.supabaseMessage,
     message: error.message,
     details: error.details,
     hint: error.hint,

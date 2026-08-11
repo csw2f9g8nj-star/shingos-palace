@@ -12,10 +12,38 @@ const {
 } = require("./_utils/supabase");
 const { parseMultipartForm, toFileArray } = require("./_utils/forms");
 
+function getInsertErrorMessage(table, error, fallbackMessage) {
+  const source = `${error?.message || ""} ${error?.details || ""} ${error?.hint || ""}`.toLowerCase();
+
+  if (error?.code === "42501" || source.includes("row-level security") || source.includes("permission denied")) {
+    return `Supabase rejected the ${table} save because the server key does not have permission. In Vercel, make sure SUPABASE_SECRET_KEY or SUPABASE_SERVICE_ROLE_KEY is the private service_role/secret key, not the anon or publishable key.`;
+  }
+
+  if (
+    error?.code === "PGRST204" ||
+    error?.code === "42703" ||
+    source.includes("column") ||
+    source.includes("schema cache")
+  ) {
+    return `The ${table} table schema does not match the booking form. Please verify the ${table} columns in Supabase.`;
+  }
+
+  if (error?.code === "42P01" || source.includes("does not exist")) {
+    return `The ${table} table was not found in Supabase. Please confirm the schema was run in the same Supabase project connected to Vercel.`;
+  }
+
+  return fallbackMessage;
+}
+
 async function insertSingle(supabase, table, payload, message) {
   const { data, error } = await supabase.from(table).insert(payload).select().single();
   if (error) {
-    throw publicApiError(message, 500, `${table}_insert_failed`);
+    const insertError = publicApiError(getInsertErrorMessage(table, error, message), 500, `${table}_insert_failed`);
+    insertError.details = error.details;
+    insertError.hint = error.hint;
+    insertError.supabaseCode = error.code;
+    insertError.supabaseMessage = error.message;
+    throw insertError;
   }
 
   return data;
