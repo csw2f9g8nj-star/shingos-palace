@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment Confirmation | Shingo's Palace</title>
+    <meta name="robots" content="noindex" />
+    <link rel="icon" type="image/jpeg" href="assets/logo-shingos-palace.jpeg" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="payment-success-page">
+      <section class="payment-success-card" id="paymentSuccessCard">
+        <a class="payment-success-brand" href="index.html" aria-label="Shingo's Palace home">
+          <img src="assets/logo-shingos-palace.jpeg" alt="Shingo's Palace Pet Hotel logo" />
+          <span>Shingo's Palace</span>
+        </a>
+
+        <div class="payment-success-state" id="paymentLoadingState">
+          <p class="summary-kicker">Secure Payment</p>
+          <h1>Confirming your deposit...</h1>
+          <p>One moment while we verify your Stripe payment securely.</p>
+        </div>
+
+        <div class="payment-success-state" id="paymentPaidState" hidden>
+          <p class="summary-kicker">Deposit received</p>
+          <h1>Thank you! Your deposit has been received. 🐾</h1>
+          <p>
+            Your booking request has been saved and your spot is now being held. We'll contact you shortly to confirm the reservation details.
+          </p>
+
+          <div class="payment-success-summary">
+            <div>
+              <span>Service</span>
+              <strong id="successService">-</strong>
+            </div>
+            <div>
+              <span>Dog name</span>
+              <strong id="successDogName">-</strong>
+            </div>
+            <div>
+              <span>Booking dates</span>
+              <strong id="successDates">-</strong>
+            </div>
+            <div>
+              <span>Deposit paid</span>
+              <strong id="successDeposit">-</strong>
+            </div>
+            <div>
+              <span>Remaining balance</span>
+              <strong id="successRemaining">-</strong>
+            </div>
+          </div>
+
+          <section class="dog-profile-cta payment-success-profile-cta" id="successDogProfileCta">
+            <div>
+              <p class="summary-kicker">Next step</p>
+              <h2>Tell us more about your dog 🐾</h2>
+              <p>Help us get to know your dog so we can make their stay safe, comfortable and personalized.</p>
+            </div>
+            <button class="submit-button" id="successProfileButton" type="button">Complete Dog Profile</button>
+          </section>
+
+          <form class="booking-profile-followup payment-success-profile-form" id="successDogProfileForm" method="POST" action="/api/dog-profile-update" enctype="multipart/form-data" hidden>
+            <input type="hidden" name="ownerId" id="successOwnerId" />
+            <input type="hidden" name="dogId" id="successDogId" />
+            <input type="hidden" name="bookingId" id="successBookingId" />
+            <div class="booking-step-head">
+              <span>✓</span>
+              <div>
+                <h3>Tell us more about your dog</h3>
+                <p>These details help us personalize care. You can also send them later.</p>
+              </div>
+            </div>
+            <div class="booking-fields">
+              <label>
+                <span>Age (optional)</span>
+                <input name="age" type="text" />
+              </label>
+              <label>
+                <span>Weight (optional)</span>
+                <input name="weight" type="text" />
+              </label>
+              <label>
+                <span>Sex (optional)</span>
+                <select name="sex">
+                  <option value="">Select</option>
+                  <option value="Female">Female</option>
+                  <option value="Male">Male</option>
+                </select>
+              </label>
+              <label>
+                <span>Vaccinations up to date? (optional)</span>
+                <select name="vaccinationsUpToDate">
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </label>
+              <label class="wide-field upload-field">
+                <span>Vaccination Records</span>
+                <input
+                  name="vaccinationRecords"
+                  id="successVaccinationRecords"
+                  type="file"
+                  accept=".pdf,.jpg,.jpeg,.png,.heic,.heif,application/pdf,image/jpeg,image/png,image/heic,image/heif"
+                  multiple
+                />
+                <small>Vaccination records are required before a reservation can be confirmed. You may send them later.</small>
+                <div class="upload-progress" id="successUploadProgress" hidden>
+                  <span id="successUploadBar"></span>
+                </div>
+                <p class="upload-status" id="successUploadStatus" aria-live="polite"></p>
+              </label>
+              <label>
+                <span>Good with cats? (optional)</span>
+                <select name="goodWithCats">
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                  <option value="Unknown">Unknown</option>
+                </select>
+              </label>
+              <label>
+                <span>Good with small dogs? (optional)</span>
+                <select name="goodWithSmallDogs">
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                  <option value="Unknown">Unknown</option>
+                </select>
+              </label>
+              <label>
+                <span>Can swim? (optional)</span>
+                <select name="canSwim">
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                  <option value="Unknown">Unknown</option>
+                </select>
+              </label>
+              <label>
+                <span>Emergency Contact (optional)</span>
+                <input name="emergencyContact" type="text" />
+              </label>
+              <label class="wide-field">
+                <span>Medications (optional)</span>
+                <textarea name="medications" rows="3"></textarea>
+              </label>
+              <label class="wide-field">
+                <span>Allergies (optional)</span>
+                <textarea name="allergies" rows="3"></textarea>
+              </label>
+              <label class="wide-field">
+                <span>Behavioral concerns (optional)</span>
+                <textarea name="behavioralConcerns" rows="3"></textarea>
+              </label>
+              <label class="wide-field">
+                <span>Favorite activities (optional)</span>
+                <textarea name="favoriteActivities" rows="3"></textarea>
+              </label>
+              <label class="wide-field">
+                <span>Feeding instructions (optional)</span>
+                <textarea name="feedingInstructions" rows="3"></textarea>
+              </label>
+              <label>
+                <span>Veterinary Clinic (optional)</span>
+                <input name="veterinaryClinic" type="text" />
+              </label>
+              <label>
+                <span>Veterinarian Name (optional)</span>
+                <input name="veterinarianName" type="text" />
+              </label>
+              <label>
+                <span>Clinic Phone Number (optional)</span>
+                <input name="clinicPhone" type="tel" />
+              </label>
+              <label>
+                <span>Clinic Address (optional)</span>
+                <input name="clinicAddress" type="text" />
+              </label>
+              <label class="wide-field">
+                <span>Notes</span>
+                <textarea name="notes" rows="4"></textarea>
+              </label>
+            </div>
+            <div class="profile-followup-actions full">
+              <button class="submit-button" id="successProfileSubmit" type="submit">Save dog profile</button>
+              <a class="ghost-button payment-home-link" href="index.html">Skip for now</a>
+            </div>
+            <p class="status-line full" id="successProfileStatus"></p>
+          </form>
+        </div>
+
+        <div class="payment-success-state payment-error-state" id="paymentErrorState" hidden>
+          <p class="summary-kicker">Payment not confirmed</p>
+          <h1>We could not confirm this deposit.</h1>
+          <p id="paymentErrorText">
+            The payment may be unpaid, expired, or invalid. Please try again or contact info@shingospalace.com.
+          </p>
+          <a class="submit-button payment-home-link" href="index.html">Return to Shingo's Palace</a>
+        </div>
+      </section>
+    </main>
+    <script src="payment-success.js"></script>
+  </body>
+</html>

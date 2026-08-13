@@ -57,7 +57,7 @@ module.exports = async function handler(req, res) {
       ui_mode: "embedded",
       mode: "payment",
       customer_email: customerEmail,
-      return_url: `${origin}/index.html?stripe_session_id={CHECKOUT_SESSION_ID}`,
+      return_url: `${origin}/payment-success.html?session_id={CHECKOUT_SESSION_ID}`,
       line_items: [
         {
           quantity: 1,

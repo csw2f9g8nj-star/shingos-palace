@@ -9,15 +9,39 @@ module.exports = async function handler(req, res) {
 
   try {
     const { bookingId, sessionId } = req.body || {};
-    if (!bookingId || !sessionId) {
-      throw publicApiError("Missing booking or payment session.", 400, "missing_payment_session");
+    if (!sessionId) {
+      throw publicApiError("Missing payment session.", 400, "missing_payment_session");
     }
 
     const supabase = getAdminClient();
+    const stripe = getStripeClient();
+    const session = await stripe.checkout.sessions.retrieve(sessionId, {
+      expand: ["payment_intent"],
+    });
+
+    const resolvedBookingId = bookingId || session.metadata?.booking_id;
+    if (!resolvedBookingId) {
+      throw publicApiError("This Stripe payment is missing booking information.", 400, "missing_booking_id");
+    }
+
     const { data: booking, error } = await supabase
       .from("bookings")
-      .select("id, stripe_checkout_session_id, deposit_due_today, remaining_balance")
-      .eq("id", bookingId)
+      .select(
+        `
+        id,
+        owner_id,
+        dog_id,
+        service,
+        dropoff_date,
+        pickup_date,
+        stripe_checkout_session_id,
+        deposit_due_today,
+        remaining_balance,
+        owner:owners(first_name,last_name,email),
+        dog:dogs(name)
+      `,
+      )
+      .eq("id", resolvedBookingId)
       .single();
 
     if (error || !booking) {
@@ -27,11 +51,6 @@ module.exports = async function handler(req, res) {
     if (booking.stripe_checkout_session_id && booking.stripe_checkout_session_id !== sessionId) {
       throw publicApiError("This payment session does not match the booking.", 400, "payment_session_mismatch");
     }
-
-    const stripe = getStripeClient();
-    const session = await stripe.checkout.sessions.retrieve(sessionId, {
-      expand: ["payment_intent"],
-    });
 
     if (session.metadata?.booking_id && session.metadata.booking_id !== booking.id) {
       throw publicApiError("This Stripe payment belongs to a different booking.", 400, "payment_booking_mismatch");
@@ -69,8 +88,13 @@ module.exports = async function handler(req, res) {
       ok: true,
       message: "Deposit received. Thank you.",
       bookingId: booking.id,
+      ownerId: booking.owner_id,
+      dogId: booking.dog_id,
       sessionId: session.id,
       paymentIntentId,
+      service: booking.service,
+      dogName: booking.dog?.name || "Guest dog",
+      dates: `${booking.dropoff_date || ""} → ${booking.pickup_date || ""}`,
       depositPaid,
       remainingBalance: booking.remaining_balance,
     });
