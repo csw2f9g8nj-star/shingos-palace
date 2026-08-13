@@ -79,7 +79,7 @@ function renderSection(title, lines) {
 }
 
 function recordList(records) {
-  if (!records?.length) return ["No vaccination records uploaded yet."];
+  if (!records?.length) return ["Vaccination Records: Pending"];
   return records.map((record) => {
     const date = record.upload_date ? new Date(record.upload_date).toLocaleDateString() : "No date";
     const expires = record.expiration_date ? ` · Expires ${record.expiration_date}` : "";

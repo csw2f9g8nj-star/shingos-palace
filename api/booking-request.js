@@ -80,14 +80,6 @@ async function handler(req, res) {
       storagePaths: [],
     };
 
-    if (!records.length) {
-      sendJson(res, 400, {
-        ok: false,
-        error: "A current vaccination record is required before a reservation can be confirmed.",
-      });
-      return;
-    }
-
     const fileErrors = records.map(validateUploadFile).filter(Boolean);
     if (fileErrors.length) {
       sendJson(res, 400, { ok: false, error: fileErrors[0] });
@@ -145,7 +137,19 @@ async function handler(req, res) {
       status: "new_request",
     };
 
-    if (!ownerPayload.email || !dogPayload.name || !bookingPayload.emergency_authorization) {
+    if (
+      !ownerPayload.first_name ||
+      !ownerPayload.last_name ||
+      !ownerPayload.email ||
+      !ownerPayload.phone ||
+      !dogPayload.name ||
+      !dogPayload.breed ||
+      !dogPayload.spayed_neutered ||
+      !bookingPayload.service ||
+      !bookingPayload.dropoff_date ||
+      !bookingPayload.pickup_date ||
+      !bookingPayload.emergency_authorization
+    ) {
       sendJson(res, 400, { ok: false, error: "Please complete all required booking fields." });
       return;
     }

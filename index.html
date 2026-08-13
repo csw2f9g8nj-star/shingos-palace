@@ -793,8 +793,8 @@
                   <input name="phone" type="tel" autocomplete="tel" required />
                 </label>
                 <label class="wide-field">
-                  <span data-i18n="fieldEmergencyContact">Emergency Contact</span>
-                  <input name="emergencyContact" type="text" required />
+                  <span data-i18n="fieldEmergencyContact">Emergency Contact (optional)</span>
+                  <input name="emergencyContact" type="text" />
                 </label>
               </div>
             </section>
@@ -817,16 +817,16 @@
                   <input name="breed" type="text" required />
                 </label>
                 <label>
-                  <span data-i18n="fieldAge">Age</span>
-                  <input name="age" type="text" required />
+                  <span data-i18n="fieldAge">Age (optional)</span>
+                  <input name="age" type="text" />
                 </label>
                 <label>
-                  <span data-i18n="fieldWeight">Weight</span>
-                  <input name="weight" type="text" required />
+                  <span data-i18n="fieldWeight">Weight (optional)</span>
+                  <input name="weight" type="text" />
                 </label>
                 <label>
-                  <span data-i18n="fieldSex">Sex</span>
-                  <select name="sex" required>
+                  <span data-i18n="fieldSex">Sex (optional)</span>
+                  <select name="sex">
                     <option value="" data-i18n="optionSelect">Select</option>
                     <option value="Female" data-i18n="optionFemale">Female</option>
                     <option value="Male" data-i18n="optionMale">Male</option>
@@ -841,25 +841,16 @@
                   </select>
                 </label>
                 <label>
-                  <span data-i18n="fieldVaccinations">Vaccinations up to date?</span>
-                  <select name="vaccinationsUpToDate" required>
+                  <span data-i18n="fieldVaccinations">Vaccinations up to date? (optional)</span>
+                  <select name="vaccinationsUpToDate">
                     <option value="" data-i18n="optionSelect">Select</option>
                     <option value="Yes" data-i18n="optionYes">Yes</option>
                     <option value="No" data-i18n="optionNo">No</option>
                   </select>
                 </label>
                 <label>
-                  <span data-i18n="fieldGoodCats">Good with cats?</span>
-                  <select name="goodWithCats" required>
-                    <option value="" data-i18n="optionSelect">Select</option>
-                    <option value="Yes" data-i18n="optionYes">Yes</option>
-                    <option value="No" data-i18n="optionNo">No</option>
-                    <option value="Unknown" data-i18n="optionUnknown">Unknown</option>
-                  </select>
-                </label>
-                <label>
-                  <span data-i18n="fieldGoodSmallDogs">Good with small dogs?</span>
-                  <select name="goodWithSmallDogs" required>
+                  <span data-i18n="fieldGoodCats">Good with cats? (optional)</span>
+                  <select name="goodWithCats">
                     <option value="" data-i18n="optionSelect">Select</option>
                     <option value="Yes" data-i18n="optionYes">Yes</option>
                     <option value="No" data-i18n="optionNo">No</option>
@@ -867,8 +858,17 @@
                   </select>
                 </label>
                 <label>
-                  <span data-i18n="fieldCanSwim">Can swim?</span>
-                  <select name="canSwim" required>
+                  <span data-i18n="fieldGoodSmallDogs">Good with small dogs? (optional)</span>
+                  <select name="goodWithSmallDogs">
+                    <option value="" data-i18n="optionSelect">Select</option>
+                    <option value="Yes" data-i18n="optionYes">Yes</option>
+                    <option value="No" data-i18n="optionNo">No</option>
+                    <option value="Unknown" data-i18n="optionUnknown">Unknown</option>
+                  </select>
+                </label>
+                <label>
+                  <span data-i18n="fieldCanSwim">Can swim? (optional)</span>
+                  <select name="canSwim">
                     <option value="" data-i18n="optionSelect">Select</option>
                     <option value="Yes" data-i18n="optionYes">Yes</option>
                     <option value="No" data-i18n="optionNo">No</option>
@@ -876,27 +876,27 @@
                   </select>
                 </label>
                 <label class="wide-field">
-                  <span data-i18n="fieldMedications">Medications</span>
+                  <span data-i18n="fieldMedications">Medications (optional)</span>
                   <textarea name="medications" rows="3"></textarea>
                 </label>
                 <label class="wide-field">
-                  <span data-i18n="fieldAllergies">Allergies</span>
+                  <span data-i18n="fieldAllergies">Allergies (optional)</span>
                   <textarea name="allergies" rows="3"></textarea>
                 </label>
                 <label class="wide-field">
-                  <span data-i18n="fieldBehavioralConcerns">Behavioral concerns</span>
+                  <span data-i18n="fieldBehavioralConcerns">Behavioral concerns (optional)</span>
                   <textarea name="behavioralConcerns" rows="3"></textarea>
                 </label>
                 <label class="wide-field">
-                  <span data-i18n="fieldFavoriteActivities">Favorite activities</span>
+                  <span data-i18n="fieldFavoriteActivities">Favorite activities (optional)</span>
                   <textarea name="favoriteActivities" rows="3"></textarea>
                 </label>
                 <label class="wide-field">
-                  <span data-i18n="fieldFeedingInstructions">Feeding instructions</span>
+                  <span data-i18n="fieldFeedingInstructions">Feeding instructions (optional)</span>
                   <textarea name="feedingInstructions" rows="3"></textarea>
                 </label>
                 <label class="wide-field">
-                  <span data-i18n="fieldSleepingRoutine">Sleeping routine</span>
+                  <span data-i18n="fieldSleepingRoutine">Sleeping routine (optional)</span>
                   <textarea name="sleepingRoutine" rows="3"></textarea>
                 </label>
               </div>
@@ -912,16 +912,16 @@
               </div>
               <div class="booking-fields">
                 <label>
-                  <span data-i18n="fieldVetClinic">Veterinary Clinic</span>
-                  <input name="veterinaryClinic" type="text" required />
+                  <span data-i18n="fieldVetClinic">Veterinary Clinic (optional)</span>
+                  <input name="veterinaryClinic" type="text" />
                 </label>
                 <label>
-                  <span data-i18n="fieldVetName">Veterinarian Name</span>
-                  <input name="veterinarianName" type="text" required />
+                  <span data-i18n="fieldVetName">Veterinarian Name (optional)</span>
+                  <input name="veterinarianName" type="text" />
                 </label>
                 <label>
-                  <span data-i18n="fieldVetPhone">Clinic Phone Number</span>
-                  <input name="clinicPhone" type="tel" required />
+                  <span data-i18n="fieldVetPhone">Clinic Phone Number (optional)</span>
+                  <input name="clinicPhone" type="tel" />
                 </label>
                 <label>
                   <span data-i18n="fieldVetAddress">Clinic Address (optional)</span>
@@ -935,10 +935,9 @@
                     type="file"
                     accept=".pdf,.jpg,.jpeg,.png,.heic,.heif,application/pdf,image/jpeg,image/png,image/heic,image/heif"
                     multiple
-                    required
                   />
                   <small data-i18n="vaccinationRecordsHelp">
-                    A current vaccination record is required before a reservation can be confirmed.
+                    Vaccination records are required before a reservation can be confirmed. You may submit this request now and send them later.
                   </small>
                   <div class="upload-progress" id="vaccinationUploadProgress" hidden>
                     <span id="vaccinationUploadBar"></span>
@@ -972,16 +971,16 @@
                     <input name="dropoffDate" id="dropoffDate" type="date" required />
                   </label>
                   <label>
-                    <span data-i18n="fieldArrivalTime">Arrival time</span>
-                    <input name="arrivalTime" type="time" required />
+                    <span data-i18n="fieldArrivalTime">Arrival time (optional)</span>
+                    <input name="arrivalTime" type="time" />
                   </label>
                   <label>
                     <span data-i18n="fieldPickupDate">Pick-up date</span>
                     <input name="pickupDate" id="pickupDate" type="date" required />
                   </label>
                   <label>
-                    <span data-i18n="fieldDepartureTime">Departure time</span>
-                    <input name="departureTime" type="time" required />
+                    <span data-i18n="fieldDepartureTime">Departure time (optional)</span>
+                    <input name="departureTime" type="time" />
                   </label>
                 </div>
                 <label>
