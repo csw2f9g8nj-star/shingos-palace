@@ -2961,10 +2961,65 @@ textarea {
 
 .required-checkbox {
   align-items: flex-start;
+  cursor: pointer;
+  gap: 14px;
+}
+
+.required-checkbox input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  flex: 0 0 26px;
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  margin: 1px 0 0;
+  padding: 0;
+  border: 2px solid rgba(39, 50, 47, 0.5);
+  border-radius: 8px;
+  background: #fffaf1;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.required-checkbox input[type="checkbox"]::after {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 3px;
+  width: 7px;
+  height: 13px;
+  border: solid #fff;
+  border-width: 0 3px 3px 0;
+  opacity: 0;
+  transform: rotate(45deg) scale(0.75);
+  transition: opacity 140ms ease, transform 140ms ease;
+}
+
+.required-checkbox input[type="checkbox"]:checked {
+  border-color: var(--sage-deep);
+  background: var(--sage-deep);
+  box-shadow: 0 8px 20px rgba(74, 96, 78, 0.22);
+}
+
+.required-checkbox input[type="checkbox"]:checked::after {
+  opacity: 1;
+  transform: rotate(45deg) scale(1);
+}
+
+.required-checkbox input[type="checkbox"]:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(168, 185, 165, 0.28);
+}
+
+.required-checkbox:hover input[type="checkbox"] {
+  border-color: var(--sage-deep);
+  transform: translateY(-1px);
 }
 
 .required-checkbox span {
   line-height: 1.45;
+  cursor: pointer;
 }
 
 .upload-field small {
