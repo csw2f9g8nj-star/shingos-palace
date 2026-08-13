@@ -15,6 +15,35 @@ const translations = {
     checkAvailability: "Check Availability",
     meetGreet: "Meet & Greet",
     bookNow: "Book Now",
+    accountSignInNav: "Sign In",
+    accountMyAccountNav: "My Account",
+    accountKicker: "My Account",
+    accountHeading: "A simpler way to book again.",
+    accountIntro: "Sign in with your email to see your dogs, reservations, vaccination status, and book again faster.",
+    accountSendLink: "Send sign-in link",
+    accountLinkSent: "Check your email for the secure sign-in link.",
+    accountLoading: "Loading your account...",
+    accountWelcome: "Welcome back",
+    accountPrivateNote: "Only your own dogs, reservations, and vaccination records are shown here.",
+    accountSignOut: "Sign Out",
+    accountMyDogs: "My Dogs",
+    accountUpcoming: "Upcoming Reservations",
+    accountPast: "Past Reservations",
+    accountDogProfile: "Dog Profile",
+    accountVaccinationStatus: "Vaccination Records",
+    accountRecordsPending: "Pending",
+    accountRecordsSubmitted: "Submitted",
+    accountBookAgain: "Book Again",
+    accountAddDog: "Add Another Dog",
+    accountSaveDog: "Save Dog",
+    accountDogSaved: "Dog added to your account.",
+    accountEmptyTitle: "No dog profiles yet.",
+    accountEmptyText: "Add your dog below or complete your first booking request.",
+    accountNoReservations: "No reservations yet.",
+    accountExistingDogLabel: "Booking for a saved dog?",
+    accountNewDogOption: "New dog",
+    accountExistingDogHelp: "Choose a dog from My Account to preload their saved information.",
+    accountLoginUnavailable: "Customer login is unavailable right now. Please try again shortly.",
     explorePricing: "View Pricing",
     servicesTitle: "Services",
     servicesHint: "Pricing and availability",
@@ -419,6 +448,35 @@ const translations = {
     checkAvailability: "Ver disponibilidad",
     meetGreet: "Meet & Greet",
     bookNow: "Reservar ahora",
+    accountSignInNav: "Ingresar",
+    accountMyAccountNav: "Mi cuenta",
+    accountKicker: "Mi cuenta",
+    accountHeading: "Una forma más simple de volver a reservar.",
+    accountIntro: "Ingresá con tu email para ver tus perros, reservas, estado de vacunas y reservar de nuevo más rápido.",
+    accountSendLink: "Enviar link de acceso",
+    accountLinkSent: "Revisá tu email para abrir el link seguro de acceso.",
+    accountLoading: "Cargando tu cuenta...",
+    accountWelcome: "Bienvenida de nuevo",
+    accountPrivateNote: "Acá solo se muestran tus propios perros, reservas y registros de vacunación.",
+    accountSignOut: "Cerrar sesión",
+    accountMyDogs: "Mis perros",
+    accountUpcoming: "Próximas reservas",
+    accountPast: "Reservas anteriores",
+    accountDogProfile: "Perfil del perro",
+    accountVaccinationStatus: "Registros de vacunación",
+    accountRecordsPending: "Pendiente",
+    accountRecordsSubmitted: "Enviado",
+    accountBookAgain: "Reservar de nuevo",
+    accountAddDog: "Agregar otro perro",
+    accountSaveDog: "Guardar perro",
+    accountDogSaved: "Perro agregado a tu cuenta.",
+    accountEmptyTitle: "Todavía no hay perfiles de perros.",
+    accountEmptyText: "Agregá tu perro abajo o completá tu primera solicitud de reserva.",
+    accountNoReservations: "Todavía no hay reservas.",
+    accountExistingDogLabel: "¿Reservás para un perro guardado?",
+    accountNewDogOption: "Perro nuevo",
+    accountExistingDogHelp: "Elegí un perro de Mi cuenta para precargar su información guardada.",
+    accountLoginUnavailable: "El acceso de clientes no está disponible ahora. Intentá de nuevo pronto.",
     explorePricing: "Ver precios",
     servicesTitle: "Servicios",
     servicesHint: "Precios y disponibilidad",
@@ -838,6 +896,9 @@ const BOOKING_ENDPOINT = "/api/booking-request";
 const MEET_GREET_ENDPOINT = "/api/meet-greet";
 const STRIPE_SESSION_ENDPOINT = "/api/create-checkout-session";
 const STRIPE_VERIFY_ENDPOINT = "/api/verify-checkout-session";
+const PUBLIC_CONFIG_ENDPOINT = "/api/public-config";
+const ACCOUNT_ENDPOINT = "/api/account/me";
+const ACCOUNT_DOGS_ENDPOINT = "/api/account/dogs";
 const defaultBookingSelection = {
   service: "",
   dropoffDate: "",
@@ -1053,9 +1114,31 @@ const mobileSummaryTotal = document.querySelector("#mobileSummaryTotal");
 const mobileSummaryDeposit = document.querySelector("#mobileSummaryDeposit");
 const mobileSummaryRemaining = document.querySelector("#mobileSummaryRemaining");
 const mobileSummaryToggle = document.querySelector("#mobileSummaryToggle");
+const accountNavButton = document.querySelector("#accountNavButton");
+const accountSignedOut = document.querySelector("#accountSignedOut");
+const accountDashboard = document.querySelector("#accountDashboard");
+const accountLoginForm = document.querySelector("#accountLoginForm");
+const accountEmail = document.querySelector("#accountEmail");
+const accountLoginStatus = document.querySelector("#accountLoginStatus");
+const accountSignOut = document.querySelector("#accountSignOut");
+const accountWelcome = document.querySelector("#accountWelcome");
+const accountEmptyState = document.querySelector("#accountEmptyState");
+const accountDogs = document.querySelector("#accountDogs");
+const accountUpcomingReservations = document.querySelector("#accountUpcomingReservations");
+const accountPastReservations = document.querySelector("#accountPastReservations");
+const accountAddDogToggle = document.querySelector("#accountAddDogToggle");
+const accountAddDogForm = document.querySelector("#accountAddDogForm");
+const accountAddDogStatus = document.querySelector("#accountAddDogStatus");
+const accountDogPicker = document.querySelector("#accountDogPicker");
+const accountDogSelect = document.querySelector("#accountDogSelect");
+const accountOwnerIdField = document.querySelector("#accountOwnerId");
+const accountDogIdField = document.querySelector("#accountDogId");
 
 let currentLang = localStorage.getItem("shingos-language") || "en";
 let currentBookingStep = 1;
+let customerSupabase = null;
+let customerSession = null;
+let customerAccount = { owner: null, dogs: [] };
 const allowedVaccinationTypes = new Set([
   "application/pdf",
   "image/jpeg",
@@ -1089,6 +1172,8 @@ function applyLanguage() {
 
   renderReviews();
   renderHomeGallery();
+  renderCustomerAccount();
+  updateAccountNav();
   updateAvailability();
   updateSummary();
   setBookingStep(currentBookingStep);
@@ -1113,6 +1198,17 @@ window.openSiteModal = (modalId) => {
     renderReviews();
   }
 
+  if (modalId === "accountModal") {
+    loadCustomerAccount().catch((error) => {
+      if (accountLoginStatus) accountLoginStatus.textContent = error.message || t("accountLoginUnavailable");
+    });
+  }
+
+  if (modalId === "bookingModal") {
+    preloadAccountOwner();
+    populateAccountDogPicker();
+  }
+
   try {
     modal.showModal();
   } catch (error) {
@@ -1125,6 +1221,8 @@ window.openSiteModal = (modalId) => {
 function resetBookingExperience(messageKey = "") {
   bookingForm?.reset();
   dogProfileForm?.reset();
+  clearAccountDogSelection();
+  if (accountDogSelect) accountDogSelect.value = "";
   if (stripeCheckout) {
     stripeCheckout.destroy();
     stripeCheckout = null;
@@ -1369,7 +1467,7 @@ function resetUploadProgress() {
 async function getStripePublishableKey() {
   if (stripePublishableKey) return stripePublishableKey;
 
-  const response = await fetch("/api/admin/config");
+  const response = await fetch(PUBLIC_CONFIG_ENDPOINT);
   if (!response.ok) {
     throw new Error(t("paymentConfigMissing"));
   }
@@ -1381,6 +1479,231 @@ async function getStripePublishableKey() {
   }
 
   return stripePublishableKey;
+}
+
+async function getCustomerSupabaseClient() {
+  if (customerSupabase) return customerSupabase;
+
+  if (!window.supabase?.createClient) {
+    throw new Error(t("accountLoginUnavailable"));
+  }
+
+  const response = await fetch(PUBLIC_CONFIG_ENDPOINT);
+  if (!response.ok) {
+    throw new Error(t("accountLoginUnavailable"));
+  }
+
+  const payload = await response.json();
+  if (!payload.supabaseUrl || !payload.supabasePublishableKey) {
+    throw new Error(t("accountLoginUnavailable"));
+  }
+
+  customerSupabase = window.supabase.createClient(payload.supabaseUrl, payload.supabasePublishableKey);
+  return customerSupabase;
+}
+
+async function customerApiFetch(endpoint, options = {}) {
+  if (!customerSession?.access_token) {
+    throw new Error(t("accountLoginUnavailable"));
+  }
+
+  const response = await fetch(endpoint, {
+    ...options,
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${customerSession.access_token}`,
+      ...(options.headers || {}),
+    },
+  });
+  const payload = await response.json().catch(() => ({}));
+
+  if (!response.ok || payload.ok === false) {
+    throw new Error(payload.error || t("accountLoginUnavailable"));
+  }
+
+  return payload;
+}
+
+function updateAccountNav() {
+  if (!accountNavButton) return;
+  accountNavButton.textContent = customerSession ? t("accountMyAccountNav") : t("accountSignInNav");
+}
+
+function accountDogById(dogId) {
+  return (customerAccount.dogs || []).find((dog) => dog.id === dogId) || null;
+}
+
+function ownerDisplayName(owner) {
+  const name = [owner?.firstName, owner?.lastName].filter(Boolean).join(" ").trim();
+  return name || owner?.email || t("accountWelcome");
+}
+
+function bookingIsUpcoming(booking) {
+  if (!booking.pickupDate) return true;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return new Date(`${booking.pickupDate}T00:00:00`) >= today;
+}
+
+function bookingCardMarkup(booking, dogName) {
+  return `
+    <article class="account-reservation-card">
+      <strong>${serviceLabel(booking.service)} · ${dogName}</strong>
+      <span>${booking.dropoffDate || t("summaryDatesEmpty")} → ${booking.pickupDate || ""}</span>
+      <small>${booking.paymentStatus || booking.status || ""}${booking.depositPaidAmount ? ` · ${booking.depositPaidAmount}` : ""}</small>
+    </article>
+  `;
+}
+
+function renderCustomerAccount() {
+  const signedIn = Boolean(customerSession);
+  if (accountSignedOut) accountSignedOut.hidden = signedIn;
+  if (accountDashboard) accountDashboard.hidden = !signedIn;
+  if (accountWelcome) accountWelcome.textContent = `${t("accountWelcome")}${customerAccount.owner ? `, ${ownerDisplayName(customerAccount.owner)}` : ""}.`;
+
+  if (accountEmptyState) accountEmptyState.hidden = !signedIn || Boolean(customerAccount.dogs?.length);
+
+  if (accountDogs) {
+    accountDogs.innerHTML = (customerAccount.dogs || [])
+      .map((dog) => {
+        const recordsLabel = dog.records?.length ? t("accountRecordsSubmitted") : t("accountRecordsPending");
+        const recordLinks = (dog.records || [])
+          .map((record) =>
+            record.signedUrl
+              ? `<a href="${record.signedUrl}" target="_blank" rel="noreferrer">${record.originalFilename}</a>`
+              : `<span>${record.originalFilename}</span>`,
+          )
+          .join("");
+
+        return `
+          <article class="account-dog-card">
+            <div>
+              <span class="account-card-kicker">${t("accountDogProfile")}</span>
+              <h3>${dog.name}</h3>
+              <p>${dog.breed || ""}${dog.spayedNeutered ? ` · ${dog.spayedNeutered}` : ""}</p>
+            </div>
+            <div class="account-vaccine-line">
+              <span>${t("accountVaccinationStatus")}</span>
+              <strong class="${dog.records?.length ? "is-submitted" : "is-pending"}">${recordsLabel}</strong>
+            </div>
+            ${recordLinks ? `<div class="account-record-links">${recordLinks}</div>` : ""}
+            <button class="ghost-button account-book-again" type="button" data-dog-id="${dog.id}">${t("accountBookAgain")}</button>
+          </article>
+        `;
+      })
+      .join("");
+  }
+
+  const upcoming = [];
+  const past = [];
+  (customerAccount.dogs || []).forEach((dog) => {
+    (dog.bookings || []).forEach((booking) => {
+      (bookingIsUpcoming(booking) ? upcoming : past).push({ booking, dogName: dog.name });
+    });
+  });
+
+  if (accountUpcomingReservations) {
+    accountUpcomingReservations.innerHTML = upcoming.length
+      ? upcoming.map(({ booking, dogName }) => bookingCardMarkup(booking, dogName)).join("")
+      : `<p>${t("accountNoReservations")}</p>`;
+  }
+
+  if (accountPastReservations) {
+    accountPastReservations.innerHTML = past.length
+      ? past.map(({ booking, dogName }) => bookingCardMarkup(booking, dogName)).join("")
+      : `<p>${t("accountNoReservations")}</p>`;
+  }
+
+  populateAccountDogPicker();
+}
+
+function populateAccountDogPicker() {
+  if (!accountDogPicker || !accountDogSelect) return;
+  const dogs = customerAccount.dogs || [];
+  accountDogPicker.hidden = !customerSession || !dogs.length;
+  const currentValue = accountDogSelect.value;
+  accountDogSelect.innerHTML = [
+    `<option value="">${t("accountNewDogOption")}</option>`,
+    ...dogs.map((dog) => `<option value="${dog.id}">${dog.name}${dog.breed ? ` · ${dog.breed}` : ""}</option>`),
+  ].join("");
+  accountDogSelect.value = dogs.some((dog) => dog.id === currentValue) ? currentValue : "";
+}
+
+function setFormField(form, name, value) {
+  const field = form?.elements?.[name];
+  if (field) field.value = value || "";
+}
+
+function preloadAccountOwner() {
+  if (!bookingForm || !customerAccount.owner) return;
+
+  setFormField(bookingForm, "firstName", customerAccount.owner.firstName);
+  setFormField(bookingForm, "lastName", customerAccount.owner.lastName);
+  setFormField(bookingForm, "email", customerAccount.owner.email);
+  setFormField(bookingForm, "phone", customerAccount.owner.phone);
+}
+
+function preloadAccountDog(dogId) {
+  const dog = accountDogById(dogId);
+  if (!bookingForm || !dog || !customerAccount.owner) return;
+
+  if (accountOwnerIdField) accountOwnerIdField.value = customerAccount.owner.id || "";
+  if (accountDogIdField) accountDogIdField.value = dog.id || "";
+  preloadAccountOwner();
+  setFormField(bookingForm, "dogName", dog.name);
+  setFormField(bookingForm, "breed", dog.breed);
+  setFormField(bookingForm, "spayedNeutered", dog.spayedNeutered);
+}
+
+function clearAccountDogSelection(clearDogFields = false) {
+  if (accountOwnerIdField) accountOwnerIdField.value = customerAccount.owner?.id || "";
+  if (accountDogIdField) accountDogIdField.value = "";
+  preloadAccountOwner();
+  if (!clearDogFields || !bookingForm) return;
+  setFormField(bookingForm, "dogName", "");
+  setFormField(bookingForm, "breed", "");
+  setFormField(bookingForm, "spayedNeutered", "");
+}
+
+async function loadCustomerAccount() {
+  if (!customerSession) {
+    customerAccount = { owner: null, dogs: [] };
+    renderCustomerAccount();
+    return;
+  }
+
+  if (accountLoginStatus) accountLoginStatus.textContent = t("accountLoading");
+  const payload = await customerApiFetch(ACCOUNT_ENDPOINT);
+  customerAccount = {
+    owner: payload.owner || null,
+    dogs: payload.dogs || [],
+  };
+  if (accountLoginStatus) accountLoginStatus.textContent = "";
+  renderCustomerAccount();
+  preloadAccountOwner();
+}
+
+async function initializeCustomerAuth() {
+  try {
+    const client = await getCustomerSupabaseClient();
+    const { data } = await client.auth.getSession();
+    customerSession = data?.session || null;
+    updateAccountNav();
+    await loadCustomerAccount();
+
+    client.auth.onAuthStateChange(async (_event, session) => {
+      customerSession = session || null;
+      updateAccountNav();
+      try {
+        await loadCustomerAccount();
+      } catch (error) {
+        if (accountLoginStatus) accountLoginStatus.textContent = error.message || t("accountLoginUnavailable");
+      }
+    });
+  } catch (error) {
+    updateAccountNav();
+    if (accountLoginStatus) accountLoginStatus.textContent = "";
+  }
 }
 
 async function verifyStripePayment(sessionId) {
@@ -1504,11 +1827,14 @@ function setBookingSelection(selection = {}) {
   updateSummary();
 }
 
-function submitFormWithProgress(form, endpoint, statusElement, submitButton, successMessageKey) {
+function submitFormWithProgress(form, endpoint, statusElement, submitButton, successMessageKey, headers = {}) {
   return new Promise((resolve, reject) => {
     const request = new XMLHttpRequest();
     request.open("POST", endpoint);
     request.setRequestHeader("Accept", "application/json");
+    Object.entries(headers).forEach(([key, value]) => {
+      if (value) request.setRequestHeader(key, value);
+    });
 
     request.upload.addEventListener("progress", (event) => {
       if (form !== dogProfileForm || !event.lengthComputable || !vaccinationUploadProgress || !vaccinationUploadBar) return;
@@ -1552,6 +1878,14 @@ function calculateBookingUnits() {
   const diffDays = Math.round((end - start) / (1000 * 60 * 60 * 24));
 
   return Math.max(1, diffDays || 1);
+}
+
+function getAccountBookingHeaders() {
+  if (!customerSession?.access_token || !accountOwnerIdField?.value || !accountDogIdField?.value) {
+    return {};
+  }
+
+  return { Authorization: `Bearer ${customerSession.access_token}` };
 }
 
 function availabilityLabel(remaining) {
@@ -1703,6 +2037,92 @@ closeButtons.forEach((button) => {
   });
 });
 
+accountLoginForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (!accountEmail?.value) return;
+  if (accountLoginStatus) accountLoginStatus.textContent = t("accountLoading");
+
+  try {
+    const client = await getCustomerSupabaseClient();
+    const redirectTo = `${window.location.origin}${window.location.pathname}`;
+    const { error } = await client.auth.signInWithOtp({
+      email: accountEmail.value.trim().toLowerCase(),
+      options: {
+        emailRedirectTo: redirectTo,
+      },
+    });
+
+    if (error) throw error;
+    if (accountLoginStatus) accountLoginStatus.textContent = t("accountLinkSent");
+  } catch (error) {
+    if (accountLoginStatus) accountLoginStatus.textContent = error.message || t("accountLoginUnavailable");
+  }
+});
+
+accountSignOut?.addEventListener("click", async () => {
+  try {
+    const client = await getCustomerSupabaseClient();
+    await client.auth.signOut();
+  } finally {
+    customerSession = null;
+    customerAccount = { owner: null, dogs: [] };
+    clearAccountDogSelection();
+    updateAccountNav();
+    renderCustomerAccount();
+  }
+});
+
+accountAddDogToggle?.addEventListener("click", () => {
+  if (!accountAddDogForm) return;
+  accountAddDogForm.hidden = !accountAddDogForm.hidden;
+});
+
+accountAddDogForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (!accountAddDogForm.checkValidity()) {
+    accountAddDogForm.reportValidity();
+    return;
+  }
+
+  if (accountAddDogStatus) accountAddDogStatus.textContent = t("accountLoading");
+  const formData = new FormData(accountAddDogForm);
+  const body = Object.fromEntries(formData.entries());
+
+  try {
+    await customerApiFetch(ACCOUNT_DOGS_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    if (accountAddDogStatus) accountAddDogStatus.textContent = t("accountDogSaved");
+    accountAddDogForm.reset();
+    accountAddDogForm.hidden = true;
+    await loadCustomerAccount();
+  } catch (error) {
+    if (accountAddDogStatus) accountAddDogStatus.textContent = error.message || t("accountLoginUnavailable");
+  }
+});
+
+accountDogs?.addEventListener("click", (event) => {
+  const button = event.target.closest(".account-book-again");
+  if (!button) return;
+  const dog = accountDogById(button.dataset.dogId);
+  if (!dog) return;
+
+  preloadAccountDog(dog.id);
+  if (accountDogSelect) accountDogSelect.value = dog.id;
+  window.closeSiteModal(button);
+  window.openSiteModal("availabilityModal");
+});
+
+accountDogSelect?.addEventListener("change", () => {
+  if (accountDogSelect.value) {
+    preloadAccountDog(accountDogSelect.value);
+  } else {
+    clearAccountDogSelection(true);
+  }
+});
+
 serviceSelect?.addEventListener("change", updateSummary);
 dropoffDateInput?.addEventListener("change", updateSummary);
 pickupDateInput?.addEventListener("change", updateSummary);
@@ -1803,7 +2223,14 @@ bookingForm?.addEventListener("submit", async (event) => {
   bookingSubmit.textContent = t("bookingSending");
 
   try {
-    const payload = await submitFormWithProgress(bookingForm, endpoint, bookingStatus, bookingSubmit, "bookingSuccess");
+    const payload = await submitFormWithProgress(
+      bookingForm,
+      endpoint,
+      bookingStatus,
+      bookingSubmit,
+      "bookingSuccess",
+      getAccountBookingHeaders(),
+    );
     await startStripePayment(payload);
   } catch (error) {
     bookingStatus.textContent = error.message || t("bookingError");
@@ -1852,3 +2279,4 @@ dogProfileSkip?.addEventListener("click", () => {
 });
 
 applyLanguage();
+initializeCustomerAuth();

@@ -166,6 +166,28 @@ h2,
   background: rgba(255, 250, 241, 0.9);
 }
 
+.account-nav-button {
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid rgba(39, 50, 47, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 252, 246, 0.62);
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 0.76rem;
+  font-weight: 720;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: transform 180ms ease, opacity 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.account-nav-button:hover {
+  transform: translateY(-1px);
+  opacity: 0.8;
+  border-color: rgba(39, 50, 47, 0.22);
+  background: rgba(255, 250, 241, 0.92);
+}
+
 .social-icon svg {
   width: 18px;
   height: 18px;
@@ -2491,6 +2513,206 @@ body.modal-open {
   line-height: 1.55;
 }
 
+.account-modal-card {
+  max-height: min(900px, calc(100svh - 28px));
+  overflow: auto;
+}
+
+.account-auth-panel,
+.account-dashboard,
+.account-section,
+.account-add-dog-form,
+.account-dog-picker {
+  border: 1px solid rgba(39, 50, 47, 0.09);
+  border-radius: 28px;
+  background: rgba(255, 250, 241, 0.72);
+  box-shadow: 0 16px 44px rgba(43, 45, 39, 0.075);
+}
+
+.account-auth-panel,
+.account-dashboard {
+  padding: clamp(20px, 3vw, 32px);
+}
+
+.account-login-form,
+.account-add-dog-form {
+  display: grid;
+  gap: 14px;
+}
+
+.account-dashboard {
+  display: grid;
+  gap: 18px;
+}
+
+.account-dashboard[hidden],
+.account-auth-panel[hidden],
+.account-empty-state[hidden],
+.account-add-dog-form[hidden],
+.account-dog-picker[hidden] {
+  display: none;
+}
+
+.account-dashboard-head,
+.account-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.account-dashboard-head strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--charcoal);
+  font-family: var(--display);
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+}
+
+.account-dashboard-head p,
+.account-empty-state p,
+.account-dog-picker p,
+.account-reservation-list p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.account-section {
+  padding: clamp(18px, 2.4vw, 26px);
+}
+
+.account-section h3 {
+  margin: 0 0 14px;
+  color: var(--charcoal);
+  font-family: var(--display);
+  font-size: 1.42rem;
+}
+
+.account-section-head h3 {
+  margin-bottom: 0;
+}
+
+.account-empty-state {
+  padding: 18px;
+  border: 1px solid rgba(122, 155, 117, 0.18);
+  border-radius: 22px;
+  background: rgba(168, 185, 165, 0.12);
+}
+
+.account-empty-state strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--sage-deep);
+}
+
+.account-dog-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.account-dog-card,
+.account-reservation-card {
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid rgba(39, 50, 47, 0.08);
+  border-radius: 24px;
+  background: rgba(255, 252, 246, 0.82);
+}
+
+.account-card-kicker,
+.account-vaccine-line span,
+.account-reservation-card small {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 720;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.account-dog-card h3 {
+  margin: 4px 0;
+  color: var(--charcoal);
+  font-family: var(--display);
+  font-size: 1.52rem;
+}
+
+.account-dog-card p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.account-vaccine-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(39, 50, 47, 0.08);
+}
+
+.account-vaccine-line strong {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+}
+
+.account-vaccine-line .is-submitted {
+  background: rgba(168, 185, 165, 0.22);
+  color: var(--sage-deep);
+}
+
+.account-vaccine-line .is-pending {
+  background: rgba(200, 166, 90, 0.16);
+  color: #8a6a2c;
+}
+
+.account-record-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.account-record-links a,
+.account-record-links span {
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(39, 50, 47, 0.06);
+  color: var(--ink);
+  font-size: 0.82rem;
+  text-decoration: none;
+}
+
+.account-reservations-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.account-reservation-list {
+  display: grid;
+  gap: 10px;
+}
+
+.account-reservation-card strong {
+  color: var(--charcoal);
+}
+
+.account-reservation-card span {
+  color: var(--muted);
+}
+
+.account-add-dog-form {
+  padding: 18px;
+}
+
+.account-dog-picker {
+  padding: 16px;
+  box-shadow: none;
+}
+
 .modal-kicker,
 .summary-kicker {
   margin: 0 0 8px;
@@ -4126,6 +4348,38 @@ textarea {
   .booking-layout {
     gap: 10px;
     margin-top: 10px;
+  }
+
+  .account-reservations-grid,
+  .account-dog-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .account-dashboard-head,
+  .account-section-head {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .account-dashboard-head .ghost-button,
+  .account-section-head .ghost-button,
+  .account-book-again {
+    width: 100%;
+  }
+
+  .account-auth-panel,
+  .account-dashboard,
+  .account-section,
+  .account-add-dog-form {
+    padding: 14px;
+    border-radius: 20px;
+  }
+
+  .account-dog-card,
+  .account-reservation-card,
+  .account-dog-picker {
+    padding: 14px;
+    border-radius: 18px;
   }
 
   .booking-form {

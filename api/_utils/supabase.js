@@ -195,6 +195,26 @@ async function requireAdminUser(req, supabase) {
   return data.user;
 }
 
+async function requireCustomerUser(req, supabase) {
+  const authorization = req.headers.authorization || "";
+  const token = authorization.replace(/^Bearer\s+/i, "").trim();
+
+  if (!token) {
+    const error = new Error("Missing customer session.");
+    error.statusCode = 401;
+    throw error;
+  }
+
+  const { data, error } = await supabase.auth.getUser(token);
+  if (error || !data?.user) {
+    const authError = new Error("Invalid customer session.");
+    authError.statusCode = 401;
+    throw authError;
+  }
+
+  return data.user;
+}
+
 function handleApiError(res, error) {
   const statusCode = error.statusCode || 500;
   console.error("[Shingo's Palace API]", {
@@ -228,5 +248,6 @@ module.exports = {
   sanitizePathPart,
   validateUploadFile,
   requireAdminUser,
+  requireCustomerUser,
   handleApiError,
 };

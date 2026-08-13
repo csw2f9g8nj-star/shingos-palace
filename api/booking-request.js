@@ -1,4 +1,5 @@
 const fs = require("fs/promises");
+const { findOwnerForUser } = require("./_utils/account");
 const {
   getAdminClient,
   getSupabaseConfig,
@@ -6,6 +7,7 @@ const {
   handleApiError,
   normalizeField,
   publicApiError,
+  requireCustomerUser,
   sanitizePathPart,
   sendJson,
   validateUploadFile,
@@ -67,6 +69,39 @@ async function removeCreatedRecords(supabase, created) {
   await Promise.allSettled(cleanupTasks);
 }
 
+async function getLinkedBookingAccount(supabase, req, fields) {
+  const ownerId = normalizeField(fields.ownerId);
+  const dogId = normalizeField(fields.dogId);
+  if (!ownerId && !dogId) return null;
+
+  if (!ownerId && dogId) {
+    throw publicApiError("Please select a saved dog or enter a new dog.", 400, "missing_account_booking_reference");
+  }
+
+  const user = await requireCustomerUser(req, supabase);
+  const linkedOwner = await findOwnerForUser(supabase, user);
+  if (!linkedOwner || linkedOwner.id !== ownerId) {
+    throw publicApiError("This saved dog does not belong to your account.", 403, "account_owner_forbidden");
+  }
+
+  if (!dogId) {
+    return { owner: linkedOwner, dog: null };
+  }
+
+  const { data: dog, error: dogError } = await supabase
+    .from("dogs")
+    .select("*")
+    .eq("id", dogId)
+    .eq("owner_id", linkedOwner.id)
+    .single();
+
+  if (dogError || !dog) {
+    throw publicApiError("We could not find the saved dog in your account.", 404, "account_dog_not_found");
+  }
+
+  return { owner: linkedOwner, dog };
+}
+
 async function handler(req, res) {
   if (req.method !== "POST") {
     sendJson(res, 405, { ok: false, error: "Method not allowed." });
@@ -78,6 +113,7 @@ async function handler(req, res) {
     const config = getSupabaseConfig();
     const { fields, files } = await parseMultipartForm(req);
     const records = toFileArray(files.vaccinationRecords);
+    const linkedAccount = await getLinkedBookingAccount(supabase, req, fields);
     const created = {
       bucket: config.bucket,
       ownerId: "",
@@ -163,21 +199,62 @@ async function handler(req, res) {
     }
 
     try {
-      const owner = await insertSingle(
-        supabase,
-        "owners",
-        ownerPayload,
-        "We could not save the owner information. Please check the Supabase service key and owners table.",
-      );
-      created.ownerId = owner.id;
+      let owner = linkedAccount?.owner || null;
+      let dog = linkedAccount?.dog || null;
 
-      const dog = await insertSingle(
-        supabase,
-        "dogs",
-        { ...dogPayload, owner_id: owner.id },
-        "We could not save the dog profile. Please check the dogs table in Supabase.",
-      );
-      created.dogId = dog.id;
+      if (owner) {
+        const { data: updatedOwner, error: ownerUpdateError } = await supabase
+          .from("owners")
+          .update({
+            first_name: ownerPayload.first_name,
+            last_name: ownerPayload.last_name,
+            email: ownerPayload.email,
+            phone: ownerPayload.phone,
+          })
+          .eq("id", owner.id)
+          .select()
+          .single();
+
+        if (ownerUpdateError) {
+          throw publicApiError("We could not update the owner information for this account.", 500, "owner_update_failed");
+        }
+        owner = updatedOwner;
+      } else {
+        owner = await insertSingle(
+          supabase,
+          "owners",
+          ownerPayload,
+          "We could not save the owner information. Please check the Supabase service key and owners table.",
+        );
+        created.ownerId = owner.id;
+      }
+
+      if (dog) {
+        const { data: updatedDog, error: dogUpdateError } = await supabase
+          .from("dogs")
+          .update({
+            name: dogPayload.name,
+            breed: dogPayload.breed,
+            spayed_neutered: dogPayload.spayed_neutered,
+          })
+          .eq("id", dog.id)
+          .eq("owner_id", owner.id)
+          .select()
+          .single();
+
+        if (dogUpdateError) {
+          throw publicApiError("We could not update the dog profile for this account.", 500, "dog_update_failed");
+        }
+        dog = updatedDog;
+      } else {
+        dog = await insertSingle(
+          supabase,
+          "dogs",
+          { ...dogPayload, owner_id: owner.id },
+          "We could not save the dog profile. Please check the dogs table in Supabase.",
+        );
+        created.dogId = dog.id;
+      }
 
       const booking = await insertSingle(
         supabase,
