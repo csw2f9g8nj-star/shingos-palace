@@ -2934,6 +2934,45 @@ h2 {
   gap: 12px;
 }
 
+.pickup-policy-note {
+  margin: -2px 0 2px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 520;
+  line-height: 1.45;
+}
+
+.booking-locked-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid rgba(39, 50, 47, 0.1);
+  border-radius: 18px;
+  background: rgba(168, 185, 165, 0.12);
+}
+
+.booking-locked-summary div {
+  display: grid;
+  gap: 4px;
+}
+
+.booking-locked-summary span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 680;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.booking-locked-summary strong {
+  min-width: 0;
+  color: var(--ink);
+  font-size: 0.94rem;
+  font-weight: 680;
+  overflow-wrap: anywhere;
+}
+
 label {
   display: grid;
   min-width: 0;
@@ -2989,6 +3028,7 @@ textarea {
   gap: 14px;
   min-height: 62px;
   padding: 18px;
+  position: relative;
 }
 
 .required-checkbox input[type="checkbox"] {
@@ -3047,6 +3087,56 @@ textarea {
   line-height: 1.45;
   cursor: pointer;
   user-select: none;
+}
+
+#emergencyAuthorization {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  accent-color: transparent;
+  position: relative;
+  flex: 0 0 26px !important;
+  width: 26px !important;
+  height: 26px !important;
+  min-width: 26px !important;
+  min-height: 26px !important;
+  margin: 1px 0 0 !important;
+  padding: 0 !important;
+  border: 2.5px solid rgba(39, 50, 47, 0.74) !important;
+  border-radius: 8px !important;
+  background: #fffaf1 !important;
+  box-shadow: inset 0 0 0 2px rgba(255, 250, 241, 0.9);
+  cursor: pointer;
+}
+
+#emergencyAuthorization::before {
+  content: "";
+  position: absolute;
+  inset: -10px;
+}
+
+#emergencyAuthorization::after {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 3px;
+  width: 7px;
+  height: 13px;
+  border: solid #fff;
+  border-width: 0 3px 3px 0;
+  opacity: 0;
+  transform: rotate(45deg) scale(0.7);
+  transition: opacity 140ms ease, transform 140ms ease;
+}
+
+#emergencyAuthorization:checked {
+  border-color: var(--sage-deep) !important;
+  background: var(--sage-deep) !important;
+  box-shadow: 0 8px 20px rgba(74, 96, 78, 0.22);
+}
+
+#emergencyAuthorization:checked::after {
+  opacity: 1;
+  transform: rotate(45deg) scale(1);
 }
 
 .upload-field small {
@@ -3940,6 +4030,13 @@ textarea {
   .profile-followup-actions {
     grid-template-columns: 1fr;
     gap: 8px;
+  }
+
+  .booking-locked-summary {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 14px;
   }
 
   .stay-grid {

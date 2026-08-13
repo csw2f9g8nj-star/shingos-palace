@@ -830,60 +830,44 @@
                 </div>
               </div>
               <div class="booking-fields">
-                <label class="wide-field">
-                  <span data-i18n="fieldService">Service</span>
-                  <select name="service" id="serviceSelect">
-                    <option value="boarding" data-i18n="optionBoarding">Boarding</option>
-                    <option value="daycare" data-i18n="optionDaycare">Daycare</option>
-                    <option value="walking" data-i18n="optionWalking">Walking</option>
-                    <option value="grooming" data-i18n="optionGrooming">Grooming</option>
-                  </select>
-                </label>
+                <input name="service" id="serviceSelect" type="hidden" />
+                <input name="dropoffDate" id="dropoffDate" type="hidden" required />
+                <input name="pickupDate" id="pickupDate" type="hidden" required />
+                <div class="booking-locked-summary wide-field">
+                  <div>
+                    <span data-i18n="fieldService">Service</span>
+                    <strong id="bookingLockedService">Select service</strong>
+                  </div>
+                  <div>
+                    <span data-i18n="summaryDates">Dates</span>
+                    <strong id="bookingLockedDates">Select dates</strong>
+                  </div>
+                  <div>
+                    <span data-i18n="fieldNumberDogs">Number of dogs</span>
+                    <strong id="bookingLockedDogs">1 dog</strong>
+                  </div>
+                </div>
                 <div class="booking-fields stay-grid wide-field">
-                  <label>
-                    <span data-i18n="fieldDropoffDate">Drop-off date</span>
-                    <input name="dropoffDate" id="dropoffDate" type="date" required />
-                  </label>
                   <label>
                     <span data-i18n="fieldArrivalTime">Arrival time (optional)</span>
                     <input name="arrivalTime" type="time" />
                   </label>
                   <label>
-                    <span data-i18n="fieldPickupDate">Pick-up date</span>
-                    <input name="pickupDate" id="pickupDate" type="date" required />
+                    <span data-i18n="fieldDepartureTime">Pick-up time</span>
+                    <input name="departureTime" id="departureTime" type="time" required />
                   </label>
-                  <label>
-                    <span data-i18n="fieldDepartureTime">Departure time (optional)</span>
-                    <input name="departureTime" type="time" />
-                  </label>
+                  <p class="pickup-policy-note wide-field" data-i18n="pickupPolicyNote">
+                    Pick-ups after 12:00 PM incur a $25 late pick-up fee. Pick-ups after 6:00 PM are charged as an additional day.
+                  </p>
                 </div>
-                <label>
-                  <span data-i18n="fieldArea">Area</span>
-                  <select name="area">
-                    <option>Margate</option>
-                    <option>Tamarac</option>
-                    <option>Fort Lauderdale</option>
-                    <option>North Fort Lauderdale</option>
-                    <option>Pompano</option>
-                    <option>Coral Springs</option>
-                    <option>Coconut Creek</option>
-                  </select>
-                </label>
                 <label>
                   <span data-i18n="fieldUnits">Nights, days, or visits</span>
                   <input name="units" id="unitsInput" type="number" min="1" value="1" readonly />
                 </label>
-                <label>
-                  <span data-i18n="fieldDogs">Additional dogs</span>
-                  <input name="additionalDogs" id="additionalDogs" type="number" min="0" value="0" />
-                </label>
+                <input name="additionalDogs" id="additionalDogs" type="hidden" value="0" />
                 <label>
                   <span data-i18n="fieldCats">Additional cats</span>
                   <input name="additionalCats" id="additionalCats" type="number" min="0" value="0" />
-                </label>
-                <label class="checkbox-line">
-                  <input name="afterHours" id="afterHours" type="checkbox" />
-                  <span data-i18n="fieldAfterHours">After-hours booking</span>
                 </label>
                 <label class="checkbox-line">
                   <input name="longStay" id="longStay" type="checkbox" />
@@ -1079,11 +1063,11 @@
               <strong id="summaryDates">Select dates</strong>
             </div>
             <div class="summary-line">
-              <span data-i18n="summaryNights">Nights</span>
+              <span data-i18n="summaryStay">Stay</span>
               <strong id="summaryNights">1 night</strong>
             </div>
             <div class="summary-line">
-              <span data-i18n="summaryAfterFee">After-hours fee</span>
+              <span data-i18n="summaryPickupFee">Pick-up fee</span>
               <strong id="summaryAfterFee">$0</strong>
             </div>
             <div class="summary-line">

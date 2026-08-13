@@ -301,12 +301,12 @@ const translations = {
     fieldDropoffDate: "Drop-off date",
     fieldPickupDate: "Pick-up date",
     fieldArrivalTime: "Arrival time (optional)",
-    fieldDepartureTime: "Departure time (optional)",
+    fieldDepartureTime: "Pick-up time",
+    pickupPolicyNote: "Pick-ups after 12:00 PM incur a $25 late pick-up fee. Pick-ups after 6:00 PM are charged as an additional day.",
     fieldArea: "Area",
     fieldUnits: "Nights, days, or visits",
     fieldDogs: "Additional dogs",
     fieldCats: "Additional cats",
-    fieldAfterHours: "After-hours booking",
     fieldLongStay: "Long stay request",
     fieldNotes: "Notes",
     fieldEmergencyAuthorization:
@@ -327,12 +327,13 @@ const translations = {
     bookingConfigMissing: "Booking connection is unavailable. Please try again shortly.",
     bookingError: "Something went wrong. Please try again or email info@shingospalace.com.",
     bookingRequired: "Please complete the required fields and emergency authorization before submitting.",
+    bookingSelectionRequired: "Please check availability first so we can use the correct service and dates.",
     summaryLabel: "Reservation summary",
     summaryBase: "Base",
     summaryDogCount: "Number of dogs",
     summaryDates: "Dates",
     summaryDatesEmpty: "Select dates",
-    summaryAfterFee: "After-hours fee",
+    summaryPickupFee: "Pick-up fee",
     summaryAdditionalPets: "Additional pets",
     summaryDogs: "Additional dogs",
     summaryCats: "Additional cats",
@@ -346,6 +347,10 @@ const translations = {
     summaryRemaining: "Remaining balance",
     oneNight: "1 night",
     multipleNights: "nights",
+    oneDay: "1 day",
+    multipleDays: "days",
+    oneVisit: "1 visit",
+    multipleVisits: "visits",
     oneDog: "1 dog",
     multipleDogs: "dogs",
     summaryLongStay: "Long stays receive a custom quote after reviewing dates, pet type, and care needs.",
@@ -688,12 +693,12 @@ const translations = {
     fieldDropoffDate: "Fecha de drop-off",
     fieldPickupDate: "Fecha de pick-up",
     fieldArrivalTime: "Horario de llegada (opcional)",
-    fieldDepartureTime: "Horario de salida (opcional)",
+    fieldDepartureTime: "Horario de pick-up",
+    pickupPolicyNote: "Los pick-ups después de las 12:00 PM tienen un cargo de $25. Los pick-ups después de las 6:00 PM se cobran como un día adicional.",
     fieldArea: "Zona",
     fieldUnits: "Noches, días o visitas",
     fieldDogs: "Perros adicionales",
     fieldCats: "Gatos extra",
-    fieldAfterHours: "Reserva fuera de horario",
     fieldLongStay: "Solicitud de estadía larga",
     fieldNotes: "Notas",
     fieldEmergencyAuthorization:
@@ -714,12 +719,13 @@ const translations = {
     bookingConfigMissing: "La conexión de reservas no está disponible. Intentá nuevamente en unos minutos.",
     bookingError: "Algo salió mal. Intentá de nuevo o escribinos a info@shingospalace.com.",
     bookingRequired: "Por favor completá los campos requeridos y la autorización de emergencia antes de enviar.",
+    bookingSelectionRequired: "Por favor revisá disponibilidad primero para usar el servicio y las fechas correctas.",
     summaryLabel: "Resumen de reserva",
     summaryBase: "Base",
     summaryDogCount: "Cantidad de perros",
     summaryDates: "Fechas",
     summaryDatesEmpty: "Seleccioná fechas",
-    summaryAfterFee: "Cargo fuera de horario",
+    summaryPickupFee: "Cargo de pick-up",
     summaryAdditionalPets: "Mascotas adicionales",
     summaryDogs: "Perros adicionales",
     summaryCats: "Gatos extra",
@@ -733,6 +739,10 @@ const translations = {
     summaryRemaining: "Saldo restante",
     oneNight: "1 noche",
     multipleNights: "noches",
+    oneDay: "1 día",
+    multipleDays: "días",
+    oneVisit: "1 visita",
+    multipleVisits: "visitas",
     oneDog: "1 perro",
     multipleDogs: "perros",
     summaryLongStay: "Las estadías largas reciben una cotización personalizada según fechas, tipo de mascota y cuidados necesarios.",
@@ -802,6 +812,13 @@ const additionalCatRate = 20;
 const depositRate = 0.25;
 const BOOKING_ENDPOINT = "/api/booking-request";
 const MEET_GREET_ENDPOINT = "/api/meet-greet";
+const defaultBookingSelection = {
+  service: "",
+  dropoffDate: "",
+  pickupDate: "",
+  numberOfDogs: 1,
+};
+let bookingSelection = { ...defaultBookingSelection };
 
 const reviews = [
   {
@@ -948,9 +965,12 @@ const serviceSelect = document.querySelector("#serviceSelect");
 const unitsInput = document.querySelector("#unitsInput");
 const dropoffDateInput = document.querySelector("#dropoffDate");
 const pickupDateInput = document.querySelector("#pickupDate");
+const departureTimeInput = document.querySelector("#departureTime");
+const bookingLockedService = document.querySelector("#bookingLockedService");
+const bookingLockedDates = document.querySelector("#bookingLockedDates");
+const bookingLockedDogs = document.querySelector("#bookingLockedDogs");
 const additionalDogsInput = document.querySelector("#additionalDogs");
 const additionalCatsInput = document.querySelector("#additionalCats");
-const afterHoursInput = document.querySelector("#afterHours");
 const longStayInput = document.querySelector("#longStay");
 const bookingSubmit = document.querySelector("#bookingSubmit");
 const bookingStatus = document.querySelector("#bookingStatus");
@@ -1148,12 +1168,16 @@ function serviceLabel(serviceKey) {
   return labels[serviceKey] || serviceKey;
 }
 
-function unitsLabel(units) {
-  if (units === 1) {
-    return t("oneNight");
+function unitsLabel(units, serviceKey = serviceSelect?.value) {
+  if (serviceKey === "daycare") {
+    return units === 1 ? t("oneDay") : `${units} ${t("multipleDays")}`;
   }
 
-  return `${units} ${t("multipleNights")}`;
+  if (serviceKey === "walking" || serviceKey === "grooming") {
+    return units === 1 ? t("oneVisit") : `${units} ${t("multipleVisits")}`;
+  }
+
+  return units === 1 ? t("oneNight") : `${units} ${t("multipleNights")}`;
 }
 
 function dogsLabel(count) {
@@ -1164,12 +1188,48 @@ function dogsLabel(count) {
   return `${count} ${t("multipleDogs")}`;
 }
 
-function datesLabel() {
+function formatTime12Hour(timeValue) {
+  if (!timeValue) return "";
+  const [hourValue, minuteValue = "00"] = timeValue.split(":");
+  const hour = Number(hourValue);
+  if (Number.isNaN(hour)) return timeValue;
+  const period = hour >= 12 ? "PM" : "AM";
+  const displayHour = hour % 12 || 12;
+  return `${displayHour}:${minuteValue.padStart(2, "0")} ${period}`;
+}
+
+function getPickupFee(nightlyRate) {
+  if (!departureTimeInput?.value) {
+    return { amount: 0, extraUnit: 0 };
+  }
+
+  const [hourValue, minuteValue = "0"] = departureTimeInput.value.split(":");
+  const minutes = Number(hourValue) * 60 + Number(minuteValue);
+  if (Number.isNaN(minutes) || minutes <= 12 * 60) {
+    return { amount: 0, extraUnit: 0 };
+  }
+
+  if (minutes <= 18 * 60) {
+    return { amount: 25, extraUnit: 0 };
+  }
+
+  return { amount: nightlyRate, extraUnit: 1 };
+}
+
+function getVisibleBookingDates() {
   if (!dropoffDateInput?.value || !pickupDateInput?.value) {
     return t("summaryDatesEmpty");
   }
 
   return `${dropoffDateInput.value} → ${pickupDateInput.value}`;
+}
+
+function datesLabel() {
+  const dates = getVisibleBookingDates();
+  if (dates === t("summaryDatesEmpty")) return dates;
+
+  const pickupTime = formatTime12Hour(departureTimeInput?.value);
+  return `${dates}${pickupTime ? ` · ${pickupTime}` : ""}`;
 }
 
 function setBookingStep(step) {
@@ -1200,6 +1260,16 @@ function validateBookingStep(step) {
   if (!invalidField) return true;
 
   invalidField.reportValidity();
+  return false;
+}
+
+function validateBookingSelection() {
+  if (serviceSelect?.value && dropoffDateInput?.value && pickupDateInput?.value) {
+    return true;
+  }
+
+  bookingStatus.textContent = t("bookingSelectionRequired");
+  window.openSiteModal("availabilityModal");
   return false;
 }
 
@@ -1241,6 +1311,33 @@ function validateVaccinationFiles() {
 function resetUploadProgress() {
   if (vaccinationUploadProgress) vaccinationUploadProgress.hidden = true;
   if (vaccinationUploadBar) vaccinationUploadBar.style.width = "0%";
+}
+
+function setBookingSelection(selection = {}) {
+  bookingSelection = {
+    ...bookingSelection,
+    ...selection,
+    numberOfDogs: Math.max(1, Number(selection.numberOfDogs ?? bookingSelection.numberOfDogs) || 1),
+  };
+
+  if (serviceSelect) serviceSelect.value = bookingSelection.service || "";
+  if (dropoffDateInput) dropoffDateInput.value = bookingSelection.dropoffDate || "";
+  if (pickupDateInput) pickupDateInput.value = bookingSelection.pickupDate || "";
+  if (additionalDogsInput) additionalDogsInput.value = Math.max(0, bookingSelection.numberOfDogs - 1);
+
+  if (bookingLockedService) {
+    bookingLockedService.textContent = bookingSelection.service ? serviceLabel(bookingSelection.service) : t("optionSelect");
+  }
+
+  if (bookingLockedDates) {
+    bookingLockedDates.textContent = getVisibleBookingDates();
+  }
+
+  if (bookingLockedDogs) {
+    bookingLockedDogs.textContent = dogsLabel(bookingSelection.numberOfDogs);
+  }
+
+  updateSummary();
 }
 
 function submitFormWithProgress(form, endpoint, statusElement, submitButton, successMessageKey) {
@@ -1346,7 +1443,7 @@ function updateSummary() {
   if (!serviceSelect || !unitsInput) return 0;
 
   const serviceKey = serviceSelect.value;
-  const service = serviceRates[serviceKey] ?? 0;
+  const service = serviceKey ? serviceRates[serviceKey] : 0;
   const isCustomQuote = false;
   const units = calculateBookingUnits();
   const extraDogs = Math.max(0, Number(additionalDogsInput?.value) || 0);
@@ -1354,7 +1451,8 @@ function updateSummary() {
   const base = isCustomQuote ? 0 : service * units;
   const dogs = isCustomQuote ? 0 : extraDogs * additionalDogRate * units;
   const cats = isCustomQuote ? 0 : extraCats * additionalCatRate * units;
-  const after = !isCustomQuote && afterHoursInput?.checked ? service : 0;
+  const pickupFee = isCustomQuote ? { amount: 0, extraUnit: 0 } : getPickupFee(service);
+  const after = pickupFee.amount;
   const total = base + dogs + cats + after;
   const deposit = isCustomQuote ? 0 : Math.ceil(total * depositRate);
   const remaining = Math.max(0, total - deposit);
@@ -1376,10 +1474,10 @@ function updateSummary() {
   const summaryRemainingDesktop = document.querySelector("#summaryRemainingDesktop");
   const summaryLongStay = document.querySelector("#summaryLongStay");
 
-  if (summaryService) summaryService.textContent = serviceLabel(serviceKey);
+  if (summaryService) summaryService.textContent = serviceKey ? serviceLabel(serviceKey) : t("optionSelect");
   if (summaryDogCount) summaryDogCount.textContent = dogsLabel(totalDogs);
   if (summaryDates) summaryDates.textContent = datesLabel();
-  if (summaryNights) summaryNights.textContent = unitsLabel(units);
+  if (summaryNights) summaryNights.textContent = unitsLabel(units, serviceKey);
   if (summaryAfterFee) summaryAfterFee.textContent = currency(after);
   if (summaryAdditionalPets) summaryAdditionalPets.textContent = currency(additionalPetsTotal);
   if (summaryTotal) summaryTotal.textContent = totalLabel;
@@ -1387,8 +1485,8 @@ function updateSummary() {
   if (summaryRemainingDesktop) summaryRemainingDesktop.textContent = remainingLabel;
   if (summaryLongStay) summaryLongStay.textContent = longStayInput?.checked ? t("summaryLongStay") : "";
 
-if (mobileSummaryService) mobileSummaryService.textContent = serviceLabel(serviceKey);
-  if (mobileSummaryNights) mobileSummaryNights.textContent = unitsLabel(units);
+  if (mobileSummaryService) mobileSummaryService.textContent = serviceKey ? serviceLabel(serviceKey) : t("optionSelect");
+  if (mobileSummaryNights) mobileSummaryNights.textContent = unitsLabel(units, serviceKey);
   if (mobileSummaryTotal) mobileSummaryTotal.textContent = totalLabel;
   if (mobileSummaryDeposit) mobileSummaryDeposit.textContent = depositLabel;
   if (mobileSummaryRemaining) mobileSummaryRemaining.textContent = remainingLabel;
@@ -1415,7 +1513,22 @@ langButtons.forEach((button) => {
 });
 
 modalButtons.forEach((button) => {
-  button.addEventListener("click", () => {
+  button.addEventListener("click", (event) => {
+    const hasAvailabilitySelection = Boolean(availabilityService?.value && availabilityDropoffDate?.value && availabilityPickupDate?.value);
+    if (button.id === "availabilityBookButton" && !hasAvailabilitySelection) {
+      event.preventDefault();
+      availabilityForm?.reportValidity();
+      return;
+    }
+
+    if (button.dataset.modal === "bookingModal" && hasAvailabilitySelection) {
+      setBookingSelection({
+        service: availabilityService?.value || bookingSelection.service,
+        dropoffDate: availabilityDropoffDate?.value || bookingSelection.dropoffDate,
+        pickupDate: availabilityPickupDate?.value || bookingSelection.pickupDate,
+        numberOfDogs: availabilityDogs?.value || bookingSelection.numberOfDogs,
+      });
+    }
     window.openSiteModal(button.dataset.modal);
   });
 });
@@ -1429,9 +1542,10 @@ closeButtons.forEach((button) => {
 serviceSelect?.addEventListener("change", updateSummary);
 dropoffDateInput?.addEventListener("change", updateSummary);
 pickupDateInput?.addEventListener("change", updateSummary);
+departureTimeInput?.addEventListener("input", updateSummary);
+departureTimeInput?.addEventListener("change", updateSummary);
 additionalDogsInput?.addEventListener("input", updateSummary);
 additionalCatsInput?.addEventListener("input", updateSummary);
-afterHoursInput?.addEventListener("change", updateSummary);
 longStayInput?.addEventListener("change", updateSummary);
 vaccinationRecordsInput?.addEventListener("change", () => {
   resetUploadProgress();
@@ -1442,6 +1556,7 @@ bookingPrev?.addEventListener("click", () => {
 });
 bookingNext?.addEventListener("click", () => {
   if (!validateBookingStep(currentBookingStep)) return;
+  if (currentBookingStep === 2 && !validateBookingSelection()) return;
   setBookingStep(currentBookingStep + 1);
 });
 bookingNavItems.forEach((item) => {
@@ -1505,6 +1620,10 @@ bookingForm?.addEventListener("submit", async (event) => {
   if (!bookingForm.checkValidity()) {
     bookingForm.reportValidity();
     bookingStatus.textContent = t("bookingRequired");
+    return;
+  }
+
+  if (!validateBookingSelection()) {
     return;
   }
 

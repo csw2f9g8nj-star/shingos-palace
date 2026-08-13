@@ -35,6 +35,12 @@ function getInsertErrorMessage(table, error, fallbackMessage) {
   return fallbackMessage;
 }
 
+function isLatePickup(timeValue) {
+  const [hourValue, minuteValue = "0"] = String(timeValue || "").split(":");
+  const minutes = Number(hourValue) * 60 + Number(minuteValue);
+  return !Number.isNaN(minutes) && minutes > 12 * 60;
+}
+
 async function insertSingle(supabase, table, payload, message) {
   const { data, error } = await supabase.from(table).insert(payload).select().single();
   if (error) {
@@ -123,11 +129,11 @@ async function handler(req, res) {
       pickup_date: normalizeField(fields.pickupDate) || null,
       arrival_time: normalizeField(fields.arrivalTime) || null,
       departure_time: normalizeField(fields.departureTime) || null,
-      area: normalizeField(fields.area),
+      area: normalizeField(fields.area) || "Margate",
       units: Number(normalizeField(fields.units)) || 1,
       additional_dogs: Number(normalizeField(fields.additionalDogs)) || 0,
       additional_cats: Number(normalizeField(fields.additionalCats)) || 0,
-      after_hours: normalizeField(fields.afterHours) === "on",
+      after_hours: isLatePickup(fields.departureTime),
       long_stay: normalizeField(fields.longStay) === "on",
       notes: normalizeField(fields.notes),
       emergency_authorization: normalizeField(fields.emergencyAuthorization) === "on",
@@ -148,6 +154,7 @@ async function handler(req, res) {
       !bookingPayload.service ||
       !bookingPayload.dropoff_date ||
       !bookingPayload.pickup_date ||
+      !bookingPayload.departure_time ||
       !bookingPayload.emergency_authorization
     ) {
       sendJson(res, 400, { ok: false, error: "Please complete all required booking fields." });
