@@ -6,7 +6,7 @@ function parseMultipartForm(req) {
     multiples: true,
     maxFileSize: 10 * 1024 * 1024,
     maxTotalFileSize: 50 * 1024 * 1024,
-    allowEmptyFiles: false,
+    allowEmptyFiles: true,
   });
 
   return new Promise((resolve, reject) => {
@@ -24,7 +24,8 @@ function parseMultipartForm(req) {
 
 function toFileArray(fileValue) {
   if (!fileValue) return [];
-  return Array.isArray(fileValue) ? fileValue.filter(Boolean) : [fileValue];
+  const files = Array.isArray(fileValue) ? fileValue : [fileValue];
+  return files.filter((file) => file && Number(file.size) > 0);
 }
 
 module.exports = {

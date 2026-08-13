@@ -2963,6 +2963,8 @@ textarea {
   align-items: flex-start;
   cursor: pointer;
   gap: 14px;
+  min-height: 62px;
+  padding: 18px;
 }
 
 .required-checkbox input[type="checkbox"] {
@@ -2975,7 +2977,7 @@ textarea {
   min-width: 26px;
   margin: 1px 0 0;
   padding: 0;
-  border: 2px solid rgba(39, 50, 47, 0.5);
+  border: 2.5px solid rgba(39, 50, 47, 0.68);
   border-radius: 8px;
   background: #fffaf1;
   cursor: pointer;
@@ -3020,6 +3022,7 @@ textarea {
 .required-checkbox span {
   line-height: 1.45;
   cursor: pointer;
+  user-select: none;
 }
 
 .upload-field small {
@@ -3939,6 +3942,20 @@ textarea {
   .checkbox-line input {
     margin-top: 3px;
     flex: 0 0 auto;
+  }
+
+  .required-checkbox {
+    gap: 13px;
+    min-height: 64px;
+    padding: 14px;
+  }
+
+  .required-checkbox input[type="checkbox"] {
+    flex: 0 0 26px;
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
+    margin-top: 1px;
   }
 
   .booking-summary {
