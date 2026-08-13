@@ -6,11 +6,12 @@ module.exports = function handler(req, res) {
     return;
   }
 
-  const config = getSupabaseConfig();
+const config = getSupabaseConfig();
   sendJson(res, 200, {
     ok: true,
     supabaseUrl: config.url,
     supabasePublishableKey: config.publishableKey,
+    stripePublishableKey: process.env.STRIPE_PUBLISHABLE_KEY || "",
     adminEmail: config.adminEmail,
   });
 };

@@ -18,6 +18,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" type="image/jpeg" href="assets/logo-shingos-palace.jpeg" />
     <link rel="stylesheet" href="styles.css" />
+    <script src="https://js.stripe.com/clover/stripe.js" defer></script>
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -914,6 +915,41 @@
             <p class="status-line full" id="bookingStatus"></p>
           </form>
 
+          <section class="payment-experience" id="paymentExperience" hidden>
+            <div class="booking-step-head">
+              <span>💳</span>
+              <div>
+                <h3 data-i18n="paymentTitle">Secure deposit payment</h3>
+                <p data-i18n="paymentIntro">
+                  Your booking request has been saved. Complete the deposit below to hold your spot.
+                </p>
+              </div>
+            </div>
+            <div class="payment-confirmation" id="paymentConfirmation" hidden>
+              <strong data-i18n="paymentSuccessTitle">Deposit received.</strong>
+              <p data-i18n="paymentSuccessText">
+                Thank you. Your reservation request and deposit were received successfully.
+              </p>
+            </div>
+            <div class="stripe-checkout-shell" id="stripeCheckout">
+              <p data-i18n="paymentLoading">Loading secure payment form...</p>
+            </div>
+            <p class="status-line" id="paymentStatus"></p>
+          </section>
+
+          <section class="dog-profile-cta" id="dogProfileCta" hidden>
+            <div>
+              <p class="summary-kicker" data-i18n="profileCtaKicker">Next step</p>
+              <h3 data-i18n="profileCtaTitle">Tell us more about your dog 🐾</h3>
+              <p data-i18n="profileCtaText">
+                Help us get to know your dog so we can make their stay safe, comfortable and personalized.
+              </p>
+            </div>
+            <button class="submit-button" id="showDogProfileButton" type="button" data-i18n="profileCtaButton">
+              Complete Dog Profile
+            </button>
+          </section>
+
           <form class="booking-profile-followup" id="dogProfileForm" method="POST" action="/api/dog-profile-update" enctype="multipart/form-data" hidden>
             <input type="hidden" name="ownerId" id="profileOwnerId" />
             <input type="hidden" name="dogId" id="profileDogId" />
@@ -1088,7 +1124,7 @@
             </div>
             <p class="summary-longstay" id="summaryLongStay" data-i18n="summaryLongStay"></p>
             <p data-i18n="paymentNote">
-              Live payment can be connected next with Stripe or Square.
+              Your card details are processed securely by Stripe. Shingo's Palace never stores card numbers.
             </p>
           </aside>
         </div>

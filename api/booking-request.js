@@ -140,7 +140,8 @@ async function handler(req, res) {
       estimated_total: normalizeField(fields.estimatedTotal),
       deposit_due_today: normalizeField(fields.depositDueToday),
       remaining_balance: normalizeField(fields.remainingBalance),
-      status: "new_request",
+      payment_status: "not_started",
+      status: "deposit_pending",
     };
 
     if (

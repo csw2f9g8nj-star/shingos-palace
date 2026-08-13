@@ -315,8 +315,20 @@ const translations = {
     fieldCardNumber: "Card number",
     fieldExpiry: "Expiry",
     bookingSubmit: "Continue to Payment",
-    bookingSending: "Sending your request...",
-    bookingSuccess: "Thank you! We have received your request and will contact you shortly.",
+    bookingSending: "Saving your reservation...",
+    bookingSuccess: "Your reservation request is saved. Please complete the deposit to hold your spot.",
+    paymentTitle: "Secure deposit payment",
+    paymentIntro: "Your booking request has been saved. Complete the deposit below to hold your spot.",
+    paymentLoading: "Loading secure payment form...",
+    paymentConfigMissing: "Payment is not connected yet. Please email info@shingospalace.com to complete your deposit.",
+    paymentError: "We could not start the secure payment. Please try again or email info@shingospalace.com.",
+    paymentSuccessTitle: "Deposit received.",
+    paymentSuccessText: "Thank you. Your reservation request and deposit were received successfully.",
+    paymentVerifying: "Confirming your payment...",
+    profileCtaKicker: "Next step",
+    profileCtaTitle: "Tell us more about your dog 🐾",
+    profileCtaText: "Help us get to know your dog so we can make their stay safe, comfortable and personalized.",
+    profileCtaButton: "Complete Dog Profile",
     profileFollowupTitle: "Tell us more about your dog",
     profileFollowupText: "Help us create your dog's profile so we can provide the safest and most personalized care possible.",
     profileSave: "Save dog profile",
@@ -355,7 +367,7 @@ const translations = {
     multipleDogs: "dogs",
     summaryLongStay: "Long stays receive a custom quote after reviewing dates, pet type, and care needs.",
     customQuote: "Custom quote",
-    paymentNote: "This is an estimate. Final availability, transportation, and grooming quotes are confirmed personally.",
+    paymentNote: "Your card details are processed securely by Stripe. Shingo's Palace never stores card numbers.",
     optionBoarding: "Boarding",
     optionSelect: "Select",
     optionFemale: "Female",
@@ -707,8 +719,20 @@ const translations = {
     fieldCardNumber: "Número de tarjeta",
     fieldExpiry: "Vencimiento",
     bookingSubmit: "Continuar al pago",
-    bookingSending: "Enviando tu solicitud...",
-    bookingSuccess: "¡Gracias! Recibimos tu solicitud y te contactaremos pronto.",
+    bookingSending: "Guardando tu reserva...",
+    bookingSuccess: "Tu solicitud de reserva fue guardada. Completá el depósito para asegurar tu lugar.",
+    paymentTitle: "Pago seguro del depósito",
+    paymentIntro: "Tu solicitud de reserva fue guardada. Completá el depósito abajo para asegurar tu lugar.",
+    paymentLoading: "Cargando formulario de pago seguro...",
+    paymentConfigMissing: "El pago todavía no está conectado. Escribinos a info@shingospalace.com para completar el depósito.",
+    paymentError: "No pudimos iniciar el pago seguro. Intentá de nuevo o escribinos a info@shingospalace.com.",
+    paymentSuccessTitle: "Depósito recibido.",
+    paymentSuccessText: "Gracias. Tu solicitud de reserva y depósito fueron recibidos correctamente.",
+    paymentVerifying: "Confirmando tu pago...",
+    profileCtaKicker: "Siguiente paso",
+    profileCtaTitle: "Contanos más sobre tu perro 🐾",
+    profileCtaText: "Ayudanos a conocer a tu perro para que su estadía sea segura, cómoda y personalizada.",
+    profileCtaButton: "Completar perfil del perro",
     profileFollowupTitle: "Contanos más sobre tu perro",
     profileFollowupText: "Ayudanos a crear el perfil de tu perro para brindarle el cuidado más seguro y personalizado posible.",
     profileSave: "Guardar perfil del perro",
@@ -747,7 +771,7 @@ const translations = {
     multipleDogs: "perros",
     summaryLongStay: "Las estadías largas reciben una cotización personalizada según fechas, tipo de mascota y cuidados necesarios.",
     customQuote: "Cotización personalizada",
-    paymentNote: "Este es un estimado. La disponibilidad final, transporte y grooming se confirman personalmente.",
+    paymentNote: "Los datos de tu tarjeta se procesan de forma segura con Stripe. Shingo's Palace nunca guarda números de tarjeta.",
     optionBoarding: "Boarding",
     optionSelect: "Seleccionar",
     optionFemale: "Hembra",
@@ -812,6 +836,8 @@ const additionalCatRate = 20;
 const depositRate = 0.25;
 const BOOKING_ENDPOINT = "/api/booking-request";
 const MEET_GREET_ENDPOINT = "/api/meet-greet";
+const STRIPE_SESSION_ENDPOINT = "/api/create-checkout-session";
+const STRIPE_VERIFY_ENDPOINT = "/api/verify-checkout-session";
 const defaultBookingSelection = {
   service: "",
   dropoffDate: "",
@@ -819,6 +845,14 @@ const defaultBookingSelection = {
   numberOfDogs: 1,
 };
 let bookingSelection = { ...defaultBookingSelection };
+let currentBookingIds = {
+  bookingId: "",
+  ownerId: "",
+  dogId: "",
+};
+let stripeInstance = null;
+let stripeCheckout = null;
+let stripePublishableKey = "";
 
 const reviews = [
   {
@@ -978,9 +1012,15 @@ const dogProfileForm = document.querySelector("#dogProfileForm");
 const dogProfileSubmit = document.querySelector("#dogProfileSubmit");
 const dogProfileSkip = document.querySelector("#dogProfileSkip");
 const dogProfileStatus = document.querySelector("#dogProfileStatus");
+const dogProfileCta = document.querySelector("#dogProfileCta");
+const showDogProfileButton = document.querySelector("#showDogProfileButton");
 const profileOwnerId = document.querySelector("#profileOwnerId");
 const profileDogId = document.querySelector("#profileDogId");
 const profileBookingId = document.querySelector("#profileBookingId");
+const paymentExperience = document.querySelector("#paymentExperience");
+const paymentConfirmation = document.querySelector("#paymentConfirmation");
+const stripeCheckoutContainer = document.querySelector("#stripeCheckout");
+const paymentStatus = document.querySelector("#paymentStatus");
 const bookingSteps = document.querySelectorAll("[data-booking-step]");
 const bookingNavItems = document.querySelectorAll("[data-booking-nav]");
 const bookingPrev = document.querySelector("#bookingPrev");
@@ -1085,12 +1125,25 @@ window.openSiteModal = (modalId) => {
 function resetBookingExperience(messageKey = "") {
   bookingForm?.reset();
   dogProfileForm?.reset();
+  if (stripeCheckout) {
+    stripeCheckout.destroy();
+    stripeCheckout = null;
+  }
+  currentBookingIds = { bookingId: "", ownerId: "", dogId: "" };
   if (bookingForm) bookingForm.hidden = false;
+  if (paymentExperience) paymentExperience.hidden = true;
+  if (paymentConfirmation) paymentConfirmation.hidden = true;
+  if (stripeCheckoutContainer) {
+    stripeCheckoutContainer.hidden = false;
+    stripeCheckoutContainer.innerHTML = `<p>${t("paymentLoading")}</p>`;
+  }
+  if (dogProfileCta) dogProfileCta.hidden = true;
   if (dogProfileForm) dogProfileForm.hidden = true;
   if (profileOwnerId) profileOwnerId.value = "";
   if (profileDogId) profileDogId.value = "";
   if (profileBookingId) profileBookingId.value = "";
   if (bookingStatus) bookingStatus.textContent = messageKey ? t(messageKey) : "";
+  if (paymentStatus) paymentStatus.textContent = "";
   if (dogProfileStatus) dogProfileStatus.textContent = messageKey ? t(messageKey) : "";
   vaccinationRecordsInput?.setCustomValidity("");
   resetUploadProgress();
@@ -1311,6 +1364,117 @@ function validateVaccinationFiles() {
 function resetUploadProgress() {
   if (vaccinationUploadProgress) vaccinationUploadProgress.hidden = true;
   if (vaccinationUploadBar) vaccinationUploadBar.style.width = "0%";
+}
+
+async function getStripePublishableKey() {
+  if (stripePublishableKey) return stripePublishableKey;
+
+  const response = await fetch("/api/admin/config");
+  if (!response.ok) {
+    throw new Error(t("paymentConfigMissing"));
+  }
+
+  const payload = await response.json();
+  stripePublishableKey = payload.stripePublishableKey || "";
+  if (!stripePublishableKey) {
+    throw new Error(t("paymentConfigMissing"));
+  }
+
+  return stripePublishableKey;
+}
+
+async function verifyStripePayment(sessionId) {
+  if (!currentBookingIds.bookingId || !sessionId) {
+    throw new Error(t("paymentError"));
+  }
+
+  if (paymentStatus) paymentStatus.textContent = t("paymentVerifying");
+
+  const response = await fetch(STRIPE_VERIFY_ENDPOINT, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      bookingId: currentBookingIds.bookingId,
+      sessionId,
+    }),
+  });
+  const payload = await response.json().catch(() => ({}));
+
+  if (!response.ok || payload.ok === false) {
+    throw new Error(payload.error || t("paymentError"));
+  }
+
+  if (stripeCheckout) {
+    stripeCheckout.destroy();
+    stripeCheckout = null;
+  }
+  if (stripeCheckoutContainer) stripeCheckoutContainer.hidden = true;
+  if (paymentConfirmation) paymentConfirmation.hidden = false;
+  if (dogProfileCta) dogProfileCta.hidden = false;
+  if (paymentStatus) paymentStatus.textContent = payload.message || t("paymentSuccessText");
+  dogProfileCta?.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+async function startStripePayment(payload) {
+  currentBookingIds = {
+    bookingId: payload.bookingId || "",
+    ownerId: payload.ownerId || "",
+    dogId: payload.dogId || "",
+  };
+
+  if (profileOwnerId) profileOwnerId.value = currentBookingIds.ownerId;
+  if (profileDogId) profileDogId.value = currentBookingIds.dogId;
+  if (profileBookingId) profileBookingId.value = currentBookingIds.bookingId;
+  if (bookingForm) bookingForm.hidden = true;
+  if (paymentExperience) paymentExperience.hidden = false;
+  if (paymentStatus) paymentStatus.textContent = "";
+  if (stripeCheckoutContainer) {
+    stripeCheckoutContainer.hidden = false;
+    stripeCheckoutContainer.innerHTML = `<p>${t("paymentLoading")}</p>`;
+  }
+
+  paymentExperience?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  try {
+    const publishableKey = await getStripePublishableKey();
+    const sessionResponse = await fetch(STRIPE_SESSION_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ bookingId: currentBookingIds.bookingId }),
+    });
+    const sessionPayload = await sessionResponse.json().catch(() => ({}));
+
+    if (!sessionResponse.ok || sessionPayload.ok === false || !sessionPayload.clientSecret) {
+      throw new Error(sessionPayload.error || t("paymentError"));
+    }
+
+    if (!window.Stripe) {
+      throw new Error(t("paymentConfigMissing"));
+    }
+
+    stripeInstance = window.Stripe(publishableKey);
+    stripeCheckout = await stripeInstance.initEmbeddedCheckout({
+      clientSecret: sessionPayload.clientSecret,
+      onComplete: async () => {
+        try {
+          await verifyStripePayment(sessionPayload.sessionId);
+        } catch (error) {
+          if (paymentStatus) paymentStatus.textContent = error.message || t("paymentError");
+        }
+      },
+    });
+
+    stripeCheckoutContainer.innerHTML = "";
+    stripeCheckout.mount("#stripeCheckout");
+  } catch (error) {
+    if (paymentStatus) paymentStatus.textContent = error.message || t("paymentError");
+  }
 }
 
 function setBookingSelection(selection = {}) {
@@ -1640,18 +1804,19 @@ bookingForm?.addEventListener("submit", async (event) => {
 
   try {
     const payload = await submitFormWithProgress(bookingForm, endpoint, bookingStatus, bookingSubmit, "bookingSuccess");
-    if (profileOwnerId) profileOwnerId.value = payload.ownerId || "";
-    if (profileDogId) profileDogId.value = payload.dogId || "";
-    if (profileBookingId) profileBookingId.value = payload.bookingId || "";
-    if (bookingForm) bookingForm.hidden = true;
-    if (dogProfileForm) dogProfileForm.hidden = false;
-    dogProfileForm?.scrollIntoView({ behavior: "smooth", block: "start" });
+    await startStripePayment(payload);
   } catch (error) {
     bookingStatus.textContent = error.message || t("bookingError");
   } finally {
     bookingSubmit.disabled = false;
     bookingSubmit.textContent = t("bookingSubmit");
   }
+});
+
+showDogProfileButton?.addEventListener("click", () => {
+  if (dogProfileCta) dogProfileCta.hidden = true;
+  if (dogProfileForm) dogProfileForm.hidden = false;
+  dogProfileForm?.scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
 dogProfileForm?.addEventListener("submit", async (event) => {
