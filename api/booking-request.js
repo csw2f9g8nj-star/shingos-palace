@@ -230,6 +230,7 @@ async function handler(req, res) {
         ok: true,
         message: "Thank you! We have received your request and will contact you shortly.",
         bookingId: booking.id,
+        ownerId: owner.id,
         dogId: dog.id,
         recordsUploaded: uploadedRecords.length,
       });

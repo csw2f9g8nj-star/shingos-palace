@@ -2822,6 +2822,30 @@ h2 {
   gap: 18px;
 }
 
+.booking-profile-followup {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  padding: 22px;
+  border: 1px solid rgba(39, 50, 47, 0.1);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(168, 185, 165, 0.18), transparent 32%),
+    rgba(255, 252, 246, 0.86);
+  box-shadow: 0 18px 48px rgba(39, 50, 47, 0.1);
+}
+
+.booking-profile-followup[hidden] {
+  display: none;
+}
+
+.profile-followup-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+
 .booking-step[data-booking-step] {
   display: none;
 }
@@ -3905,6 +3929,17 @@ textarea {
   .booking-wizard-actions .submit-button {
     min-height: 50px;
     flex: 1;
+  }
+
+  .booking-profile-followup {
+    padding: 14px;
+    border-radius: 20px;
+    gap: 12px;
+  }
+
+  .profile-followup-actions {
+    grid-template-columns: 1fr;
+    gap: 8px;
   }
 
   .stay-grid {

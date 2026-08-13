@@ -243,7 +243,7 @@ const translations = {
     bookingStepContact: "Owner information",
     bookingStepContactHelp: "Tell us who is booking and how to reach you.",
     bookingStepDog: "Dog information",
-    bookingStepDogHelp: "Share health, behavior, and comfort details so we can care for your dog safely.",
+    bookingStepDogHelp: "A few essential details help us prepare your reservation quickly.",
     bookingStepVet: "Veterinarian information",
     bookingStepVetHelp: "This helps us act quickly and responsibly if your dog ever needs care.",
     bookingStepService: "Booking information",
@@ -251,7 +251,7 @@ const translations = {
     bookingStepExtras: "Additional notes",
     bookingStepExtrasHelp: "Share anything else that would help us prepare a calm, safe stay.",
     bookingStepReview: "Review & Payment",
-    bookingStepReviewHelp: "Review your estimate, add final notes, and authorize emergency care.",
+    bookingStepReviewHelp: "Choose your stay details, review your estimate, and authorize emergency care.",
     progressOwner: "Owner",
     progressPet: "Dog",
     progressVet: "Veterinarian",
@@ -317,6 +317,13 @@ const translations = {
     bookingSubmit: "Continue to Payment",
     bookingSending: "Sending your request...",
     bookingSuccess: "Thank you! We have received your request and will contact you shortly.",
+    profileFollowupTitle: "Tell us more about your dog",
+    profileFollowupText: "Help us create your dog's profile so we can provide the safest and most personalized care possible.",
+    profileSave: "Save dog profile",
+    profileSaving: "Saving profile...",
+    profileSkip: "Skip for now",
+    profileSuccess: "Thank you. Your dog's profile has been updated.",
+    profileSkipped: "No problem. We can collect those details later.",
     bookingConfigMissing: "Booking connection is unavailable. Please try again shortly.",
     bookingError: "Something went wrong. Please try again or email info@shingospalace.com.",
     bookingRequired: "Please complete the required fields and emergency authorization before submitting.",
@@ -623,7 +630,7 @@ const translations = {
     bookingStepContact: "Información del dueño",
     bookingStepContactHelp: "Contanos quién reserva y cómo podemos contactarte.",
     bookingStepDog: "Información del perro",
-    bookingStepDogHelp: "Compartí detalles de salud, comportamiento y comodidad para cuidarlo con seguridad.",
+    bookingStepDogHelp: "Unos datos esenciales nos ayudan a preparar la reserva rápidamente.",
     bookingStepVet: "Información veterinaria",
     bookingStepVetHelp: "Esto nos ayuda a actuar rápido y responsablemente si tu perro necesita atención.",
     bookingStepService: "Información de la reserva",
@@ -631,7 +638,7 @@ const translations = {
     bookingStepExtras: "Notas adicionales",
     bookingStepExtrasHelp: "Compartí cualquier detalle que nos ayude a preparar una estadía tranquila y segura.",
     bookingStepReview: "Revisión y pago",
-    bookingStepReviewHelp: "Revisá el estimado, agregá notas finales y autorizá atención veterinaria de emergencia.",
+    bookingStepReviewHelp: "Elegí los detalles de la estadía, revisá el estimado y autorizá atención veterinaria de emergencia.",
     progressOwner: "Dueño",
     progressPet: "Perro",
     progressVet: "Veterinario",
@@ -697,6 +704,13 @@ const translations = {
     bookingSubmit: "Continuar al pago",
     bookingSending: "Enviando tu solicitud...",
     bookingSuccess: "¡Gracias! Recibimos tu solicitud y te contactaremos pronto.",
+    profileFollowupTitle: "Contanos más sobre tu perro",
+    profileFollowupText: "Ayudanos a crear el perfil de tu perro para brindarle el cuidado más seguro y personalizado posible.",
+    profileSave: "Guardar perfil del perro",
+    profileSaving: "Guardando perfil...",
+    profileSkip: "Saltar por ahora",
+    profileSuccess: "Gracias. El perfil de tu perro fue actualizado.",
+    profileSkipped: "No hay problema. Podemos pedir esos datos más adelante.",
     bookingConfigMissing: "La conexión de reservas no está disponible. Intentá nuevamente en unos minutos.",
     bookingError: "Algo salió mal. Intentá de nuevo o escribinos a info@shingospalace.com.",
     bookingRequired: "Por favor completá los campos requeridos y la autorización de emergencia antes de enviar.",
@@ -940,6 +954,13 @@ const afterHoursInput = document.querySelector("#afterHours");
 const longStayInput = document.querySelector("#longStay");
 const bookingSubmit = document.querySelector("#bookingSubmit");
 const bookingStatus = document.querySelector("#bookingStatus");
+const dogProfileForm = document.querySelector("#dogProfileForm");
+const dogProfileSubmit = document.querySelector("#dogProfileSubmit");
+const dogProfileSkip = document.querySelector("#dogProfileSkip");
+const dogProfileStatus = document.querySelector("#dogProfileStatus");
+const profileOwnerId = document.querySelector("#profileOwnerId");
+const profileDogId = document.querySelector("#profileDogId");
+const profileBookingId = document.querySelector("#profileBookingId");
 const bookingSteps = document.querySelectorAll("[data-booking-step]");
 const bookingNavItems = document.querySelectorAll("[data-booking-nav]");
 const bookingPrev = document.querySelector("#bookingPrev");
@@ -1041,6 +1062,22 @@ window.openSiteModal = (modalId) => {
   modal.classList.add("is-open");
 };
 
+function resetBookingExperience(messageKey = "") {
+  bookingForm?.reset();
+  dogProfileForm?.reset();
+  if (bookingForm) bookingForm.hidden = false;
+  if (dogProfileForm) dogProfileForm.hidden = true;
+  if (profileOwnerId) profileOwnerId.value = "";
+  if (profileDogId) profileDogId.value = "";
+  if (profileBookingId) profileBookingId.value = "";
+  if (bookingStatus) bookingStatus.textContent = messageKey ? t(messageKey) : "";
+  if (dogProfileStatus) dogProfileStatus.textContent = messageKey ? t(messageKey) : "";
+  vaccinationRecordsInput?.setCustomValidity("");
+  resetUploadProgress();
+  updateSummary();
+  setBookingStep(1);
+}
+
 window.closeSiteModal = (button) => {
   const modal = button.closest("dialog");
   if (!modal) return;
@@ -1050,6 +1087,10 @@ window.closeSiteModal = (button) => {
     modal.close();
   } else {
     modal.removeAttribute("open");
+  }
+
+  if (modal.id === "bookingModal") {
+    resetBookingExperience();
   }
 };
 
@@ -1209,7 +1250,7 @@ function submitFormWithProgress(form, endpoint, statusElement, submitButton, suc
     request.setRequestHeader("Accept", "application/json");
 
     request.upload.addEventListener("progress", (event) => {
-      if (form !== bookingForm || !event.lengthComputable || !vaccinationUploadProgress || !vaccinationUploadBar) return;
+      if (form !== dogProfileForm || !event.lengthComputable || !vaccinationUploadProgress || !vaccinationUploadBar) return;
       vaccinationUploadProgress.hidden = false;
       const percent = Math.round((event.loaded / event.total) * 100);
       vaccinationUploadBar.style.width = `${percent}%`;
@@ -1226,7 +1267,7 @@ function submitFormWithProgress(form, endpoint, statusElement, submitButton, suc
 
       if (request.status >= 200 && request.status < 300 && payload.ok !== false) {
         if (statusElement) statusElement.textContent = payload.message || t(successMessageKey);
-        if (vaccinationUploadStatus && form === bookingForm) vaccinationUploadStatus.textContent = t("vaccinationUploadSuccess");
+        if (vaccinationUploadStatus && form === dogProfileForm) vaccinationUploadStatus.textContent = t("vaccinationUploadSuccess");
         resolve(payload);
         return;
       }
@@ -1467,13 +1508,6 @@ bookingForm?.addEventListener("submit", async (event) => {
     return;
   }
 
-  if (!validateVaccinationFiles()) {
-    vaccinationRecordsInput?.reportValidity();
-    bookingStatus.textContent = vaccinationRecordsInput?.validationMessage || t("bookingRequired");
-    setBookingStep(3);
-    return;
-  }
-
   updateSummary();
 
   const endpoint = bookingForm.getAttribute("action") || BOOKING_ENDPOINT;
@@ -1486,18 +1520,51 @@ bookingForm?.addEventListener("submit", async (event) => {
   bookingSubmit.textContent = t("bookingSending");
 
   try {
-    await submitFormWithProgress(bookingForm, endpoint, bookingStatus, bookingSubmit, "bookingSuccess");
-    bookingForm.reset();
-    vaccinationRecordsInput?.setCustomValidity("");
-    resetUploadProgress();
-    updateSummary();
-    setBookingStep(1);
+    const payload = await submitFormWithProgress(bookingForm, endpoint, bookingStatus, bookingSubmit, "bookingSuccess");
+    if (profileOwnerId) profileOwnerId.value = payload.ownerId || "";
+    if (profileDogId) profileDogId.value = payload.dogId || "";
+    if (profileBookingId) profileBookingId.value = payload.bookingId || "";
+    if (bookingForm) bookingForm.hidden = true;
+    if (dogProfileForm) dogProfileForm.hidden = false;
+    dogProfileForm?.scrollIntoView({ behavior: "smooth", block: "start" });
   } catch (error) {
     bookingStatus.textContent = error.message || t("bookingError");
   } finally {
     bookingSubmit.disabled = false;
     bookingSubmit.textContent = t("bookingSubmit");
   }
+});
+
+dogProfileForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  dogProfileStatus.textContent = "";
+
+  if (!validateVaccinationFiles()) {
+    vaccinationRecordsInput?.reportValidity();
+    dogProfileStatus.textContent = vaccinationRecordsInput?.validationMessage || t("bookingRequired");
+    return;
+  }
+
+  const endpoint = dogProfileForm.getAttribute("action") || "/api/dog-profile-update";
+  dogProfileSubmit.disabled = true;
+  dogProfileSubmit.textContent = t("profileSaving");
+
+  try {
+    await submitFormWithProgress(dogProfileForm, endpoint, dogProfileStatus, dogProfileSubmit, "profileSuccess");
+    dogProfileForm.reset();
+    vaccinationRecordsInput?.setCustomValidity("");
+    resetUploadProgress();
+  } catch (error) {
+    dogProfileStatus.textContent = error.message || t("bookingError");
+  } finally {
+    dogProfileSubmit.disabled = false;
+    dogProfileSubmit.textContent = t("profileSave");
+  }
+});
+
+dogProfileSkip?.addEventListener("click", () => {
+  resetBookingExperience("profileSkipped");
+  window.closeSiteModal(dogProfileSkip);
 });
 
 applyLanguage();

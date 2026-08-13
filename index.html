@@ -756,9 +756,7 @@
         <ol class="booking-progress" aria-label="Booking progress">
           <li class="active" data-booking-nav="1" data-i18n="progressOwner">Owner</li>
           <li data-booking-nav="2" data-i18n="progressPet">Dog</li>
-          <li data-booking-nav="3" data-i18n="progressVet">Veterinarian</li>
-          <li data-booking-nav="4" data-i18n="progressStay">Stay</li>
-          <li data-booking-nav="5" data-i18n="progressReviewPayment">Review & Payment</li>
+          <li data-booking-nav="3" data-i18n="progressReviewPayment">Review & Payment</li>
         </ol>
 
         <div class="booking-layout">
@@ -792,10 +790,6 @@
                   <span data-i18n="fieldPhone">Phone Number</span>
                   <input name="phone" type="tel" autocomplete="tel" required />
                 </label>
-                <label class="wide-field">
-                  <span data-i18n="fieldEmergencyContact">Emergency Contact (optional)</span>
-                  <input name="emergencyContact" type="text" />
-                </label>
               </div>
             </section>
 
@@ -817,87 +811,12 @@
                   <input name="breed" type="text" required />
                 </label>
                 <label>
-                  <span data-i18n="fieldAge">Age (optional)</span>
-                  <input name="age" type="text" />
-                </label>
-                <label>
-                  <span data-i18n="fieldWeight">Weight (optional)</span>
-                  <input name="weight" type="text" />
-                </label>
-                <label>
-                  <span data-i18n="fieldSex">Sex (optional)</span>
-                  <select name="sex">
-                    <option value="" data-i18n="optionSelect">Select</option>
-                    <option value="Female" data-i18n="optionFemale">Female</option>
-                    <option value="Male" data-i18n="optionMale">Male</option>
-                  </select>
-                </label>
-                <label>
                   <span data-i18n="fieldSpayedNeutered">Spayed / Neutered</span>
                   <select name="spayedNeutered" required>
                     <option value="" data-i18n="optionSelect">Select</option>
                     <option value="Yes" data-i18n="optionYes">Yes</option>
                     <option value="No" data-i18n="optionNo">No</option>
                   </select>
-                </label>
-                <label>
-                  <span data-i18n="fieldVaccinations">Vaccinations up to date? (optional)</span>
-                  <select name="vaccinationsUpToDate">
-                    <option value="" data-i18n="optionSelect">Select</option>
-                    <option value="Yes" data-i18n="optionYes">Yes</option>
-                    <option value="No" data-i18n="optionNo">No</option>
-                  </select>
-                </label>
-                <label>
-                  <span data-i18n="fieldGoodCats">Good with cats? (optional)</span>
-                  <select name="goodWithCats">
-                    <option value="" data-i18n="optionSelect">Select</option>
-                    <option value="Yes" data-i18n="optionYes">Yes</option>
-                    <option value="No" data-i18n="optionNo">No</option>
-                    <option value="Unknown" data-i18n="optionUnknown">Unknown</option>
-                  </select>
-                </label>
-                <label>
-                  <span data-i18n="fieldGoodSmallDogs">Good with small dogs? (optional)</span>
-                  <select name="goodWithSmallDogs">
-                    <option value="" data-i18n="optionSelect">Select</option>
-                    <option value="Yes" data-i18n="optionYes">Yes</option>
-                    <option value="No" data-i18n="optionNo">No</option>
-                    <option value="Unknown" data-i18n="optionUnknown">Unknown</option>
-                  </select>
-                </label>
-                <label>
-                  <span data-i18n="fieldCanSwim">Can swim? (optional)</span>
-                  <select name="canSwim">
-                    <option value="" data-i18n="optionSelect">Select</option>
-                    <option value="Yes" data-i18n="optionYes">Yes</option>
-                    <option value="No" data-i18n="optionNo">No</option>
-                    <option value="Unknown" data-i18n="optionUnknown">Unknown</option>
-                  </select>
-                </label>
-                <label class="wide-field">
-                  <span data-i18n="fieldMedications">Medications (optional)</span>
-                  <textarea name="medications" rows="3"></textarea>
-                </label>
-                <label class="wide-field">
-                  <span data-i18n="fieldAllergies">Allergies (optional)</span>
-                  <textarea name="allergies" rows="3"></textarea>
-                </label>
-                <label class="wide-field">
-                  <span data-i18n="fieldBehavioralConcerns">Behavioral concerns (optional)</span>
-                  <textarea name="behavioralConcerns" rows="3"></textarea>
-                </label>
-                <label class="wide-field">
-                  <span data-i18n="fieldFavoriteActivities">Favorite activities (optional)</span>
-                  <textarea name="favoriteActivities" rows="3"></textarea>
-                </label>
-                <label class="wide-field">
-                  <span data-i18n="fieldFeedingInstructions">Feeding instructions (optional)</span>
-                  <textarea name="feedingInstructions" rows="3"></textarea>
-                </label>
-                <label class="wide-field">
-                  <span data-i18n="fieldSleepingRoutine">Sleeping routine (optional)</span>
-                  <textarea name="sleepingRoutine" rows="3"></textarea>
                 </label>
               </div>
             </section>
@@ -906,53 +825,8 @@
               <div class="booking-step-head">
                 <span>03</span>
                 <div>
-                  <h3 data-i18n="bookingStepVet">Veterinarian information</h3>
-                  <p data-i18n="bookingStepVetHelp">This helps us act quickly and responsibly if your dog ever needs care.</p>
-                </div>
-              </div>
-              <div class="booking-fields">
-                <label>
-                  <span data-i18n="fieldVetClinic">Veterinary Clinic (optional)</span>
-                  <input name="veterinaryClinic" type="text" />
-                </label>
-                <label>
-                  <span data-i18n="fieldVetName">Veterinarian Name (optional)</span>
-                  <input name="veterinarianName" type="text" />
-                </label>
-                <label>
-                  <span data-i18n="fieldVetPhone">Clinic Phone Number (optional)</span>
-                  <input name="clinicPhone" type="tel" />
-                </label>
-                <label>
-                  <span data-i18n="fieldVetAddress">Clinic Address (optional)</span>
-                  <input name="clinicAddress" type="text" />
-                </label>
-                <label class="wide-field upload-field">
-                  <span data-i18n="fieldVaccinationRecords">Vaccination Records</span>
-                  <input
-                    name="vaccinationRecords"
-                    id="vaccinationRecords"
-                    type="file"
-                    accept=".pdf,.jpg,.jpeg,.png,.heic,.heif,application/pdf,image/jpeg,image/png,image/heic,image/heif"
-                    multiple
-                  />
-                  <small data-i18n="vaccinationRecordsHelp">
-                    Vaccination records are required before a reservation can be confirmed. You may submit this request now and send them later.
-                  </small>
-                  <div class="upload-progress" id="vaccinationUploadProgress" hidden>
-                    <span id="vaccinationUploadBar"></span>
-                  </div>
-                  <p class="upload-status" id="vaccinationUploadStatus" aria-live="polite"></p>
-                </label>
-              </div>
-            </section>
-
-            <section class="booking-step full" data-booking-step="4">
-              <div class="booking-step-head">
-                <span>04</span>
-                <div>
-                  <h3 data-i18n="bookingStepService">Service details</h3>
-                  <p data-i18n="bookingStepServiceHelp">Choose the care type, dates, times, and service area.</p>
+                  <h3 data-i18n="bookingStepReview">Review & Payment</h3>
+                  <p data-i18n="bookingStepReviewHelp">Choose your stay details, review your estimate, and authorize emergency care.</p>
                 </div>
               </div>
               <div class="booking-fields">
@@ -999,18 +873,6 @@
                   <span data-i18n="fieldUnits">Nights, days, or visits</span>
                   <input name="units" id="unitsInput" type="number" min="1" value="1" readonly />
                 </label>
-              </div>
-            </section>
-
-            <section class="booking-step full" data-booking-step="5">
-              <div class="booking-step-head">
-                <span>05</span>
-                <div>
-                  <h3 data-i18n="bookingStepReview">Review & Payment</h3>
-                  <p data-i18n="bookingStepReviewHelp">Review your estimate, add final notes, and authorize emergency care.</p>
-                </div>
-              </div>
-              <div class="booking-fields">
                 <label>
                   <span data-i18n="fieldDogs">Additional dogs</span>
                   <input name="additionalDogs" id="additionalDogs" type="number" min="0" value="0" />
@@ -1026,10 +888,6 @@
                 <label class="checkbox-line">
                   <input name="longStay" id="longStay" type="checkbox" />
                   <span data-i18n="fieldLongStay">Long stay request</span>
-                </label>
-                <label class="wide-field">
-                  <span data-i18n="fieldNotes">Notes</span>
-                  <textarea name="notes" rows="4"></textarea>
                 </label>
                 <label class="checkbox-line required-checkbox wide-field">
                   <input name="emergencyAuthorization" id="emergencyAuthorization" type="checkbox" required />
@@ -1070,6 +928,140 @@
               Continue to Payment
             </button>
             <p class="status-line full" id="bookingStatus"></p>
+          </form>
+
+          <form class="booking-profile-followup" id="dogProfileForm" method="POST" action="/api/dog-profile-update" enctype="multipart/form-data" hidden>
+            <input type="hidden" name="ownerId" id="profileOwnerId" />
+            <input type="hidden" name="dogId" id="profileDogId" />
+            <input type="hidden" name="bookingId" id="profileBookingId" />
+            <div class="booking-step-head">
+              <span>✓</span>
+              <div>
+                <h3 data-i18n="profileFollowupTitle">Tell us more about your dog</h3>
+                <p data-i18n="profileFollowupText">
+                  Help us create your dog's profile so we can provide the safest and most personalized care possible.
+                </p>
+              </div>
+            </div>
+            <div class="booking-fields">
+              <label>
+                <span data-i18n="fieldAge">Age (optional)</span>
+                <input name="age" type="text" />
+              </label>
+              <label>
+                <span data-i18n="fieldWeight">Weight (optional)</span>
+                <input name="weight" type="text" />
+              </label>
+              <label>
+                <span data-i18n="fieldSex">Sex (optional)</span>
+                <select name="sex">
+                  <option value="" data-i18n="optionSelect">Select</option>
+                  <option value="Female" data-i18n="optionFemale">Female</option>
+                  <option value="Male" data-i18n="optionMale">Male</option>
+                </select>
+              </label>
+              <label>
+                <span data-i18n="fieldVaccinations">Vaccinations up to date? (optional)</span>
+                <select name="vaccinationsUpToDate">
+                  <option value="" data-i18n="optionSelect">Select</option>
+                  <option value="Yes" data-i18n="optionYes">Yes</option>
+                  <option value="No" data-i18n="optionNo">No</option>
+                </select>
+              </label>
+              <label class="wide-field upload-field">
+                <span data-i18n="fieldVaccinationRecords">Vaccination Records</span>
+                <input
+                  name="vaccinationRecords"
+                  id="vaccinationRecords"
+                  type="file"
+                  accept=".pdf,.jpg,.jpeg,.png,.heic,.heif,application/pdf,image/jpeg,image/png,image/heic,image/heif"
+                  multiple
+                />
+                <small data-i18n="vaccinationRecordsHelp">
+                  Vaccination records are required before a reservation can be confirmed. You may submit this request now and send them later.
+                </small>
+                <div class="upload-progress" id="vaccinationUploadProgress" hidden>
+                  <span id="vaccinationUploadBar"></span>
+                </div>
+                <p class="upload-status" id="vaccinationUploadStatus" aria-live="polite"></p>
+              </label>
+              <label>
+                <span data-i18n="fieldGoodCats">Good with cats? (optional)</span>
+                <select name="goodWithCats">
+                  <option value="" data-i18n="optionSelect">Select</option>
+                  <option value="Yes" data-i18n="optionYes">Yes</option>
+                  <option value="No" data-i18n="optionNo">No</option>
+                  <option value="Unknown" data-i18n="optionUnknown">Unknown</option>
+                </select>
+              </label>
+              <label>
+                <span data-i18n="fieldGoodSmallDogs">Good with small dogs? (optional)</span>
+                <select name="goodWithSmallDogs">
+                  <option value="" data-i18n="optionSelect">Select</option>
+                  <option value="Yes" data-i18n="optionYes">Yes</option>
+                  <option value="No" data-i18n="optionNo">No</option>
+                  <option value="Unknown" data-i18n="optionUnknown">Unknown</option>
+                </select>
+              </label>
+              <label>
+                <span data-i18n="fieldCanSwim">Can swim? (optional)</span>
+                <select name="canSwim">
+                  <option value="" data-i18n="optionSelect">Select</option>
+                  <option value="Yes" data-i18n="optionYes">Yes</option>
+                  <option value="No" data-i18n="optionNo">No</option>
+                  <option value="Unknown" data-i18n="optionUnknown">Unknown</option>
+                </select>
+              </label>
+              <label>
+                <span data-i18n="fieldEmergencyContact">Emergency Contact (optional)</span>
+                <input name="emergencyContact" type="text" />
+              </label>
+              <label class="wide-field">
+                <span data-i18n="fieldMedications">Medications (optional)</span>
+                <textarea name="medications" rows="3"></textarea>
+              </label>
+              <label class="wide-field">
+                <span data-i18n="fieldAllergies">Allergies (optional)</span>
+                <textarea name="allergies" rows="3"></textarea>
+              </label>
+              <label class="wide-field">
+                <span data-i18n="fieldBehavioralConcerns">Behavioral concerns (optional)</span>
+                <textarea name="behavioralConcerns" rows="3"></textarea>
+              </label>
+              <label class="wide-field">
+                <span data-i18n="fieldFavoriteActivities">Favorite activities (optional)</span>
+                <textarea name="favoriteActivities" rows="3"></textarea>
+              </label>
+              <label class="wide-field">
+                <span data-i18n="fieldFeedingInstructions">Feeding instructions (optional)</span>
+                <textarea name="feedingInstructions" rows="3"></textarea>
+              </label>
+              <label>
+                <span data-i18n="fieldVetClinic">Veterinary Clinic (optional)</span>
+                <input name="veterinaryClinic" type="text" />
+              </label>
+              <label>
+                <span data-i18n="fieldVetName">Veterinarian Name (optional)</span>
+                <input name="veterinarianName" type="text" />
+              </label>
+              <label>
+                <span data-i18n="fieldVetPhone">Clinic Phone Number (optional)</span>
+                <input name="clinicPhone" type="tel" />
+              </label>
+              <label>
+                <span data-i18n="fieldVetAddress">Clinic Address (optional)</span>
+                <input name="clinicAddress" type="text" />
+              </label>
+              <label class="wide-field">
+                <span data-i18n="fieldNotes">Notes</span>
+                <textarea name="notes" rows="4"></textarea>
+              </label>
+            </div>
+            <div class="profile-followup-actions full">
+              <button class="submit-button" id="dogProfileSubmit" type="submit" data-i18n="profileSave">Save dog profile</button>
+              <button class="ghost-button" id="dogProfileSkip" type="button" data-i18n="profileSkip">Skip for now</button>
+            </div>
+            <p class="status-line full" id="dogProfileStatus"></p>
           </form>
 
           <aside class="booking-summary">
