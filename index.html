@@ -900,7 +900,7 @@
               <button class="submit-button" id="bookingNext" type="button" data-i18n="wizardContinue">Continue</button>
             </div>
 
-            <button class="mobile-booking-summary full" id="mobileSummaryToggle" type="button" aria-live="polite" aria-expanded="false">
+            <button class="mobile-booking-summary full" id="mobileSummaryToggle" type="button" aria-live="polite" aria-expanded="false" aria-controls="mobileSummaryDetails">
               <div class="mobile-summary-primary">
                 <span data-i18n="summaryService">Service</span>
                 <strong id="mobileSummaryService">Boarding</strong>
@@ -913,15 +913,35 @@
                 <span data-i18n="summaryTotal">Estimated total</span>
                 <strong id="mobileSummaryTotal">$50</strong>
               </div>
-              <div class="mobile-summary-detail">
+              <div class="mobile-summary-primary deposit">
                 <span data-i18n="summaryDeposit">Deposit due today</span>
                 <strong id="mobileSummaryDeposit">$13</strong>
               </div>
-              <div class="mobile-summary-detail">
+              <span class="mobile-summary-action" id="mobileSummaryAction" data-i18n="summaryViewDetails">View details</span>
+            </button>
+
+            <div class="mobile-summary-details-panel full" id="mobileSummaryDetails" hidden>
+              <div>
+                <span data-i18n="summaryGuests">Guests</span>
+                <strong id="mobileSummaryDogCount">1 dog</strong>
+              </div>
+              <div>
+                <span data-i18n="summaryDates">Dates</span>
+                <strong id="mobileSummaryDates">Select dates</strong>
+              </div>
+              <div>
+                <span data-i18n="summaryPickupFee">Pick-up fee</span>
+                <strong id="mobileSummaryAfterFee">$0</strong>
+              </div>
+              <div>
+                <span data-i18n="summaryAdditionalPets">Additional pets</span>
+                <strong id="mobileSummaryAdditionalPets">$0</strong>
+              </div>
+              <div>
                 <span data-i18n="summaryRemaining">Remaining balance</span>
                 <strong id="mobileSummaryRemaining">$37</strong>
               </div>
-            </button>
+            </div>
 
             <button class="submit-button full wizard-submit" id="bookingSubmit" type="submit" data-i18n="bookingSubmit">
               Continue to Payment

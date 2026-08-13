@@ -386,6 +386,8 @@ const translations = {
     summaryGuests: "Guests",
     summaryDeposit: "Deposit due today",
     summaryRemaining: "Remaining balance",
+    summaryViewDetails: "View details",
+    summaryHideDetails: "Hide details",
     oneNight: "1 night",
     multipleNights: "nights",
     oneDay: "1 day",
@@ -819,6 +821,8 @@ const translations = {
     summaryGuests: "Huéspedes",
     summaryDeposit: "Depósito hoy",
     summaryRemaining: "Saldo restante",
+    summaryViewDetails: "Ver detalles",
+    summaryHideDetails: "Ocultar detalles",
     oneNight: "1 noche",
     multipleNights: "noches",
     oneDay: "1 día",
@@ -1114,6 +1118,12 @@ const mobileSummaryTotal = document.querySelector("#mobileSummaryTotal");
 const mobileSummaryDeposit = document.querySelector("#mobileSummaryDeposit");
 const mobileSummaryRemaining = document.querySelector("#mobileSummaryRemaining");
 const mobileSummaryToggle = document.querySelector("#mobileSummaryToggle");
+const mobileSummaryAction = document.querySelector("#mobileSummaryAction");
+const mobileSummaryDetails = document.querySelector("#mobileSummaryDetails");
+const mobileSummaryDogCount = document.querySelector("#mobileSummaryDogCount");
+const mobileSummaryDates = document.querySelector("#mobileSummaryDates");
+const mobileSummaryAfterFee = document.querySelector("#mobileSummaryAfterFee");
+const mobileSummaryAdditionalPets = document.querySelector("#mobileSummaryAdditionalPets");
 const accountNavButton = document.querySelector("#accountNavButton");
 const accountSignedOut = document.querySelector("#accountSignedOut");
 const accountDashboard = document.querySelector("#accountDashboard");
@@ -1988,6 +1998,10 @@ function updateSummary() {
   if (mobileSummaryTotal) mobileSummaryTotal.textContent = totalLabel;
   if (mobileSummaryDeposit) mobileSummaryDeposit.textContent = depositLabel;
   if (mobileSummaryRemaining) mobileSummaryRemaining.textContent = remainingLabel;
+  if (mobileSummaryDogCount) mobileSummaryDogCount.textContent = dogsLabel(totalDogs);
+  if (mobileSummaryDates) mobileSummaryDates.textContent = datesLabel();
+  if (mobileSummaryAfterFee) mobileSummaryAfterFee.textContent = currency(after);
+  if (mobileSummaryAdditionalPets) mobileSummaryAdditionalPets.textContent = currency(additionalPetsTotal);
 
   if (estimatedTotalField) {
     estimatedTotalField.value = totalLabel;
@@ -2154,6 +2168,8 @@ bookingNavItems.forEach((item) => {
 mobileSummaryToggle?.addEventListener("click", () => {
   const isExpanded = mobileSummaryToggle.classList.toggle("expanded");
   mobileSummaryToggle.setAttribute("aria-expanded", String(isExpanded));
+  if (mobileSummaryDetails) mobileSummaryDetails.hidden = !isExpanded;
+  if (mobileSummaryAction) mobileSummaryAction.textContent = isExpanded ? t("summaryHideDetails") : t("summaryViewDetails");
 });
 availabilityService?.addEventListener("change", updateAvailability);
 availabilityDropoffDate?.addEventListener("change", updateAvailability);

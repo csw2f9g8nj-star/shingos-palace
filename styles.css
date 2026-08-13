@@ -4312,10 +4312,10 @@ textarea {
   .modal-card {
     max-height: calc(100svh - 10px);
     overflow-y: auto;
-    padding: 18px 12px 12px;
+    padding: 18px 12px max(14px, env(safe-area-inset-bottom));
     border-radius: 22px;
     overscroll-behavior: contain;
-    scroll-padding-bottom: 210px;
+    scroll-padding-bottom: max(24px, env(safe-area-inset-bottom));
   }
 
   .modal-card > h2 {
@@ -4411,9 +4411,8 @@ textarea {
   }
 
   .booking-progress {
-    position: sticky;
-    top: -18px;
-    z-index: 4;
+    position: static;
+    z-index: auto;
     margin: 0 -2px 10px;
     padding: 9px 2px 8px;
     overflow-x: auto;
@@ -4471,19 +4470,17 @@ textarea {
   }
 
   .booking-wizard-actions {
-    position: sticky;
-    bottom: 92px;
-    z-index: 6;
-    margin-top: 8px;
-    padding: 8px 0 0;
-    background: linear-gradient(180deg, rgba(255, 250, 241, 0), rgba(255, 250, 241, 0.96) 30%);
+    position: static;
+    z-index: auto;
+    margin-top: 10px;
+    padding: 0;
+    background: transparent;
   }
 
   .wizard-submit {
-    position: sticky;
-    bottom: 92px;
-    z-index: 6;
-    margin-top: 8px;
+    position: static;
+    z-index: auto;
+    margin-top: 10px;
     padding: 0 22px;
     color: #fffaf1;
     background: var(--sage-deep);
@@ -4623,22 +4620,19 @@ textarea {
   }
 
   .mobile-booking-summary {
-    position: fixed;
-    right: max(10px, env(safe-area-inset-right));
-    bottom: max(10px, env(safe-area-inset-bottom));
-    left: max(10px, env(safe-area-inset-left));
-    z-index: 70;
+    position: static;
+    z-index: auto;
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px 14px;
-    margin: 0;
+    margin: 10px 0 0;
     padding: 12px 14px;
     border: 1px solid rgba(255, 250, 241, 0.18);
     border-radius: 22px;
     background:
       radial-gradient(circle at 18% 0%, rgba(217, 197, 165, 0.22), transparent 34%),
       linear-gradient(145deg, rgba(39, 50, 47, 0.98), rgba(63, 77, 68, 0.96));
-    box-shadow: 0 -18px 42px rgba(39, 50, 47, 0.18);
+    box-shadow: 0 18px 42px rgba(39, 50, 47, 0.14);
     color: #fff8ee;
     text-align: left;
     cursor: pointer;
@@ -4648,7 +4642,7 @@ textarea {
   .mobile-booking-summary::after {
     content: "+";
     grid-column: 2;
-    grid-row: 1 / span 2;
+    grid-row: 3;
     align-self: center;
     justify-self: end;
     display: grid;
@@ -4678,23 +4672,24 @@ textarea {
     grid-column: 1;
   }
 
-  .mobile-summary-detail {
-    display: none;
-    grid-column: 1 / -1;
+  .mobile-summary-primary.deposit {
+    grid-column: 2;
+  }
+
+  .mobile-summary-action {
+    grid-column: 1;
+    grid-row: 3;
+    align-self: center;
+    color: rgba(255, 248, 238, 0.86);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
   .mobile-booking-summary.expanded {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
     border-radius: 26px;
-    box-shadow: 0 -20px 56px rgba(39, 50, 47, 0.25);
-  }
-
-  .mobile-booking-summary.expanded .mobile-summary-detail {
-    display: grid;
-  }
-
-  .mobile-booking-summary.expanded .mobile-summary-primary.total {
-    grid-column: 1 / span 2;
+    box-shadow: 0 20px 56px rgba(39, 50, 47, 0.18);
   }
 
   .mobile-booking-summary span {
@@ -4713,6 +4708,47 @@ textarea {
 
   .mobile-summary-primary.total strong {
     font-size: 1.22rem;
+  }
+
+  .mobile-summary-details-panel {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    margin-top: 8px;
+    padding: 4px 14px;
+    border: 1px solid rgba(63, 77, 68, 0.1);
+    border-radius: 18px;
+    background: rgba(255, 250, 241, 0.74);
+  }
+
+  .mobile-summary-details-panel[hidden] {
+    display: none;
+  }
+
+  .mobile-summary-details-panel div {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(63, 77, 68, 0.09);
+  }
+
+  .mobile-summary-details-panel div:last-child {
+    border-bottom: 0;
+  }
+
+  .mobile-summary-details-panel span {
+    color: rgba(55, 48, 42, 0.62);
+    font-size: 0.73rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .mobile-summary-details-panel strong {
+    color: var(--charcoal);
+    font-size: 0.88rem;
+    text-align: right;
   }
 
   .submit-button {
