@@ -1,5 +1,5 @@
-const { getAdminClient, handleApiError, normalizeField, sendJson } = require("./_utils/supabase");
-const { parseMultipartForm } = require("./_utils/forms");
+const { getAdminClient, handleApiError, normalizeField, sendJson } = require("../lib/api-utils/supabase");
+const { parseMultipartForm } = require("../lib/api-utils/forms");
 
 async function handler(req, res) {
   if (req.method !== "POST") {

@@ -1,4 +1,4 @@
-const { getSupabaseConfig, sendJson } = require("./_utils/supabase");
+const { getSupabaseConfig, sendJson } = require("../lib/api-utils/supabase");
 
 module.exports = function handler(req, res) {
   if (req.method !== "GET") {

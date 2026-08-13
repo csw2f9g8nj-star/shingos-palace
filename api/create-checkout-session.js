@@ -1,5 +1,5 @@
-const { amountToCents, getStripeClient } = require("./_utils/payments");
-const { getAdminClient, handleApiError, publicApiError, sendJson } = require("./_utils/supabase");
+const { amountToCents, getStripeClient } = require("../lib/api-utils/payments");
+const { getAdminClient, handleApiError, publicApiError, sendJson } = require("../lib/api-utils/supabase");
 
 function getOrigin(req) {
   const host = req.headers["x-forwarded-host"] || req.headers.host;

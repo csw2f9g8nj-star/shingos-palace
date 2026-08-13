@@ -9,8 +9,8 @@ const {
   sanitizePathPart,
   sendJson,
   validateUploadFile,
-} = require("./_utils/supabase");
-const { parseMultipartForm, toFileArray } = require("./_utils/forms");
+} = require("../lib/api-utils/supabase");
+const { parseMultipartForm, toFileArray } = require("../lib/api-utils/forms");
 
 async function updateSingle(supabase, table, payload, filters, message) {
   if (!Object.keys(payload).length) return null;

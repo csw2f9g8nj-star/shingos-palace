@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "vercel dev",
-    "check": "node -c api/booking-request.js && node -c api/meet-greet.js && node -c api/account/me.js && node -c api/account/dogs.js && node -c api/public-config.js && node -c api/admin/config.js && node -c api/admin/dogs.js && node -c api/admin/meet-greets.js && node -c api/admin/vaccination-records.js && node -c api/admin/notes.js && node -c api/admin/compatibility.js && node -c api/_utils/supabase.js && node -c api/_utils/account.js && node -c api/_utils/forms.js"
+    "check": "node -c api/booking-request.js && node -c api/meet-greet.js && node -c 'api/account/[route].js' && node -c api/public-config.js && node -c 'api/admin/[route].js' && node -c api/create-checkout-session.js && node -c api/dog-profile-update.js && node -c api/verify-checkout-session.js && node -c lib/api-routes/account/me.js && node -c lib/api-routes/account/dogs.js && node -c lib/api-routes/admin/config.js && node -c lib/api-routes/admin/dogs.js && node -c lib/api-routes/admin/meet-greets.js && node -c lib/api-routes/admin/vaccination-records.js && node -c lib/api-routes/admin/notes.js && node -c lib/api-routes/admin/compatibility.js && node -c lib/api-utils/supabase.js && node -c lib/api-utils/account.js && node -c lib/api-utils/forms.js && node -c lib/api-utils/payments.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",

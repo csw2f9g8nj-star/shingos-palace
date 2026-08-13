@@ -1,5 +1,5 @@
-const { centsToCurrency, getStripeClient } = require("./_utils/payments");
-const { getAdminClient, handleApiError, publicApiError, sendJson } = require("./_utils/supabase");
+const { centsToCurrency, getStripeClient } = require("../lib/api-utils/payments");
+const { getAdminClient, handleApiError, publicApiError, sendJson } = require("../lib/api-utils/supabase");
 
 module.exports = async function handler(req, res) {
   if (req.method !== "POST") {

@@ -1,5 +1,5 @@
 const fs = require("fs/promises");
-const { findOwnerForUser } = require("./_utils/account");
+const { findOwnerForUser } = require("../lib/api-utils/account");
 const {
   getAdminClient,
   getSupabaseConfig,
@@ -11,8 +11,8 @@ const {
   sanitizePathPart,
   sendJson,
   validateUploadFile,
-} = require("./_utils/supabase");
-const { parseMultipartForm, toFileArray } = require("./_utils/forms");
+} = require("../lib/api-utils/supabase");
+const { parseMultipartForm, toFileArray } = require("../lib/api-utils/forms");
 
 function getInsertErrorMessage(table, error, fallbackMessage) {
   const source = `${error?.message || ""} ${error?.details || ""} ${error?.hint || ""}`.toLowerCase();
