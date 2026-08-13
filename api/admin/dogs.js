@@ -24,7 +24,7 @@ module.exports = async function handler(req, res) {
         owner:owners(*),
         bookings(*),
         vaccination_records(*),
-        dog_notes(*),
+        dog_notes:dog_notes!dog_notes_dog_id_fkey(*),
         compatibility_as_first:dog_compatibility!dog_compatibility_dog_one_id_fkey(*),
         compatibility_as_second:dog_compatibility!dog_compatibility_dog_two_id_fkey(*)
       `)
