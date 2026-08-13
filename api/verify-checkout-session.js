@@ -90,6 +90,7 @@ module.exports = async function handler(req, res) {
       bookingId: booking.id,
       ownerId: booking.owner_id,
       dogId: booking.dog_id,
+      ownerEmail: booking.owner?.email || "",
       sessionId: session.id,
       paymentIntentId,
       service: booking.service,

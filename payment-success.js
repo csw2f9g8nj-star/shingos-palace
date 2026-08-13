@@ -1,5 +1,6 @@
 const VERIFY_ENDPOINT = "/api/verify-checkout-session";
 const PROFILE_ENDPOINT = "/api/dog-profile-update";
+const PUBLIC_CONFIG_ENDPOINT = "/api/public-config";
 const maxVaccinationFileSize = 10 * 1024 * 1024;
 const allowedVaccinationExtensions = new Set(["pdf", "jpg", "jpeg", "png", "heic", "heif"]);
 const allowedVaccinationTypes = new Set([
@@ -38,6 +39,13 @@ const successVaccinationRecords = document.querySelector("#successVaccinationRec
 const successUploadProgress = document.querySelector("#successUploadProgress");
 const successUploadBar = document.querySelector("#successUploadBar");
 const successUploadStatus = document.querySelector("#successUploadStatus");
+const successAccountCta = document.querySelector("#successAccountCta");
+const successAccountButton = document.querySelector("#successAccountButton");
+const successAccountStatus = document.querySelector("#successAccountStatus");
+const successAccountEmail = document.querySelector("#successAccountEmail");
+
+let verifiedOwnerEmail = "";
+let customerSupabase = null;
 
 function showState(state) {
   if (loadingState) loadingState.hidden = state !== "loading";
@@ -86,6 +94,27 @@ function validateVaccinationFiles() {
   }
 
   return true;
+}
+
+async function getCustomerSupabaseClient() {
+  if (customerSupabase) return customerSupabase;
+
+  if (!window.supabase?.createClient) {
+    throw new Error("Customer login is unavailable right now. Please try again shortly.");
+  }
+
+  const response = await fetch(PUBLIC_CONFIG_ENDPOINT);
+  if (!response.ok) {
+    throw new Error("Customer login is unavailable right now. Please try again shortly.");
+  }
+
+  const payload = await response.json().catch(() => ({}));
+  if (!payload.supabaseUrl || !payload.supabasePublishableKey) {
+    throw new Error("Customer login is unavailable right now. Please try again shortly.");
+  }
+
+  customerSupabase = window.supabase.createClient(payload.supabaseUrl, payload.supabasePublishableKey);
+  return customerSupabase;
 }
 
 function submitProfileWithProgress() {
@@ -153,6 +182,11 @@ async function verifyPayment() {
     if (successOwnerId) successOwnerId.value = payload.ownerId || "";
     if (successDogId) successDogId.value = payload.dogId || "";
     if (successBookingId) successBookingId.value = payload.bookingId || "";
+    verifiedOwnerEmail = payload.ownerEmail || "";
+    if (successAccountEmail) {
+      successAccountEmail.textContent = verifiedOwnerEmail ? `We'll send the secure link to ${verifiedOwnerEmail}.` : "";
+    }
+    if (successAccountCta) successAccountCta.hidden = !verifiedOwnerEmail;
 
     showState("paid");
   } catch (error) {
@@ -165,6 +199,41 @@ successProfileButton?.addEventListener("click", () => {
   if (successDogProfileCta) successDogProfileCta.hidden = true;
   if (successDogProfileForm) successDogProfileForm.hidden = false;
   successDogProfileForm?.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+successAccountButton?.addEventListener("click", async () => {
+  if (!successAccountStatus) return;
+  successAccountStatus.textContent = "";
+
+  if (!verifiedOwnerEmail) {
+    successAccountStatus.textContent = "We could not find the reservation email for this payment.";
+    return;
+  }
+
+  if (successAccountButton) {
+    successAccountButton.disabled = true;
+    successAccountButton.textContent = "Sending secure link...";
+  }
+
+  try {
+    const client = await getCustomerSupabaseClient();
+    const { error } = await client.auth.signInWithOtp({
+      email: verifiedOwnerEmail,
+      options: {
+        emailRedirectTo: `${window.location.origin}/index.html`,
+      },
+    });
+
+    if (error) throw error;
+    successAccountStatus.textContent = "Check your email for the secure sign-in link.";
+  } catch (error) {
+    successAccountStatus.textContent = error.message || "Customer login is unavailable right now. Please try again shortly.";
+  } finally {
+    if (successAccountButton) {
+      successAccountButton.disabled = false;
+      successAccountButton.textContent = "Create / access My Account";
+    }
+  }
 });
 
 successVaccinationRecords?.addEventListener("change", validateVaccinationFiles);

@@ -3224,6 +3224,18 @@ h2 {
   font-size: clamp(1.7rem, 3vw, 2.4rem);
 }
 
+.account-create-cta {
+  background: rgba(255, 252, 246, 0.74);
+}
+
+.account-create-cta small {
+  display: block;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
 .payment-error-state .submit-button,
 .payment-home-link {
   display: inline-flex;
@@ -3911,6 +3923,18 @@ textarea {
   .footer-links {
     width: 100%;
     justify-content: space-between;
+  }
+
+  .toolbar {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .account-nav-button {
+    flex: 1 1 160px;
+    min-width: 0;
+    padding: 0 12px;
+    text-align: center;
   }
 
   .mini-contact {
@@ -4728,6 +4752,11 @@ textarea {
 
   .toolbar {
     gap: 10px;
+  }
+
+  .account-nav-button {
+    flex-basis: 100%;
+    min-height: 40px;
   }
 
   .social-icon {

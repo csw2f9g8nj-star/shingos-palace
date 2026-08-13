@@ -15,7 +15,7 @@ const translations = {
     checkAvailability: "Check Availability",
     meetGreet: "Meet & Greet",
     bookNow: "Book Now",
-    accountSignInNav: "Sign In",
+    accountSignInNav: "Sign In / My Account",
     accountMyAccountNav: "My Account",
     accountKicker: "My Account",
     accountHeading: "A simpler way to book again.",
@@ -448,7 +448,7 @@ const translations = {
     checkAvailability: "Ver disponibilidad",
     meetGreet: "Meet & Greet",
     bookNow: "Reservar ahora",
-    accountSignInNav: "Ingresar",
+    accountSignInNav: "Ingresar / Mi cuenta",
     accountMyAccountNav: "Mi cuenta",
     accountKicker: "Mi cuenta",
     accountHeading: "Una forma más simple de volver a reservar.",
@@ -1881,7 +1881,7 @@ function calculateBookingUnits() {
 }
 
 function getAccountBookingHeaders() {
-  if (!customerSession?.access_token || !accountOwnerIdField?.value || !accountDogIdField?.value) {
+  if (!customerSession?.access_token || !accountOwnerIdField?.value) {
     return {};
   }
 

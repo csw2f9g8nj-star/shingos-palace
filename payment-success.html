@@ -61,6 +61,19 @@
             <button class="submit-button" id="successProfileButton" type="button">Complete Dog Profile</button>
           </section>
 
+          <section class="dog-profile-cta payment-success-profile-cta account-create-cta" id="successAccountCta">
+            <div>
+              <p class="summary-kicker">My Account</p>
+              <h2>Create your Shingo's Palace account</h2>
+              <p>
+                Use the same email from your reservation to see your booking, dog profile, vaccination status, and book again faster.
+              </p>
+              <small id="successAccountEmail"></small>
+            </div>
+            <button class="submit-button" id="successAccountButton" type="button">Create / access My Account</button>
+            <p class="status-line" id="successAccountStatus" aria-live="polite"></p>
+          </section>
+
           <form class="booking-profile-followup payment-success-profile-form" id="successDogProfileForm" method="POST" action="/api/dog-profile-update" enctype="multipart/form-data" hidden>
             <input type="hidden" name="ownerId" id="successOwnerId" />
             <input type="hidden" name="dogId" id="successDogId" />
@@ -202,6 +215,7 @@
         </div>
       </section>
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="payment-success.js"></script>
   </body>
 </html>

@@ -29,7 +29,7 @@ async function findOwnerForUser(supabase, user) {
   const { data: emailOwners, error: emailError } = await supabase
     .from("owners")
     .select("*")
-    .eq("email", email)
+    .ilike("email", email)
     .order("created_at", { ascending: true })
     .limit(1);
 
