@@ -43,6 +43,10 @@ function isLatePickup(timeValue) {
   return !Number.isNaN(minutes) && minutes > 12 * 60;
 }
 
+function requiresPickupTime(service) {
+  return service !== "walking";
+}
+
 async function insertSingle(supabase, table, payload, message) {
   const { data, error } = await supabase.from(table).insert(payload).select().single();
   if (error) {
@@ -159,18 +163,20 @@ async function handler(req, res) {
       sleeping_routine: normalizeField(fields.sleepingRoutine),
     };
 
+    const service = normalizeField(fields.service);
+    const preferredWalkingTime = normalizeField(fields.preferredWalkingTime);
     const bookingPayload = {
-      service: normalizeField(fields.service),
+      service,
       dropoff_date: normalizeField(fields.dropoffDate) || null,
       pickup_date: normalizeField(fields.pickupDate) || null,
-      arrival_time: normalizeField(fields.arrivalTime) || null,
-      departure_time: normalizeField(fields.departureTime) || null,
+      arrival_time: service === "walking" ? (preferredWalkingTime || null) : normalizeField(fields.arrivalTime) || null,
+      departure_time: service === "walking" ? null : normalizeField(fields.departureTime) || null,
       area: normalizeField(fields.area) || "Margate",
       units: Number(normalizeField(fields.units)) || 1,
       additional_dogs: Number(normalizeField(fields.additionalDogs)) || 0,
-      additional_cats: Number(normalizeField(fields.additionalCats)) || 0,
-      after_hours: isLatePickup(fields.departureTime),
-      long_stay: normalizeField(fields.longStay) === "on",
+      additional_cats: service === "walking" ? 0 : Number(normalizeField(fields.additionalCats)) || 0,
+      after_hours: service === "walking" ? false : isLatePickup(fields.departureTime),
+      long_stay: service === "walking" ? false : normalizeField(fields.longStay) === "on",
       notes: normalizeField(fields.notes),
       emergency_authorization: normalizeField(fields.emergencyAuthorization) === "on",
       estimated_total: normalizeField(fields.estimatedTotal),
@@ -191,7 +197,8 @@ async function handler(req, res) {
       !bookingPayload.service ||
       !bookingPayload.dropoff_date ||
       !bookingPayload.pickup_date ||
-      !bookingPayload.departure_time ||
+      (requiresPickupTime(bookingPayload.service) && !bookingPayload.departure_time) ||
+      (bookingPayload.service === "walking" && !bookingPayload.arrival_time) ||
       !bookingPayload.emergency_authorization
     ) {
       sendJson(res, 400, { ok: false, error: "Please complete all required booking fields." });

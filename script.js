@@ -331,6 +331,7 @@ const translations = {
     fieldPickupDate: "Pick-up date",
     fieldArrivalTime: "Arrival time (optional)",
     fieldDepartureTime: "Pick-up time",
+    fieldPreferredWalkingTime: "Preferred Walking Time",
     pickupPolicyNote: "Pick-ups after 12:00 PM incur a $25 late pick-up fee. Pick-ups after 6:00 PM are charged as an additional day.",
     fieldArea: "Area",
     fieldUnits: "Nights, days, or visits",
@@ -348,6 +349,15 @@ const translations = {
     bookingSuccess: "Your reservation request is saved. Please complete the deposit to hold your spot.",
     paymentTitle: "Secure deposit payment",
     paymentIntro: "Your booking request has been saved. Complete the deposit below to hold your spot.",
+    paymentMethodTitle: "Deposit payment",
+    paymentMethodCard: "Card / Apple Pay / Google Pay",
+    paymentMethodCardHelp: "Secure online deposit through Stripe.",
+    paymentMethodZelle: "Zelle",
+    paymentMethodZelleHelp: "Send the deposit manually. Your request stays pending until confirmed.",
+    zelleInstructionsTitle: "Zelle instructions",
+    zelleInstructionsText: "Send your deposit to info@shingospalace.com and include your dog's name in the memo. We will manually confirm your payment and contact you shortly.",
+    manualPaymentTitle: "Booking request saved.",
+    manualPaymentText: "Your request is pending manual Zelle confirmation. Please send your deposit and we will contact you shortly.",
     paymentLoading: "Loading secure payment form...",
     paymentConfigMissing: "Payment is not connected yet. Please email info@shingospalace.com to complete your deposit.",
     paymentError: "We could not start the secure payment. Please try again or email info@shingospalace.com.",
@@ -398,7 +408,7 @@ const translations = {
     multipleDogs: "dogs",
     summaryLongStay: "Long stays receive a custom quote after reviewing dates, pet type, and care needs.",
     customQuote: "Custom quote",
-    paymentNote: "Your card details are processed securely by Stripe. Shingo's Palace never stores card numbers.",
+    paymentNote: "Card, Apple Pay, and Google Pay deposits are processed securely by Stripe. Zelle deposits are confirmed manually.",
     optionBoarding: "Boarding",
     optionSelect: "Select",
     optionFemale: "Female",
@@ -766,6 +776,7 @@ const translations = {
     fieldPickupDate: "Fecha de pick-up",
     fieldArrivalTime: "Horario de llegada (opcional)",
     fieldDepartureTime: "Horario de pick-up",
+    fieldPreferredWalkingTime: "Horario preferido para el paseo",
     pickupPolicyNote: "Los pick-ups después de las 12:00 PM tienen un cargo de $25. Los pick-ups después de las 6:00 PM se cobran como un día adicional.",
     fieldArea: "Zona",
     fieldUnits: "Noches, días o visitas",
@@ -783,6 +794,15 @@ const translations = {
     bookingSuccess: "Tu solicitud de reserva fue guardada. Completá el depósito para asegurar tu lugar.",
     paymentTitle: "Pago seguro del depósito",
     paymentIntro: "Tu solicitud de reserva fue guardada. Completá el depósito abajo para asegurar tu lugar.",
+    paymentMethodTitle: "Pago del depósito",
+    paymentMethodCard: "Tarjeta / Apple Pay / Google Pay",
+    paymentMethodCardHelp: "Depósito online seguro a través de Stripe.",
+    paymentMethodZelle: "Zelle",
+    paymentMethodZelleHelp: "Envía el depósito manualmente. Tu solicitud queda pendiente hasta confirmarlo.",
+    zelleInstructionsTitle: "Instrucciones para Zelle",
+    zelleInstructionsText: "Envía tu depósito a info@shingospalace.com e incluye el nombre de tu perro en la nota. Confirmaremos el pago manualmente y te contactaremos pronto.",
+    manualPaymentTitle: "Solicitud de reserva guardada.",
+    manualPaymentText: "Tu solicitud queda pendiente de confirmación manual por Zelle. Por favor envía el depósito y te contactaremos pronto.",
     paymentLoading: "Cargando formulario de pago seguro...",
     paymentConfigMissing: "El pago todavía no está conectado. Escribinos a info@shingospalace.com para completar el depósito.",
     paymentError: "No pudimos iniciar el pago seguro. Intentá de nuevo o escribinos a info@shingospalace.com.",
@@ -833,7 +853,7 @@ const translations = {
     multipleDogs: "perros",
     summaryLongStay: "Las estadías largas reciben una cotización personalizada según fechas, tipo de mascota y cuidados necesarios.",
     customQuote: "Cotización personalizada",
-    paymentNote: "Los datos de tu tarjeta se procesan de forma segura con Stripe. Shingo's Palace nunca guarda números de tarjeta.",
+    paymentNote: "Los depósitos con tarjeta, Apple Pay y Google Pay se procesan de forma segura con Stripe. Los depósitos por Zelle se confirman manualmente.",
     optionBoarding: "Boarding",
     optionSelect: "Seleccionar",
     optionFemale: "Hembra",
@@ -1064,13 +1084,22 @@ const serviceSelect = document.querySelector("#serviceSelect");
 const unitsInput = document.querySelector("#unitsInput");
 const dropoffDateInput = document.querySelector("#dropoffDate");
 const pickupDateInput = document.querySelector("#pickupDate");
+const arrivalTimeInput = document.querySelector("#arrivalTime");
 const departureTimeInput = document.querySelector("#departureTime");
+const preferredWalkingTimeInput = document.querySelector("#preferredWalkingTime");
 const bookingLockedService = document.querySelector("#bookingLockedService");
 const bookingLockedDates = document.querySelector("#bookingLockedDates");
 const bookingLockedDogs = document.querySelector("#bookingLockedDogs");
 const additionalDogsInput = document.querySelector("#additionalDogs");
 const additionalCatsInput = document.querySelector("#additionalCats");
 const longStayInput = document.querySelector("#longStay");
+const boardingDaycareTimeFields = document.querySelectorAll(".boarding-daycare-time");
+const walkingOnlyFields = document.querySelectorAll(".walking-only");
+const pickupPolicyNote = document.querySelector(".pickup-policy-note");
+const additionalCatsField = document.querySelector(".additional-cats-field");
+const longStayField = document.querySelector(".long-stay-field");
+const paymentMethodInputs = document.querySelectorAll('input[name="paymentMethod"]');
+const zelleInstructions = document.querySelector("#zelleInstructions");
 const bookingSubmit = document.querySelector("#bookingSubmit");
 const bookingStatus = document.querySelector("#bookingStatus");
 const dogProfileForm = document.querySelector("#dogProfileForm");
@@ -1084,6 +1113,7 @@ const profileDogId = document.querySelector("#profileDogId");
 const profileBookingId = document.querySelector("#profileBookingId");
 const paymentExperience = document.querySelector("#paymentExperience");
 const paymentConfirmation = document.querySelector("#paymentConfirmation");
+const manualPaymentConfirmation = document.querySelector("#manualPaymentConfirmation");
 const stripeCheckoutContainer = document.querySelector("#stripeCheckout");
 const paymentStatus = document.querySelector("#paymentStatus");
 const bookingSteps = document.querySelectorAll("[data-booking-step]");
@@ -1241,6 +1271,7 @@ function resetBookingExperience(messageKey = "") {
   if (bookingForm) bookingForm.hidden = false;
   if (paymentExperience) paymentExperience.hidden = true;
   if (paymentConfirmation) paymentConfirmation.hidden = true;
+  if (manualPaymentConfirmation) manualPaymentConfirmation.hidden = true;
   if (stripeCheckoutContainer) {
     stripeCheckoutContainer.hidden = false;
     stripeCheckoutContainer.innerHTML = `<p>${t("paymentLoading")}</p>`;
@@ -1255,7 +1286,8 @@ function resetBookingExperience(messageKey = "") {
   if (dogProfileStatus) dogProfileStatus.textContent = messageKey ? t(messageKey) : "";
   vaccinationRecordsInput?.setCustomValidity("");
   resetUploadProgress();
-  updateSummary();
+  updatePaymentMethodDisplay();
+  updateServiceSpecificFields();
   setBookingStep(1);
 }
 
@@ -1359,7 +1391,84 @@ function formatTime12Hour(timeValue) {
   return `${displayHour}:${minuteValue.padStart(2, "0")} ${period}`;
 }
 
+function populateTimeSelect(select, { start = 7 * 60, end = 20 * 60, step = 30 } = {}) {
+  if (!select || select.dataset.timeOptionsReady === "true") return;
+
+  for (let minutes = start; minutes <= end; minutes += step) {
+    const hour = Math.floor(minutes / 60);
+    const minute = minutes % 60;
+    const value = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+    const option = document.createElement("option");
+    option.value = value;
+    option.textContent = formatTime12Hour(value);
+    select.appendChild(option);
+  }
+
+  select.dataset.timeOptionsReady = "true";
+}
+
+function isWalkingService() {
+  return serviceSelect?.value === "walking";
+}
+
+function selectedPaymentMethod() {
+  return [...paymentMethodInputs].find((input) => input.checked)?.value || "stripe";
+}
+
+function updatePaymentMethodDisplay() {
+  const isZelle = selectedPaymentMethod() === "zelle";
+  if (zelleInstructions) zelleInstructions.hidden = !isZelle;
+}
+
+function updateServiceSpecificFields() {
+  const walking = isWalkingService();
+
+  boardingDaycareTimeFields.forEach((field) => {
+    field.hidden = walking;
+  });
+  walkingOnlyFields.forEach((field) => {
+    field.hidden = !walking;
+  });
+
+  if (pickupPolicyNote) pickupPolicyNote.hidden = walking;
+  if (additionalCatsField) additionalCatsField.hidden = walking;
+  if (longStayField) longStayField.hidden = walking;
+
+  if (arrivalTimeInput) {
+    arrivalTimeInput.disabled = walking;
+    if (walking) arrivalTimeInput.value = "";
+  }
+
+  if (departureTimeInput) {
+    departureTimeInput.disabled = walking;
+    departureTimeInput.required = !walking;
+    if (walking) departureTimeInput.value = "";
+  }
+
+  if (preferredWalkingTimeInput) {
+    preferredWalkingTimeInput.disabled = !walking;
+    preferredWalkingTimeInput.required = walking;
+    if (!walking) preferredWalkingTimeInput.value = "";
+  }
+
+  if (additionalCatsInput) {
+    additionalCatsInput.disabled = walking;
+    if (walking) additionalCatsInput.value = 0;
+  }
+
+  if (longStayInput) {
+    longStayInput.disabled = walking;
+    if (walking) longStayInput.checked = false;
+  }
+
+  updateSummary();
+}
+
 function getPickupFee(nightlyRate) {
+  if (isWalkingService()) {
+    return { amount: 0, extraUnit: 0 };
+  }
+
   if (!departureTimeInput?.value) {
     return { amount: 0, extraUnit: 0 };
   }
@@ -1389,8 +1498,10 @@ function datesLabel() {
   const dates = getVisibleBookingDates();
   if (dates === t("summaryDatesEmpty")) return dates;
 
-  const pickupTime = formatTime12Hour(departureTimeInput?.value);
-  return `${dates}${pickupTime ? ` · ${pickupTime}` : ""}`;
+  const serviceTime = isWalkingService()
+    ? formatTime12Hour(preferredWalkingTimeInput?.value)
+    : formatTime12Hour(departureTimeInput?.value);
+  return `${dates}${serviceTime ? ` · ${serviceTime}` : ""}`;
 }
 
 function setBookingStep(step) {
@@ -1746,6 +1857,7 @@ async function verifyStripePayment(sessionId) {
   }
   if (stripeCheckoutContainer) stripeCheckoutContainer.hidden = true;
   if (paymentConfirmation) paymentConfirmation.hidden = false;
+  if (manualPaymentConfirmation) manualPaymentConfirmation.hidden = true;
   if (dogProfileCta) dogProfileCta.hidden = false;
   if (paymentStatus) paymentStatus.textContent = payload.message || t("paymentSuccessText");
   dogProfileCta?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -1763,6 +1875,8 @@ async function startStripePayment(payload) {
   if (profileBookingId) profileBookingId.value = currentBookingIds.bookingId;
   if (bookingForm) bookingForm.hidden = true;
   if (paymentExperience) paymentExperience.hidden = false;
+  if (manualPaymentConfirmation) manualPaymentConfirmation.hidden = true;
+  if (paymentConfirmation) paymentConfirmation.hidden = true;
   if (paymentStatus) paymentStatus.textContent = "";
   if (stripeCheckoutContainer) {
     stripeCheckoutContainer.hidden = false;
@@ -1810,6 +1924,26 @@ async function startStripePayment(payload) {
   }
 }
 
+function showManualPaymentPending(payload) {
+  currentBookingIds = {
+    bookingId: payload.bookingId || "",
+    ownerId: payload.ownerId || "",
+    dogId: payload.dogId || "",
+  };
+
+  if (profileOwnerId) profileOwnerId.value = currentBookingIds.ownerId;
+  if (profileDogId) profileDogId.value = currentBookingIds.dogId;
+  if (profileBookingId) profileBookingId.value = currentBookingIds.bookingId;
+  if (bookingForm) bookingForm.hidden = true;
+  if (paymentExperience) paymentExperience.hidden = false;
+  if (paymentConfirmation) paymentConfirmation.hidden = true;
+  if (manualPaymentConfirmation) manualPaymentConfirmation.hidden = false;
+  if (stripeCheckoutContainer) stripeCheckoutContainer.hidden = true;
+  if (dogProfileCta) dogProfileCta.hidden = false;
+  if (paymentStatus) paymentStatus.textContent = t("manualPaymentText");
+  paymentExperience?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 function setBookingSelection(selection = {}) {
   bookingSelection = {
     ...bookingSelection,
@@ -1834,7 +1968,7 @@ function setBookingSelection(selection = {}) {
     bookingLockedDogs.textContent = dogsLabel(bookingSelection.numberOfDogs);
   }
 
-  updateSummary();
+  updateServiceSpecificFields();
 }
 
 function submitFormWithProgress(form, endpoint, statusElement, submitButton, successMessageKey, headers = {}) {
@@ -1951,6 +2085,7 @@ function updateSummary() {
   if (!serviceSelect || !unitsInput) return 0;
 
   const serviceKey = serviceSelect.value;
+  const walking = serviceKey === "walking";
   const service = serviceKey ? serviceRates[serviceKey] : 0;
   const isCustomQuote = false;
   const units = calculateBookingUnits();
@@ -1988,6 +2123,8 @@ function updateSummary() {
   if (summaryNights) summaryNights.textContent = unitsLabel(units, serviceKey);
   if (summaryAfterFee) summaryAfterFee.textContent = currency(after);
   if (summaryAdditionalPets) summaryAdditionalPets.textContent = currency(additionalPetsTotal);
+  summaryAfterFee?.closest(".summary-line")?.toggleAttribute("hidden", walking);
+  summaryAdditionalPets?.closest(".summary-line")?.toggleAttribute("hidden", walking);
   if (summaryTotal) summaryTotal.textContent = totalLabel;
   if (summaryDepositDesktop) summaryDepositDesktop.textContent = depositLabel;
   if (summaryRemainingDesktop) summaryRemainingDesktop.textContent = remainingLabel;
@@ -2002,6 +2139,8 @@ function updateSummary() {
   if (mobileSummaryDates) mobileSummaryDates.textContent = datesLabel();
   if (mobileSummaryAfterFee) mobileSummaryAfterFee.textContent = currency(after);
   if (mobileSummaryAdditionalPets) mobileSummaryAdditionalPets.textContent = currency(additionalPetsTotal);
+  mobileSummaryAfterFee?.closest("div")?.toggleAttribute("hidden", walking);
+  mobileSummaryAdditionalPets?.closest("div")?.toggleAttribute("hidden", walking);
 
   if (estimatedTotalField) {
     estimatedTotalField.value = totalLabel;
@@ -2137,14 +2276,19 @@ accountDogSelect?.addEventListener("change", () => {
   }
 });
 
-serviceSelect?.addEventListener("change", updateSummary);
+serviceSelect?.addEventListener("change", updateServiceSpecificFields);
 dropoffDateInput?.addEventListener("change", updateSummary);
 pickupDateInput?.addEventListener("change", updateSummary);
+arrivalTimeInput?.addEventListener("change", updateSummary);
 departureTimeInput?.addEventListener("input", updateSummary);
 departureTimeInput?.addEventListener("change", updateSummary);
+preferredWalkingTimeInput?.addEventListener("change", updateSummary);
 additionalDogsInput?.addEventListener("input", updateSummary);
 additionalCatsInput?.addEventListener("input", updateSummary);
 longStayInput?.addEventListener("change", updateSummary);
+paymentMethodInputs.forEach((input) => {
+  input.addEventListener("change", updatePaymentMethodDisplay);
+});
 vaccinationRecordsInput?.addEventListener("change", () => {
   resetUploadProgress();
   validateVaccinationFiles();
@@ -2247,7 +2391,11 @@ bookingForm?.addEventListener("submit", async (event) => {
       "bookingSuccess",
       getAccountBookingHeaders(),
     );
-    await startStripePayment(payload);
+    if (selectedPaymentMethod() === "zelle") {
+      showManualPaymentPending(payload);
+    } else {
+      await startStripePayment(payload);
+    }
   } catch (error) {
     bookingStatus.textContent = error.message || t("bookingError");
   } finally {
@@ -2294,5 +2442,10 @@ dogProfileSkip?.addEventListener("click", () => {
   window.closeSiteModal(dogProfileSkip);
 });
 
+populateTimeSelect(arrivalTimeInput);
+populateTimeSelect(departureTimeInput);
+populateTimeSelect(preferredWalkingTimeInput);
+updatePaymentMethodDisplay();
+updateServiceSpecificFields();
 applyLanguage();
 initializeCustomerAuth();

@@ -56,6 +56,7 @@ module.exports = async function handler(req, res) {
     const session = await stripe.checkout.sessions.create({
       ui_mode: "embedded",
       mode: "payment",
+      payment_method_types: ["card"],
       customer_email: customerEmail,
       return_url: `${origin}/payment-success.html?session_id={CHECKOUT_SESSION_ID}`,
       line_items: [

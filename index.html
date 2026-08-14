@@ -862,14 +862,24 @@
                     <strong id="bookingLockedDogs">1 dog</strong>
                   </div>
                 </div>
-                <div class="booking-fields stay-grid wide-field">
-                  <label>
+                <div class="booking-fields stay-grid wide-field" id="stayTimeFields">
+                  <label class="boarding-daycare-time">
                     <span data-i18n="fieldArrivalTime">Arrival time (optional)</span>
-                    <input name="arrivalTime" type="time" />
+                    <select name="arrivalTime" id="arrivalTime">
+                      <option value="" data-i18n="optionSelect">Select</option>
+                    </select>
                   </label>
-                  <label>
+                  <label class="boarding-daycare-time">
                     <span data-i18n="fieldDepartureTime">Pick-up time</span>
-                    <input name="departureTime" id="departureTime" type="time" required />
+                    <select name="departureTime" id="departureTime" required>
+                      <option value="" data-i18n="optionSelect">Select</option>
+                    </select>
+                  </label>
+                  <label class="walking-only" hidden>
+                    <span data-i18n="fieldPreferredWalkingTime">Preferred Walking Time</span>
+                    <select name="preferredWalkingTime" id="preferredWalkingTime">
+                      <option value="" data-i18n="optionSelect">Select</option>
+                    </select>
                   </label>
                   <p class="pickup-policy-note wide-field" data-i18n="pickupPolicyNote">
                     Pick-ups after 12:00 PM incur a $25 late pick-up fee. Pick-ups after 6:00 PM are charged as an additional day.
@@ -880,14 +890,35 @@
                   <input name="units" id="unitsInput" type="number" min="1" value="1" readonly />
                 </label>
                 <input name="additionalDogs" id="additionalDogs" type="hidden" value="0" />
-                <label>
+                <label class="additional-cats-field">
                   <span data-i18n="fieldCats">Additional cats</span>
                   <input name="additionalCats" id="additionalCats" type="number" min="0" value="0" />
                 </label>
-                <label class="checkbox-line">
+                <label class="checkbox-line long-stay-field">
                   <input name="longStay" id="longStay" type="checkbox" />
                   <span data-i18n="fieldLongStay">Long stay request</span>
                 </label>
+                <div class="payment-method-options wide-field">
+                  <p class="summary-kicker" data-i18n="paymentMethodTitle">Deposit payment</p>
+                  <label class="payment-method-option">
+                    <input name="paymentMethod" type="radio" value="stripe" checked />
+                    <span>
+                      <strong data-i18n="paymentMethodCard">Card / Apple Pay / Google Pay</strong>
+                      <small data-i18n="paymentMethodCardHelp">Secure online deposit through Stripe.</small>
+                    </span>
+                  </label>
+                  <label class="payment-method-option">
+                    <input name="paymentMethod" type="radio" value="zelle" />
+                    <span>
+                      <strong data-i18n="paymentMethodZelle">Zelle</strong>
+                      <small data-i18n="paymentMethodZelleHelp">Send the deposit manually. Your request stays pending until confirmed.</small>
+                    </span>
+                  </label>
+                  <div class="zelle-instructions" id="zelleInstructions" hidden>
+                    <strong data-i18n="zelleInstructionsTitle">Zelle instructions</strong>
+                    <p data-i18n="zelleInstructionsText">Send your deposit to info@shingospalace.com and include your dog's name in the memo. We will manually confirm your payment and contact you shortly.</p>
+                  </div>
+                </div>
                 <label class="checkbox-line required-checkbox wide-field">
                   <input name="emergencyAuthorization" id="emergencyAuthorization" type="checkbox" required />
                   <span data-i18n="fieldEmergencyAuthorization">I authorize Shingo's Palace to seek veterinary care in case of an emergency if I cannot be reached. I understand that all veterinary expenses are my responsibility.</span>
@@ -963,6 +994,12 @@
               <strong data-i18n="paymentSuccessTitle">Deposit received.</strong>
               <p data-i18n="paymentSuccessText">
                 Thank you. Your reservation request and deposit were received successfully.
+              </p>
+            </div>
+            <div class="payment-confirmation manual-payment-confirmation" id="manualPaymentConfirmation" hidden>
+              <strong data-i18n="manualPaymentTitle">Booking request saved.</strong>
+              <p data-i18n="manualPaymentText">
+                Your request is pending manual Zelle confirmation. Please send your deposit and we will contact you shortly.
               </p>
             </div>
             <div class="stripe-checkout-shell" id="stripeCheckout">

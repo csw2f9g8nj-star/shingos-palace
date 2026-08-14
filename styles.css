@@ -3106,6 +3106,79 @@ h2 {
   color: var(--muted);
 }
 
+.payment-method-options {
+  display: grid;
+  gap: 12px;
+}
+
+.payment-method-options .summary-kicker {
+  margin: 0 0 2px;
+}
+
+.payment-method-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid rgba(39, 50, 47, 0.12);
+  border-radius: 18px;
+  background: rgba(255, 252, 246, 0.86);
+  cursor: pointer;
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.payment-method-option:hover {
+  border-color: rgba(74, 96, 78, 0.28);
+  box-shadow: 0 12px 28px rgba(43, 45, 39, 0.07);
+  transform: translateY(-1px);
+}
+
+.payment-method-option input {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  accent-color: var(--sage-deep);
+}
+
+.payment-method-option strong {
+  display: block;
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: 1rem;
+}
+
+.payment-method-option small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.zelle-instructions {
+  padding: 14px 16px;
+  border: 1px solid rgba(35, 134, 128, 0.18);
+  border-radius: 18px;
+  background: rgba(222, 240, 235, 0.58);
+  color: var(--ink);
+}
+
+.zelle-instructions[hidden] {
+  display: none;
+}
+
+.zelle-instructions strong {
+  display: block;
+  margin-bottom: 4px;
+  font-family: var(--display);
+}
+
+.zelle-instructions p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.52;
+}
+
 .dog-profile-cta {
   align-items: center;
   grid-template-columns: minmax(0, 1fr) auto;
