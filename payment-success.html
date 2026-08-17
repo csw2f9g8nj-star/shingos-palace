@@ -18,14 +18,14 @@
 
         <div class="payment-success-state" id="paymentLoadingState">
           <p class="summary-kicker">Secure Payment</p>
-          <h1>Confirming your deposit...</h1>
+          <h1>Confirming your payment...</h1>
           <p>One moment while we verify your Stripe payment securely.</p>
         </div>
 
         <div class="payment-success-state" id="paymentPaidState" hidden>
-          <p class="summary-kicker">Deposit received</p>
-          <h1>Thank you! Your deposit has been received. 🐾</h1>
-          <p>
+          <p class="summary-kicker" id="paymentSuccessKicker">Deposit received</p>
+          <h1 id="paymentSuccessHeading">Thank you! Your deposit has been received. 🐾</h1>
+          <p id="paymentSuccessIntro">
             Your booking request has been saved and your spot is now being held. We'll contact you shortly to confirm the reservation details.
           </p>
 
@@ -43,11 +43,11 @@
               <strong id="successDates">-</strong>
             </div>
             <div>
-              <span>Deposit paid</span>
+              <span id="successDepositLabel">Deposit paid</span>
               <strong id="successDeposit">-</strong>
             </div>
             <div>
-              <span>Remaining balance</span>
+              <span id="successRemainingLabel">Remaining balance</span>
               <strong id="successRemaining">-</strong>
             </div>
           </div>

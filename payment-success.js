@@ -26,6 +26,11 @@ const successService = document.querySelector("#successService");
 const successDogName = document.querySelector("#successDogName");
 const successDates = document.querySelector("#successDates");
 const successDeposit = document.querySelector("#successDeposit");
+const paymentSuccessKicker = document.querySelector("#paymentSuccessKicker");
+const paymentSuccessHeading = document.querySelector("#paymentSuccessHeading");
+const paymentSuccessIntro = document.querySelector("#paymentSuccessIntro");
+const successDepositLabel = document.querySelector("#successDepositLabel");
+const successRemainingLabel = document.querySelector("#successRemainingLabel");
 const successRemaining = document.querySelector("#successRemaining");
 const successOwnerId = document.querySelector("#successOwnerId");
 const successDogId = document.querySelector("#successDogId");
@@ -174,10 +179,25 @@ async function verifyPayment() {
       throw new Error(payload.error || "The payment could not be confirmed.");
     }
 
+    const isBalancePayment = payload.paymentType === "balance";
+
+    if (paymentSuccessKicker) paymentSuccessKicker.textContent = isBalancePayment ? "Balance paid" : "Deposit received";
+    if (paymentSuccessHeading) {
+      paymentSuccessHeading.textContent = isBalancePayment
+        ? "Thank you! Your remaining balance has been paid. 🐾"
+        : "Thank you! Your deposit has been received. 🐾";
+    }
+    if (paymentSuccessIntro) {
+      paymentSuccessIntro.textContent = isBalancePayment
+        ? "Your reservation is now marked as fully paid. We look forward to welcoming your pet soon."
+        : "Your booking request has been saved and your spot is now being held. We'll contact you shortly to confirm the reservation details.";
+    }
+    if (successDepositLabel) successDepositLabel.textContent = isBalancePayment ? "Balance paid" : "Deposit paid";
+    if (successRemainingLabel) successRemainingLabel.textContent = isBalancePayment ? "Remaining balance" : "Remaining balance";
     if (successService) successService.textContent = serviceLabel(payload.service);
     if (successDogName) successDogName.textContent = payload.dogName || "-";
     if (successDates) successDates.textContent = payload.dates || "-";
-    if (successDeposit) successDeposit.textContent = payload.depositPaid || "-";
+    if (successDeposit) successDeposit.textContent = isBalancePayment ? payload.balancePaid || "-" : payload.depositPaid || "-";
     if (successRemaining) successRemaining.textContent = payload.remainingBalance || "-";
     if (successOwnerId) successOwnerId.value = payload.ownerId || "";
     if (successDogId) successDogId.value = payload.dogId || "";
@@ -186,6 +206,8 @@ async function verifyPayment() {
     if (successAccountEmail) {
       successAccountEmail.textContent = verifiedOwnerEmail ? `We'll send the secure link to ${verifiedOwnerEmail}.` : "";
     }
+    if (successDogProfileCta) successDogProfileCta.hidden = isBalancePayment;
+    if (successDogProfileForm) successDogProfileForm.hidden = true;
     if (successAccountCta) successAccountCta.hidden = !verifiedOwnerEmail;
 
     showState("paid");

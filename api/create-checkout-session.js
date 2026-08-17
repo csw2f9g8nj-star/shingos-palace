@@ -14,16 +14,27 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const { bookingId } = req.body || {};
+    const { bookingId, paymentType = "deposit" } = req.body || {};
     if (!bookingId) {
       throw publicApiError("Missing booking ID.", 400, "missing_booking_id");
     }
 
     const supabase = getAdminClient();
-    const { data: booking, error } = await supabase
-      .from("bookings")
-      .select(
-        `
+    const isBalancePayment = paymentType === "balance";
+    const bookingSelect = isBalancePayment
+      ? `
+        id,
+        service,
+        dropoff_date,
+        pickup_date,
+        estimated_total,
+        deposit_due_today,
+        remaining_balance,
+        balance_payment_status,
+        owner:owners(first_name,last_name,email),
+        dog:dogs(name)
+      `
+      : `
         id,
         service,
         dropoff_date,
@@ -33,18 +44,27 @@ module.exports = async function handler(req, res) {
         remaining_balance,
         owner:owners(first_name,last_name,email),
         dog:dogs(name)
-      `,
-      )
-      .eq("id", bookingId)
-      .single();
+      `;
+
+    const { data: booking, error } = await supabase.from("bookings").select(bookingSelect).eq("id", bookingId).single();
 
     if (error || !booking) {
       throw publicApiError("We could not find this booking request.", 404, "booking_not_found");
     }
 
-    const depositCents = amountToCents(booking.deposit_due_today);
-    if (!depositCents) {
-      throw publicApiError("This booking does not have a valid deposit amount.", 400, "invalid_deposit");
+    if (isBalancePayment && booking.balance_payment_status === "paid") {
+      throw publicApiError("The remaining balance for this booking has already been paid.", 409, "balance_already_paid");
+    }
+
+    const amountCents = isBalancePayment ? amountToCents(booking.remaining_balance) : amountToCents(booking.deposit_due_today);
+    if (!amountCents) {
+      throw publicApiError(
+        isBalancePayment
+          ? "This booking does not have a valid remaining balance."
+          : "This booking does not have a valid deposit amount.",
+        400,
+        isBalancePayment ? "invalid_remaining_balance" : "invalid_deposit",
+      );
     }
 
     const stripe = getStripeClient();
@@ -52,6 +72,7 @@ module.exports = async function handler(req, res) {
     const customerEmail = booking.owner?.email || undefined;
     const dogName = booking.dog?.name || "Guest dog";
     const serviceLabel = booking.service ? booking.service.charAt(0).toUpperCase() + booking.service.slice(1) : "Booking";
+    const paymentLabel = isBalancePayment ? "Remaining Balance" : "Deposit";
 
     const session = await stripe.checkout.sessions.create({
       ui_mode: "embedded",
@@ -64,9 +85,9 @@ module.exports = async function handler(req, res) {
           quantity: 1,
           price_data: {
             currency: "usd",
-            unit_amount: depositCents,
+            unit_amount: amountCents,
             product_data: {
-              name: `Shingo's Palace ${serviceLabel} Deposit`,
+              name: `Shingo's Palace ${serviceLabel} ${paymentLabel}`,
               description: `${dogName} · ${booking.dropoff_date || ""} to ${booking.pickup_date || ""}`,
             },
           },
@@ -74,6 +95,7 @@ module.exports = async function handler(req, res) {
       ],
       metadata: {
         booking_id: booking.id,
+        payment_type: isBalancePayment ? "balance" : "deposit",
         dog_name: dogName,
         estimated_total: booking.estimated_total || "",
         deposit_due_today: booking.deposit_due_today || "",
@@ -81,20 +103,26 @@ module.exports = async function handler(req, res) {
       },
     });
 
-    const { error: updateError } = await supabase
-      .from("bookings")
-      .update({
-        stripe_checkout_session_id: session.id,
-        payment_status: "pending",
-        status: "deposit_pending",
-      })
-      .eq("id", booking.id);
+    const updatePayload = isBalancePayment
+      ? {
+          stripe_balance_checkout_session_id: session.id,
+          balance_payment_status: "pending",
+        }
+      : {
+          stripe_checkout_session_id: session.id,
+          payment_status: "pending",
+          status: "deposit_pending",
+        };
+
+    const { error: updateError } = await supabase.from("bookings").update(updatePayload).eq("id", booking.id);
 
     if (updateError) {
       throw publicApiError(
-        "We created the Stripe payment, but could not link it to the booking. Please check the bookings payment columns.",
+        isBalancePayment
+          ? "We created the balance payment, but could not link it to the booking. Please run the remaining balance payment migration in Supabase."
+          : "We created the Stripe payment, but could not link it to the booking. Please check the bookings payment columns.",
         500,
-        "payment_link_failed",
+        isBalancePayment ? "balance_payment_link_failed" : "payment_link_failed",
       );
     }
 
@@ -102,6 +130,7 @@ module.exports = async function handler(req, res) {
       ok: true,
       sessionId: session.id,
       clientSecret: session.client_secret,
+      paymentType: isBalancePayment ? "balance" : "deposit",
     });
   } catch (error) {
     handleApiError(res, error);

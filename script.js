@@ -34,6 +34,8 @@ const translations = {
     accountRecordsPending: "Pending",
     accountRecordsSubmitted: "Submitted",
     accountBookAgain: "Book Again",
+    accountPayBalance: "Pay remaining balance",
+    accountFullyPaid: "Fully paid",
     accountAddDog: "Add Another Dog",
     accountSaveDog: "Save Dog",
     accountDogSaved: "Dog added to your account.",
@@ -396,6 +398,9 @@ const translations = {
     summaryGuests: "Guests",
     summaryDeposit: "Deposit due today",
     summaryRemaining: "Remaining balance",
+    summaryRemainingCheckin: "Remaining balance due at check-in",
+    summaryRemainingFirstService: "Remaining balance due before first service",
+    summaryRemainingPaid: "Remaining balance: PAID ✓",
     summaryViewDetails: "View details",
     summaryHideDetails: "Hide details",
     oneNight: "1 night",
@@ -479,6 +484,8 @@ const translations = {
     accountRecordsPending: "Pendiente",
     accountRecordsSubmitted: "Enviado",
     accountBookAgain: "Reservar de nuevo",
+    accountPayBalance: "Pagar saldo restante",
+    accountFullyPaid: "Reserva pagada completa",
     accountAddDog: "Agregar otro perro",
     accountSaveDog: "Guardar perro",
     accountDogSaved: "Perro agregado a tu cuenta.",
@@ -841,6 +848,9 @@ const translations = {
     summaryGuests: "Huéspedes",
     summaryDeposit: "Depósito hoy",
     summaryRemaining: "Saldo restante",
+    summaryRemainingCheckin: "Saldo restante a pagar en check-in",
+    summaryRemainingFirstService: "Saldo restante a pagar antes del primer servicio",
+    summaryRemainingPaid: "Saldo restante: PAGADO ✓",
     summaryViewDetails: "Ver detalles",
     summaryHideDetails: "Ocultar detalles",
     oneNight: "1 noche",
@@ -1146,6 +1156,8 @@ const mobileSummaryService = document.querySelector("#mobileSummaryService");
 const mobileSummaryNights = document.querySelector("#mobileSummaryNights");
 const mobileSummaryTotal = document.querySelector("#mobileSummaryTotal");
 const mobileSummaryDeposit = document.querySelector("#mobileSummaryDeposit");
+const summaryRemainingLabel = document.querySelector("#summaryRemainingLabel");
+const mobileSummaryRemainingLabel = document.querySelector("#mobileSummaryRemainingLabel");
 const mobileSummaryRemaining = document.querySelector("#mobileSummaryRemaining");
 const mobileSummaryToggle = document.querySelector("#mobileSummaryToggle");
 const mobileSummaryAction = document.querySelector("#mobileSummaryAction");
@@ -1666,12 +1678,29 @@ function bookingIsUpcoming(booking) {
   return new Date(`${booking.pickupDate}T00:00:00`) >= today;
 }
 
+function remainingBalanceLabelForService(service) {
+  return service === "walking" ? t("summaryRemainingFirstService") : t("summaryRemainingCheckin");
+}
+
 function bookingCardMarkup(booking, dogName) {
+  const balancePaid = booking.balancePaymentStatus === "paid";
+  const hasRemainingBalance = booking.remainingBalance && booking.remainingBalance !== "$0" && booking.remainingBalance !== "$0.00";
+  const depositStarted = ["deposit_paid", "paid_in_full"].includes(booking.paymentStatus) || booking.depositPaidAmount;
+  const balanceLine = balancePaid
+    ? t("summaryRemainingPaid")
+    : `${remainingBalanceLabelForService(booking.service)}: ${booking.remainingBalance || "-"}`;
+  const balanceAction =
+    !balancePaid && hasRemainingBalance && depositStarted
+      ? `<a class="ghost-button account-pay-balance" href="balance-payment.html?booking_id=${encodeURIComponent(booking.id)}">${t("accountPayBalance")}</a>`
+      : `<small>${balancePaid ? t("accountFullyPaid") : ""}</small>`;
+
   return `
     <article class="account-reservation-card">
       <strong>${serviceLabel(booking.service)} · ${dogName}</strong>
       <span>${booking.dropoffDate || t("summaryDatesEmpty")} → ${booking.pickupDate || ""}</span>
       <small>${booking.paymentStatus || booking.status || ""}${booking.depositPaidAmount ? ` · ${booking.depositPaidAmount}` : ""}</small>
+      <span>${balanceLine}</span>
+      ${balanceAction}
     </article>
   `;
 }
@@ -2127,6 +2156,7 @@ function updateSummary() {
   summaryAdditionalPets?.closest(".summary-line")?.toggleAttribute("hidden", walking);
   if (summaryTotal) summaryTotal.textContent = totalLabel;
   if (summaryDepositDesktop) summaryDepositDesktop.textContent = depositLabel;
+  if (summaryRemainingLabel) summaryRemainingLabel.textContent = remainingBalanceLabelForService(serviceKey);
   if (summaryRemainingDesktop) summaryRemainingDesktop.textContent = remainingLabel;
   if (summaryLongStay) summaryLongStay.textContent = longStayInput?.checked ? t("summaryLongStay") : "";
 
@@ -2134,6 +2164,7 @@ function updateSummary() {
   if (mobileSummaryNights) mobileSummaryNights.textContent = unitsLabel(units, serviceKey);
   if (mobileSummaryTotal) mobileSummaryTotal.textContent = totalLabel;
   if (mobileSummaryDeposit) mobileSummaryDeposit.textContent = depositLabel;
+  if (mobileSummaryRemainingLabel) mobileSummaryRemainingLabel.textContent = remainingBalanceLabelForService(serviceKey);
   if (mobileSummaryRemaining) mobileSummaryRemaining.textContent = remainingLabel;
   if (mobileSummaryDogCount) mobileSummaryDogCount.textContent = dogsLabel(totalDogs);
   if (mobileSummaryDates) mobileSummaryDates.textContent = datesLabel();

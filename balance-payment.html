@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pay Remaining Balance | Shingo's Palace</title>
+    <meta name="robots" content="noindex" />
+    <link rel="icon" type="image/jpeg" href="assets/logo-shingos-palace.jpeg" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="payment-success-page">
+      <section class="payment-success-card balance-payment-card">
+        <a class="payment-success-brand" href="index.html" aria-label="Shingo's Palace home">
+          <img src="assets/logo-shingos-palace.jpeg" alt="Shingo's Palace Pet Hotel logo" />
+          <span>Shingo's Palace</span>
+        </a>
+
+        <div class="payment-success-state">
+          <p class="summary-kicker">Secure Payment</p>
+          <h1>Pay your remaining balance</h1>
+          <p id="balancePaymentIntro">
+            Loading your secure payment link...
+          </p>
+        </div>
+
+        <div class="stripe-checkout-shell balance-checkout-shell" id="balanceStripeCheckout">
+          <p>Loading secure payment form...</p>
+        </div>
+        <p class="status-line" id="balancePaymentStatus" aria-live="polite"></p>
+      </section>
+    </main>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="balance-payment.js"></script>
+  </body>
+</html>
