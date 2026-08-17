@@ -341,6 +341,9 @@ const translations = {
     fieldPet: "Pet's Name",
     fieldPetType: "Pet type",
     fieldBreed: "Breed",
+    fieldBreedOther: "Please specify breed",
+    breedSearchHelp: "Start typing to search by breed.",
+    breedInvalid: "Please select a breed from the list or choose Other.",
     fieldAge: "Age (optional)",
     fieldWeight: "Weight (optional)",
     fieldSex: "Sex (optional)",
@@ -450,6 +453,9 @@ const translations = {
     multipleDays: "days",
     oneVisit: "1 visit",
     multipleVisits: "visits",
+    rateNight: "night",
+    rateDay: "day",
+    rateVisit: "visit",
     oneDog: "1 dog",
     multipleDogs: "dogs",
     oneCat: "1 cat",
@@ -838,6 +844,9 @@ const translations = {
     fieldPet: "Nombre de la mascota",
     fieldPetType: "Tipo de mascota",
     fieldBreed: "Raza",
+    fieldBreedOther: "Especificá la raza",
+    breedSearchHelp: "Empezá a escribir para buscar la raza.",
+    breedInvalid: "Seleccioná una raza de la lista o elegí Other.",
     fieldAge: "Edad (opcional)",
     fieldWeight: "Peso (opcional)",
     fieldSex: "Sexo (opcional)",
@@ -947,6 +956,9 @@ const translations = {
     multipleDays: "días",
     oneVisit: "1 visita",
     multipleVisits: "visitas",
+    rateNight: "noche",
+    rateDay: "día",
+    rateVisit: "visita",
     oneDog: "1 perro",
     multipleDogs: "perros",
     oneCat: "1 gato",
@@ -1001,6 +1013,176 @@ const serviceRates = {
   walking: 18,
   grooming: 30,
 };
+
+const commonBreedOptions = ["Mixed Breed", "Unknown", "Other"];
+const dogBreeds = [
+  "Affenpinscher",
+  "Afghan Hound",
+  "Airedale Terrier",
+  "Akita",
+  "Alaskan Malamute",
+  "American Bulldog",
+  "American Bully",
+  "American Eskimo Dog",
+  "American Foxhound",
+  "American Pit Bull Terrier",
+  "American Staffordshire Terrier",
+  "Australian Cattle Dog",
+  "Australian Labradoodle",
+  "Australian Shepherd",
+  "Aussiedoodle",
+  "Basenji",
+  "Basset Hound",
+  "Beagle",
+  "Bearded Collie",
+  "Beauceron",
+  "Belgian Malinois",
+  "Bernese Mountain Dog",
+  "Bernedoodle",
+  "Biewer Terrier",
+  "Bichon Frise",
+  "Black and Tan Coonhound",
+  "Bloodhound",
+  "Bluetick Coonhound",
+  "Border Collie",
+  "Boston Terrier",
+  "Boxer",
+  "Boykin Spaniel",
+  "Brittany",
+  "Brussels Griffon",
+  "Bull Terrier",
+  "Bulldog",
+  "Bullmastiff",
+  "Cairn Terrier",
+  "Cane Corso",
+  "Cardigan Welsh Corgi",
+  "Catahoula Leopard Dog",
+  "Cavachon",
+  "Cavapoo",
+  "Cavalier King Charles Spaniel",
+  "Chihuahua",
+  "Chiweenie",
+  "Chinese Crested",
+  "Chow Chow",
+  "Cockapoo",
+  "Cocker Spaniel",
+  "Collie",
+  "Corgi",
+  "Dachshund",
+  "Dalmatian",
+  "Doberman Pinscher",
+  "Dogo Argentino",
+  "English Cocker Spaniel",
+  "English Mastiff",
+  "English Setter",
+  "English Springer Spaniel",
+  "Flat-Coated Retriever",
+  "French Bulldog",
+  "German Shepherd",
+  "German Shorthaired Pointer",
+  "Giant Schnauzer",
+  "Golden Retriever",
+  "Goldendoodle",
+  "Great Dane",
+  "Great Pyrenees",
+  "Greyhound",
+  "Havanese",
+  "Irish Setter",
+  "Italian Greyhound",
+  "Jack Russell Terrier",
+  "Labradoodle",
+  "Labrador Retriever",
+  "Lhasa Apso",
+  "Maltese",
+  "Maltipoo",
+  "Mastiff",
+  "Miniature American Shepherd",
+  "Miniature Pinscher",
+  "Miniature Poodle",
+  "Miniature Schnauzer",
+  "Morkie",
+  "Newfoundland",
+  "Old English Sheepdog",
+  "Papillon",
+  "Pembroke Welsh Corgi",
+  "Pekingese",
+  "Pomeranian",
+  "Poodle",
+  "Pomsky",
+  "Portuguese Water Dog",
+  "Presa Canario",
+  "Pug",
+  "Rat Terrier",
+  "Rhodesian Ridgeback",
+  "Rottweiler",
+  "Saint Bernard",
+  "Samoyed",
+  "Schipperke",
+  "Schnauzer",
+  "Scottish Terrier",
+  "Shar Pei",
+  "Shetland Sheepdog",
+  "Shiba Inu",
+  "Shih Tzu",
+  "Siberian Husky",
+  "Soft Coated Wheaten Terrier",
+  "Staffordshire Bull Terrier",
+  "Standard Poodle",
+  "Terrier",
+  "Toy Poodle",
+  "Vizsla",
+  "Weimaraner",
+  "Welsh Terrier",
+  "West Highland White Terrier",
+  "Whippet",
+  "Yorkshire Terrier",
+  "Yorkipoo",
+  ...commonBreedOptions,
+];
+const catBreeds = [
+  "Abyssinian",
+  "American Bobtail",
+  "American Curl",
+  "American Shorthair",
+  "American Wirehair",
+  "Balinese",
+  "Bengal",
+  "Birman",
+  "Bombay",
+  "British Shorthair",
+  "Burmese",
+  "Chartreux",
+  "Cornish Rex",
+  "Devon Rex",
+  "Domestic Longhair",
+  "Domestic Medium Hair",
+  "Domestic Shorthair",
+  "Egyptian Mau",
+  "Exotic Shorthair",
+  "Himalayan",
+  "Japanese Bobtail",
+  "Maine Coon",
+  "Manx",
+  "Norwegian Forest Cat",
+  "Ocicat",
+  "Oriental Shorthair",
+  "Persian",
+  "Ragdoll",
+  "Russian Blue",
+  "Savannah",
+  "Scottish Fold",
+  "Selkirk Rex",
+  "Siamese",
+  "Siberian",
+  "Singapura",
+  "Snowshoe",
+  "Somali",
+  "Sphynx",
+  "Tonkinese",
+  "Turkish Angora",
+  "Turkish Van",
+  ...commonBreedOptions,
+];
 
 const availabilityCapacity = {
   boarding: 10,
@@ -1267,6 +1449,7 @@ const mobileSummaryDogCount = document.querySelector("#mobileSummaryDogCount");
 const mobileSummaryDates = document.querySelector("#mobileSummaryDates");
 const mobileSummaryAfterFee = document.querySelector("#mobileSummaryAfterFee");
 const mobileSummaryAdditionalPets = document.querySelector("#mobileSummaryAdditionalPets");
+const mobileSummaryStayBreakdown = document.querySelector("#mobileSummaryStayBreakdown");
 const accountNavButton = document.querySelector("#accountNavButton");
 const accountSignedOut = document.querySelector("#accountSignedOut");
 const accountDashboard = document.querySelector("#accountDashboard");
@@ -1293,6 +1476,10 @@ const reviewRating = document.querySelector("#reviewRating");
 const reviewText = document.querySelector("#reviewText");
 const reviewSubmit = document.querySelector("#reviewSubmit");
 const reviewStatus = document.querySelector("#reviewStatus");
+const breedInputs = document.querySelectorAll('input[name="breed"]');
+const breedOtherInputs = document.querySelectorAll('input[name="breedOther"]');
+const bookingBreedOptions = document.querySelector("#bookingBreedOptions");
+const accountBreedOptions = document.querySelector("#accountBreedOptions");
 
 let currentLang = localStorage.getItem("shingos-language") || "en";
 let currentBookingStep = 1;
@@ -1533,6 +1720,17 @@ function unitsLabel(units, serviceKey = serviceSelect?.value) {
   return units === 1 ? t("oneNight") : `${units} ${t("multipleNights")}`;
 }
 
+function rateUnitLabel(serviceKey = serviceSelect?.value) {
+  if (serviceKey === "daycare") return t("rateDay");
+  if (serviceKey === "walking" || serviceKey === "grooming") return t("rateVisit");
+  return t("rateNight");
+}
+
+function stayPricingBreakdown(units, rate, subtotal, serviceKey = serviceSelect?.value) {
+  const safeUnits = Math.max(1, Number(units) || 1);
+  return `${unitsLabel(safeUnits, serviceKey)} × ${currency(rate)}/${rateUnitLabel(serviceKey)} = ${currency(subtotal)}`;
+}
+
 function getSelectedPetType() {
   return [...petTypeInputs].find((input) => input.checked)?.value || "dog";
 }
@@ -1565,6 +1763,91 @@ function dogsLabel(count) {
   return petsLabel(count, "dog");
 }
 
+function breedListForPetType(petType = getSelectedPetType()) {
+  return petType === "cat" ? catBreeds : dogBreeds;
+}
+
+function renderBreedOptions(datalist, petType) {
+  if (!datalist) return;
+  datalist.innerHTML = breedListForPetType(petType)
+    .map((breed) => `<option value="${escapeHtml(breed)}"></option>`)
+    .join("");
+}
+
+function breedIsValidForPetType(breed, petType) {
+  const normalizedBreed = String(breed || "").trim().toLowerCase();
+  if (!normalizedBreed) return true;
+  return breedListForPetType(petType).some((option) => option.toLowerCase() === normalizedBreed);
+}
+
+function canonicalBreedValue(breed, petType) {
+  const normalizedBreed = String(breed || "").trim().toLowerCase();
+  return breedListForPetType(petType).find((option) => option.toLowerCase() === normalizedBreed) || "";
+}
+
+function formPetType(form) {
+  if (form === bookingForm) return getSelectedPetType();
+  return form?.elements?.petType?.value === "cat" ? "cat" : "dog";
+}
+
+function updateBreedDatalists() {
+  renderBreedOptions(bookingBreedOptions, getSelectedPetType());
+  renderBreedOptions(accountBreedOptions, accountAddDogForm?.elements?.petType?.value || "dog");
+}
+
+function updateBreedOtherField(form) {
+  const breedInput = form?.elements?.breed;
+  const otherInput = form?.elements?.breedOther;
+  if (!breedInput || !otherInput) return;
+
+  breedInput.setCustomValidity("");
+  const showOther = breedInput.value.trim().toLowerCase() === "other";
+  const otherField = otherInput.closest(".breed-other-field");
+  if (otherField) otherField.hidden = !showOther;
+  otherInput.required = showOther;
+  otherInput.disabled = !showOther;
+  if (!showOther) otherInput.value = "";
+}
+
+function clearInvalidBreed(form) {
+  const breedInput = form?.elements?.breed;
+  if (!breedInput) return;
+
+  const petType = formPetType(form);
+  if (breedInput.value && !breedIsValidForPetType(breedInput.value, petType)) {
+    breedInput.value = "";
+  }
+  updateBreedOtherField(form);
+}
+
+function validateBreedSelection(form) {
+  const breedInput = form?.elements?.breed;
+  if (!breedInput) return true;
+
+  updateBreedOtherField(form);
+  const value = breedInput.value.trim();
+  if (!value || breedIsValidForPetType(value, formPetType(form))) {
+    breedInput.setCustomValidity("");
+    return true;
+  }
+
+  breedInput.setCustomValidity(t("breedInvalid"));
+  return false;
+}
+
+function finalBreedValue(form) {
+  const breedInput = form?.elements?.breed;
+  const otherInput = form?.elements?.breedOther;
+  if (!breedInput) return "";
+
+  if (breedInput.value.trim().toLowerCase() === "other" && otherInput?.value.trim()) {
+    return otherInput.value.trim();
+  }
+
+  const canonicalBreed = canonicalBreedValue(breedInput.value, formPetType(form));
+  return canonicalBreed || breedInput.value.trim();
+}
+
 function updatePetSpecificFields() {
   const petType = getSelectedPetType();
   const isDog = petType === "dog";
@@ -1579,6 +1862,8 @@ function updatePetSpecificFields() {
 
   if (profilePetType) profilePetType.value = petType;
   if (bookingLockedPetType) bookingLockedPetType.textContent = petTypeLabel(petType);
+  updateBreedDatalists();
+  clearInvalidBreed(bookingForm);
 }
 
 function formatTime12Hour(timeValue) {
@@ -1728,6 +2013,12 @@ function setBookingStep(step) {
 function validateBookingStep(step) {
   const section = document.querySelector(`[data-booking-step="${step}"]`);
   if (!section) return true;
+
+  const stepForm = section.closest("form");
+  if (section.querySelector('input[name="breed"]') && !validateBreedSelection(stepForm)) {
+    stepForm?.elements?.breed?.reportValidity();
+    return false;
+  }
 
   const fields = [...section.querySelectorAll("input, select, textarea")];
   const invalidField = fields.find((field) => !field.checkValidity());
@@ -2290,7 +2581,12 @@ function submitFormWithProgress(form, endpoint, statusElement, submitButton, suc
 
     request.addEventListener("error", () => reject(new Error(t("bookingError"))));
     request.addEventListener("abort", () => reject(new Error(t("bookingError"))));
-    request.send(new FormData(form));
+    const formData = new FormData(form);
+    const breedValue = finalBreedValue(form);
+    if (breedValue && formData.has("breed")) {
+      formData.set("breed", breedValue);
+    }
+    request.send(formData);
   });
 }
 
@@ -2389,6 +2685,7 @@ function updateSummary() {
   const remainingLabel = isCustomQuote ? t("customQuote") : currency(remaining);
   const totalPets = selectedPets;
   const additionalPetsTotal = dogs + cats;
+  const stayBreakdown = stayPricingBreakdown(units, service, base, serviceKey);
 
   if (additionalDogsInput) additionalDogsInput.value = extraDogs;
   if (petType === "cat" && additionalCatsInput) additionalCatsInput.value = extraCats;
@@ -2408,7 +2705,7 @@ function updateSummary() {
   if (summaryService) summaryService.textContent = serviceKey ? serviceLabel(serviceKey) : t("optionSelect");
   if (summaryDogCount) summaryDogCount.textContent = petsLabel(totalPets, petType);
   if (summaryDates) summaryDates.textContent = datesLabel();
-  if (summaryNights) summaryNights.textContent = unitsLabel(units, serviceKey);
+  if (summaryNights) summaryNights.textContent = stayBreakdown;
   if (summaryAfterFee) summaryAfterFee.textContent = currency(after);
   if (summaryAdditionalPets) summaryAdditionalPets.textContent = currency(additionalPetsTotal);
   summaryAfterFee?.closest(".summary-line")?.toggleAttribute("hidden", walking);
@@ -2421,6 +2718,7 @@ function updateSummary() {
 
   if (mobileSummaryService) mobileSummaryService.textContent = serviceKey ? serviceLabel(serviceKey) : t("optionSelect");
   if (mobileSummaryNights) mobileSummaryNights.textContent = unitsLabel(units, serviceKey);
+  if (mobileSummaryStayBreakdown) mobileSummaryStayBreakdown.textContent = stayBreakdown;
   if (mobileSummaryTotal) mobileSummaryTotal.textContent = totalLabel;
   if (mobileSummaryDeposit) mobileSummaryDeposit.textContent = depositLabel;
   if (mobileSummaryRemainingLabel) mobileSummaryRemainingLabel.textContent = remainingBalanceLabelForService(serviceKey);
@@ -2520,8 +2818,29 @@ accountAddDogToggle?.addEventListener("click", () => {
   accountAddDogForm.hidden = !accountAddDogForm.hidden;
 });
 
+accountAddDogForm?.elements?.petType?.addEventListener("change", () => {
+  updateBreedDatalists();
+  clearInvalidBreed(accountAddDogForm);
+});
+
+breedInputs.forEach((input) => {
+  input.addEventListener("input", () => {
+    const form = input.closest("form");
+    updateBreedOtherField(form);
+    validateBreedSelection(form);
+  });
+});
+
+breedOtherInputs.forEach((input) => {
+  input.addEventListener("input", () => {
+    const form = input.closest("form");
+    validateBreedSelection(form);
+  });
+});
+
 accountAddDogForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
+  validateBreedSelection(accountAddDogForm);
   if (!accountAddDogForm.checkValidity()) {
     accountAddDogForm.reportValidity();
     return;
@@ -2529,6 +2848,8 @@ accountAddDogForm?.addEventListener("submit", async (event) => {
 
   if (accountAddDogStatus) accountAddDogStatus.textContent = t("accountLoading");
   const formData = new FormData(accountAddDogForm);
+  const breedValue = finalBreedValue(accountAddDogForm);
+  if (breedValue) formData.set("breed", breedValue);
   const body = Object.fromEntries(formData.entries());
 
   try {
@@ -2539,6 +2860,8 @@ accountAddDogForm?.addEventListener("submit", async (event) => {
     });
     if (accountAddDogStatus) accountAddDogStatus.textContent = t("accountDogSaved");
     accountAddDogForm.reset();
+    updateBreedDatalists();
+    updateBreedOtherField(accountAddDogForm);
     accountAddDogForm.hidden = true;
     await loadCustomerAccount();
   } catch (error) {
@@ -2708,6 +3031,7 @@ bookingForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
   bookingStatus.textContent = "";
 
+  validateBreedSelection(bookingForm);
   if (!bookingForm.checkValidity()) {
     bookingForm.reportValidity();
     bookingStatus.textContent = t("bookingRequired");
@@ -2792,6 +3116,9 @@ dogProfileSkip?.addEventListener("click", () => {
 populateTimeSelect(arrivalTimeInput);
 populateTimeSelect(departureTimeInput);
 populateTimeSelect(preferredWalkingTimeInput);
+updateBreedDatalists();
+updateBreedOtherField(bookingForm);
+updateBreedOtherField(accountAddDogForm);
 updatePaymentMethodDisplay();
 updateServiceSpecificFields();
 applyLanguage();

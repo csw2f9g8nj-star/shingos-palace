@@ -890,9 +890,14 @@
                   <span data-i18n="fieldPet">Pet's Name</span>
                   <input name="dogName" type="text" required />
                 </label>
-                <label>
+                <label class="breed-field">
                   <span data-i18n="fieldBreed">Breed</span>
-                  <input name="breed" type="text" required />
+                  <input name="breed" type="text" list="bookingBreedOptions" autocomplete="off" required />
+                  <small data-i18n="breedSearchHelp">Start typing to search by breed.</small>
+                </label>
+                <label class="breed-other-field" hidden>
+                  <span data-i18n="fieldBreedOther">Please specify breed</span>
+                  <input name="breedOther" type="text" autocomplete="off" />
                 </label>
                 <label>
                   <span data-i18n="fieldSpayedNeutered">Spayed / Neutered</span>
@@ -1032,6 +1037,10 @@
               <div>
                 <span data-i18n="summaryDates">Dates</span>
                 <strong id="mobileSummaryDates">Select dates</strong>
+              </div>
+              <div>
+                <span data-i18n="summaryStay">Stay</span>
+                <strong id="mobileSummaryStayBreakdown">1 night × $50/night = $50</strong>
               </div>
               <div>
                 <span data-i18n="summaryPickupFee">Pick-up fee</span>
@@ -1331,9 +1340,14 @@
                   <option value="cat" data-i18n="optionCat">Cat</option>
                 </select>
               </label>
-              <label>
+              <label class="breed-field">
                 <span data-i18n="fieldBreed">Breed</span>
-                <input name="breed" type="text" required />
+                <input name="breed" type="text" list="accountBreedOptions" autocomplete="off" required />
+                <small data-i18n="breedSearchHelp">Start typing to search by breed.</small>
+              </label>
+              <label class="breed-other-field" hidden>
+                <span data-i18n="fieldBreedOther">Please specify breed</span>
+                <input name="breedOther" type="text" autocomplete="off" />
               </label>
               <label>
                 <span data-i18n="fieldSpayedNeutered">Spayed / Neutered</span>
@@ -1453,6 +1467,8 @@
       </div>
     </dialog>
 
+    <datalist id="bookingBreedOptions"></datalist>
+    <datalist id="accountBreedOptions"></datalist>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <script src="script.js" defer></script>
   </body>

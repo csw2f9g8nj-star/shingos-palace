@@ -3676,6 +3676,17 @@ h2 {
   line-height: 1.45;
 }
 
+.breed-field small {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 520;
+  line-height: 1.35;
+}
+
+.breed-other-field[hidden] {
+  display: none;
+}
+
 .booking-locked-summary {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -3952,6 +3963,8 @@ textarea {
 .booking-summary .summary-kicker,
 .booking-summary strong {
   color: #fff8ee;
+  text-align: right;
+  overflow-wrap: anywhere;
 }
 
 .summary-line {
