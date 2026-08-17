@@ -47,6 +47,10 @@ function requiresPickupTime(service) {
   return service !== "walking";
 }
 
+function normalizePetType(value) {
+  return normalizeField(value).toLowerCase() === "cat" ? "cat" : "dog";
+}
+
 async function insertSingle(supabase, table, payload, message) {
   const { data, error } = await supabase.from(table).insert(payload).select().single();
   if (error) {
@@ -167,8 +171,10 @@ async function handler(req, res) {
       emergency_contact: normalizeField(fields.emergencyContact),
     };
 
+    const petType = normalizePetType(fields.petType);
     const dogPayload = {
       name: normalizeField(fields.dogName),
+      pet_type: petType,
       breed: normalizeField(fields.breed),
       age: normalizeField(fields.age),
       weight: normalizeField(fields.weight),
@@ -194,6 +200,7 @@ async function handler(req, res) {
     const preferredWalkingTime = normalizeField(fields.preferredWalkingTime);
     const bookingPayload = {
       service,
+      pet_type: petType,
       dropoff_date: normalizeField(fields.dropoffDate) || null,
       pickup_date: normalizeField(fields.pickupDate) || null,
       arrival_time: service === "walking" ? (preferredWalkingTime || null) : normalizeField(fields.arrivalTime) || null,
@@ -275,6 +282,7 @@ async function handler(req, res) {
           .from("dogs")
           .update({
             name: dogPayload.name,
+            pet_type: dogPayload.pet_type,
             breed: dogPayload.breed,
             spayed_neutered: dogPayload.spayed_neutered,
           })
@@ -292,7 +300,7 @@ async function handler(req, res) {
           supabase,
           "dogs",
           { ...dogPayload, owner_id: owner.id },
-          "We could not save the dog profile. Please check the dogs table in Supabase.",
+          "We could not save the pet profile. Please check the dogs table in Supabase.",
         );
         created.dogId = dog.id;
       }

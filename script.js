@@ -19,17 +19,17 @@ const translations = {
     accountMyAccountNav: "My Account",
     accountKicker: "My Account",
     accountHeading: "A simpler way to book again.",
-    accountIntro: "Sign in with your email to see your dogs, reservations, vaccination status, and book again faster.",
+    accountIntro: "Sign in with your email to see your pets, reservations, vaccination status, and book again faster.",
     accountSendLink: "Send sign-in link",
     accountLinkSent: "Check your email for the secure sign-in link.",
     accountLoading: "Loading your account...",
     accountWelcome: "Welcome back",
-    accountPrivateNote: "Only your own dogs, reservations, and vaccination records are shown here.",
+    accountPrivateNote: "Only your own pets, reservations, and vaccination records are shown here.",
     accountSignOut: "Sign Out",
-    accountMyDogs: "My Dogs",
+    accountMyDogs: "My Pets",
     accountUpcoming: "Upcoming Reservations",
     accountPast: "Past Reservations",
-    accountDogProfile: "Dog Profile",
+    accountDogProfile: "Pet Profile",
     accountVaccinationStatus: "Vaccination Records",
     accountRecordsPending: "Pending",
     accountRecordsSubmitted: "Submitted",
@@ -41,15 +41,15 @@ const translations = {
     accountReviewPending: "Review pending approval",
     accountReviewApproved: "Review approved",
     accountReviewRejected: "Review not approved",
-    accountAddDog: "Add Another Dog",
-    accountSaveDog: "Save Dog",
-    accountDogSaved: "Dog added to your account.",
-    accountEmptyTitle: "No dog profiles yet.",
-    accountEmptyText: "Add your dog below or complete your first booking request.",
+    accountAddDog: "Add Another Pet",
+    accountSaveDog: "Save Pet",
+    accountDogSaved: "Pet added to your account.",
+    accountEmptyTitle: "No pet profiles yet.",
+    accountEmptyText: "Add your pet below or complete your first booking request.",
     accountNoReservations: "No reservations yet.",
-    accountExistingDogLabel: "Booking for a saved dog?",
-    accountNewDogOption: "New dog",
-    accountExistingDogHelp: "Choose a dog from My Account to preload their saved information.",
+    accountExistingDogLabel: "Booking for a saved pet?",
+    accountNewDogOption: "New pet",
+    accountExistingDogHelp: "Choose a pet from My Account to preload their saved information.",
     accountLoginUnavailable: "Customer login is unavailable right now. Please try again shortly.",
     explorePricing: "View Pricing",
     servicesTitle: "Services",
@@ -243,6 +243,25 @@ const translations = {
     publicReviewsIntro:
       "Warm words from families whose pets have stayed, played, and felt at home at Shingo's Palace.",
     publicReviewsEmpty: "Reviews from our guests will appear here soon.",
+    faqKicker: "Good to know",
+    faqHeading: "Frequently Asked Questions",
+    faqIntro: "Clear answers before your first stay, with anything policy-specific confirmed personally by Carla.",
+    faqVaccinesQuestion: "Are vaccination records required?",
+    faqVaccinesAnswer: "Yes. Current vaccination records are required before a reservation can be confirmed. You can submit the booking request first and send records later.",
+    faqPickupQuestion: "How do drop-off and pick-up times work?",
+    faqPickupAnswer: "Check-in times are flexible and scheduled individually with each family. Check-out is complimentary until 12:00 PM.",
+    faqLateQuestion: "What is the late pick-up policy?",
+    faqLateAnswer: "Pick-ups from 12:01 PM through 6:00 PM add a $25 late pick-up fee. Pick-ups after 6:00 PM are charged as an additional day.",
+    faqDepositQuestion: "How do deposits and remaining balances work?",
+    faqDepositAnswer: "A deposit is collected to hold the reservation. For Boarding and Daycare, the remaining balance is due at check-in. For Dog Walking, the remaining balance is due before the first scheduled service.",
+    faqCancellationQuestion: "What is the cancellation policy?",
+    faqCancellationAnswer: "The final cancellation policy still needs to be confirmed by Shingo's Palace before it is published.",
+    faqBringQuestion: "What should owners bring?",
+    faqBringAnswer: "A final packing list should be confirmed with Carla before arrival so each pet has exactly what they need for their stay.",
+    faqCatsQuestion: "Do you accept cats?",
+    faqCatsAnswer: "Yes. Shingo's Palace accepts dogs and cats, with pet-specific care routines and pricing.",
+    faqEmergencyQuestion: "What happens in an emergency?",
+    faqEmergencyAnswer: "The booking form includes a required veterinary authorization so Shingo's Palace can seek emergency care if the owner cannot be reached.",
     leaveReviewKicker: "Review",
     leaveReviewHeading: "Share your Shingo's Palace experience.",
     leaveReviewIntro: "Your review will be sent to Carla for approval before appearing publicly.",
@@ -257,8 +276,8 @@ const translations = {
     availabilityTitle: "Check Availability",
     availabilityHeading: "Check your dates first.",
     availabilityIntro: "See if we have space before completing a full reservation request.",
-    fieldNumberDogs: "Number of dogs",
-    fieldDogSize: "Dog size",
+    fieldNumberDogs: "Number of pets",
+    fieldDogSize: "Pet size",
     optionSmall: "Small",
     optionMedium: "Medium",
     optionLarge: "Large",
@@ -270,7 +289,7 @@ const translations = {
     availabilitySpots: "spots remaining",
     availabilitySpot: "spot remaining",
     availabilityAvailableMessage: "Great news!",
-    availabilityHostMessage: "We'd love to host your dog.",
+    availabilityHostMessage: "We'd love to host your pet.",
     availabilitySuitesMessage: "We currently have {count} suites available for your selected dates.",
     availabilityContinueMessage: "Continue to complete your reservation.",
     availabilityLimitedMessage: "This date is almost full. We recommend booking soon.",
@@ -294,7 +313,7 @@ const translations = {
     bookingAssistantText: "Check your dates before completing your booking request.",
     bookingStepContact: "Owner information",
     bookingStepContactHelp: "Tell us who is booking and how to reach you.",
-    bookingStepDog: "Dog information",
+    bookingStepDog: "Pet information",
     bookingStepDogHelp: "A few essential details help us prepare your reservation quickly.",
     bookingStepVet: "Veterinarian information",
     bookingStepVetHelp: "This helps us act quickly and responsibly if your dog ever needs care.",
@@ -305,7 +324,7 @@ const translations = {
     bookingStepReview: "Review & Payment",
     bookingStepReviewHelp: "Choose your stay details, review your estimate, and authorize emergency care.",
     progressOwner: "Owner",
-    progressPet: "Dog",
+    progressPet: "Pet",
     progressVet: "Veterinarian",
     progressStay: "Stay",
     progressReview: "Review",
@@ -319,7 +338,8 @@ const translations = {
     fieldEmail: "Email",
     fieldPhone: "Phone Number",
     fieldEmergencyContact: "Emergency Contact (optional)",
-    fieldPet: "Dog's Name",
+    fieldPet: "Pet's Name",
+    fieldPetType: "Pet type",
     fieldBreed: "Breed",
     fieldAge: "Age (optional)",
     fieldWeight: "Weight (optional)",
@@ -378,7 +398,7 @@ const translations = {
     paymentMethodZelle: "Zelle",
     paymentMethodZelleHelp: "Send the deposit manually. Your request stays pending until confirmed.",
     zelleInstructionsTitle: "Zelle instructions",
-    zelleInstructionsText: "Send your deposit to info@shingospalace.com and include your dog's name in the memo. We will manually confirm your payment and contact you shortly.",
+    zelleInstructionsText: "Send your deposit to info@shingospalace.com and include your pet's name in the memo. We will manually confirm your payment and contact you shortly.",
     manualPaymentTitle: "Booking request saved.",
     manualPaymentText: "Your request is pending manual Zelle confirmation. Please send your deposit and we will contact you shortly.",
     paymentLoading: "Loading secure payment form...",
@@ -388,15 +408,15 @@ const translations = {
     paymentSuccessText: "Thank you. Your reservation request and deposit were received successfully.",
     paymentVerifying: "Confirming your payment...",
     profileCtaKicker: "Next step",
-    profileCtaTitle: "Tell us more about your dog 🐾",
-    profileCtaText: "Help us get to know your dog so we can make their stay safe, comfortable and personalized.",
-    profileCtaButton: "Complete Dog Profile",
-    profileFollowupTitle: "Tell us more about your dog",
-    profileFollowupText: "Help us create your dog's profile so we can provide the safest and most personalized care possible.",
-    profileSave: "Save dog profile",
+    profileCtaTitle: "Tell us more about your pet 🐾",
+    profileCtaText: "Help us get to know your pet so we can make their stay safe, comfortable and personalized.",
+    profileCtaButton: "Complete Pet Profile",
+    profileFollowupTitle: "Tell us more about your pet",
+    profileFollowupText: "Help us create your pet's profile so we can provide the safest and most personalized care possible.",
+    profileSave: "Save pet profile",
     profileSaving: "Saving profile...",
     profileSkip: "Skip for now",
-    profileSuccess: "Thank you. Your dog's profile has been updated.",
+    profileSuccess: "Thank you. Your pet's profile has been updated.",
     profileSkipped: "No problem. We can collect those details later.",
     bookingConfigMissing: "Booking connection is unavailable. Please try again shortly.",
     bookingError: "Something went wrong. Please try again or email info@shingospalace.com.",
@@ -404,7 +424,7 @@ const translations = {
     bookingSelectionRequired: "Please check availability first so we can use the correct service and dates.",
     summaryLabel: "Reservation summary",
     summaryBase: "Base",
-    summaryDogCount: "Number of dogs",
+    summaryDogCount: "Number of pets",
     summaryDates: "Dates",
     summaryDatesEmpty: "Select dates",
     summaryPickupFee: "Pick-up fee",
@@ -432,11 +452,17 @@ const translations = {
     multipleVisits: "visits",
     oneDog: "1 dog",
     multipleDogs: "dogs",
+    oneCat: "1 cat",
+    multipleCats: "cats",
+    onePet: "1 pet",
+    multiplePets: "pets",
     summaryLongStay: "Long stays receive a custom quote after reviewing dates, pet type, and care needs.",
     customQuote: "Custom quote",
     paymentNote: "Card, Apple Pay, and Google Pay deposits are processed securely by Stripe. Zelle deposits are confirmed manually.",
     optionBoarding: "Boarding",
     optionSelect: "Select",
+    optionDog: "Dog",
+    optionCat: "Cat",
     optionFemale: "Female",
     optionMale: "Male",
     optionYes: "Yes",
@@ -490,17 +516,17 @@ const translations = {
     accountMyAccountNav: "Mi cuenta",
     accountKicker: "Mi cuenta",
     accountHeading: "Una forma más simple de volver a reservar.",
-    accountIntro: "Ingresá con tu email para ver tus perros, reservas, estado de vacunas y reservar de nuevo más rápido.",
+    accountIntro: "Ingresá con tu email para ver tus mascotas, reservas, estado de vacunas y reservar de nuevo más rápido.",
     accountSendLink: "Enviar link de acceso",
     accountLinkSent: "Revisá tu email para abrir el link seguro de acceso.",
     accountLoading: "Cargando tu cuenta...",
     accountWelcome: "Bienvenida de nuevo",
-    accountPrivateNote: "Acá solo se muestran tus propios perros, reservas y registros de vacunación.",
+    accountPrivateNote: "Acá solo se muestran tus propias mascotas, reservas y registros de vacunación.",
     accountSignOut: "Cerrar sesión",
-    accountMyDogs: "Mis perros",
+    accountMyDogs: "Mis mascotas",
     accountUpcoming: "Próximas reservas",
     accountPast: "Reservas anteriores",
-    accountDogProfile: "Perfil del perro",
+    accountDogProfile: "Perfil de mascota",
     accountVaccinationStatus: "Registros de vacunación",
     accountRecordsPending: "Pendiente",
     accountRecordsSubmitted: "Enviado",
@@ -512,15 +538,15 @@ const translations = {
     accountReviewPending: "Review pendiente de aprobación",
     accountReviewApproved: "Review aprobada",
     accountReviewRejected: "Review no aprobada",
-    accountAddDog: "Agregar otro perro",
-    accountSaveDog: "Guardar perro",
-    accountDogSaved: "Perro agregado a tu cuenta.",
-    accountEmptyTitle: "Todavía no hay perfiles de perros.",
-    accountEmptyText: "Agregá tu perro abajo o completá tu primera solicitud de reserva.",
+    accountAddDog: "Agregar otra mascota",
+    accountSaveDog: "Guardar mascota",
+    accountDogSaved: "Mascota agregada a tu cuenta.",
+    accountEmptyTitle: "Todavía no hay perfiles de mascotas.",
+    accountEmptyText: "Agregá tu mascota abajo o completá tu primera solicitud de reserva.",
     accountNoReservations: "Todavía no hay reservas.",
-    accountExistingDogLabel: "¿Reservás para un perro guardado?",
-    accountNewDogOption: "Perro nuevo",
-    accountExistingDogHelp: "Elegí un perro de Mi cuenta para precargar su información guardada.",
+    accountExistingDogLabel: "¿Reservás para una mascota guardada?",
+    accountNewDogOption: "Mascota nueva",
+    accountExistingDogHelp: "Elegí una mascota de Mi cuenta para precargar su información guardada.",
     accountLoginUnavailable: "El acceso de clientes no está disponible ahora. Intentá de nuevo pronto.",
     explorePricing: "Ver precios",
     servicesTitle: "Servicios",
@@ -714,6 +740,25 @@ const translations = {
     publicReviewsIntro:
       "Comentarios de familias cuyas mascotas se hospedaron, jugaron y se sintieron en casa en Shingo's Palace.",
     publicReviewsEmpty: "Las reviews de nuestros huéspedes van a aparecer aquí pronto.",
+    faqKicker: "Bueno saberlo",
+    faqHeading: "Preguntas frecuentes",
+    faqIntro: "Respuestas claras antes de la primera estadía, con cualquier política específica confirmada personalmente por Carla.",
+    faqVaccinesQuestion: "¿Los registros de vacunación son requeridos?",
+    faqVaccinesAnswer: "Sí. Los registros de vacunación vigentes son requeridos antes de confirmar una reserva. Podés enviar la solicitud primero y mandar los registros después.",
+    faqPickupQuestion: "¿Cómo funcionan los horarios de drop-off y pick-up?",
+    faqPickupAnswer: "Los horarios de check-in son flexibles y se coordinan individualmente con cada familia. El check-out está incluido sin cargo hasta las 12:00 PM.",
+    faqLateQuestion: "¿Cuál es la política de late pick-up?",
+    faqLateAnswer: "Los pick-ups desde las 12:01 PM hasta las 6:00 PM suman un cargo de $25. Los pick-ups después de las 6:00 PM se cobran como un día adicional.",
+    faqDepositQuestion: "¿Cómo funcionan los depósitos y saldos restantes?",
+    faqDepositAnswer: "Se cobra un depósito para guardar la reserva. Para Boarding y Daycare, el saldo restante se paga en el check-in. Para Paseo de perros, el saldo restante se paga antes del primer servicio programado.",
+    faqCancellationQuestion: "¿Cuál es la política de cancelación?",
+    faqCancellationAnswer: "La política final de cancelación todavía debe ser confirmada por Shingo's Palace antes de publicarse.",
+    faqBringQuestion: "¿Qué deberían traer los dueños?",
+    faqBringAnswer: "La lista final de cosas para traer debe confirmarse con Carla antes de la llegada para que cada mascota tenga exactamente lo que necesita.",
+    faqCatsQuestion: "¿Aceptan gatos?",
+    faqCatsAnswer: "Sí. Shingo's Palace acepta perros y gatos, con rutinas de cuidado y precios específicos para cada mascota.",
+    faqEmergencyQuestion: "¿Qué pasa en una emergencia?",
+    faqEmergencyAnswer: "El formulario de reserva incluye una autorización veterinaria requerida para que Shingo's Palace pueda buscar atención de emergencia si no se puede contactar al dueño.",
     leaveReviewKicker: "Review",
     leaveReviewHeading: "Compartí tu experiencia en Shingo's Palace.",
     leaveReviewIntro: "Tu review será enviada a Carla para aprobación antes de aparecer públicamente.",
@@ -728,8 +773,8 @@ const translations = {
     availabilityTitle: "Ver disponibilidad",
     availabilityHeading: "Primero revisá tus fechas.",
     availabilityIntro: "Confirmá si tenemos espacio antes de completar una solicitud de reserva.",
-    fieldNumberDogs: "Cantidad de perros",
-    fieldDogSize: "Tamaño del perro",
+    fieldNumberDogs: "Cantidad de mascotas",
+    fieldDogSize: "Tamaño de la mascota",
     optionSmall: "Pequeño",
     optionMedium: "Mediano",
     optionLarge: "Grande",
@@ -741,7 +786,7 @@ const translations = {
     availabilitySpots: "lugares disponibles",
     availabilitySpot: "lugar disponible",
     availabilityAvailableMessage: "¡Buenas noticias!",
-    availabilityHostMessage: "Nos encantaría recibir a tu perro.",
+    availabilityHostMessage: "Nos encantaría recibir a tu mascota.",
     availabilitySuitesMessage: "Actualmente tenemos {count} suites disponibles para las fechas seleccionadas.",
     availabilityContinueMessage: "Continuá para completar tu reserva.",
     availabilityLimitedMessage: "Esta fecha está casi completa. Recomendamos reservar pronto.",
@@ -765,7 +810,7 @@ const translations = {
     bookingAssistantText: "Revisá tus fechas antes de completar la solicitud de reserva.",
     bookingStepContact: "Información del dueño",
     bookingStepContactHelp: "Contanos quién reserva y cómo podemos contactarte.",
-    bookingStepDog: "Información del perro",
+    bookingStepDog: "Información de la mascota",
     bookingStepDogHelp: "Unos datos esenciales nos ayudan a preparar la reserva rápidamente.",
     bookingStepVet: "Información veterinaria",
     bookingStepVetHelp: "Esto nos ayuda a actuar rápido y responsablemente si tu perro necesita atención.",
@@ -776,7 +821,7 @@ const translations = {
     bookingStepReview: "Revisión y pago",
     bookingStepReviewHelp: "Elegí los detalles de la estadía, revisá el estimado y autorizá atención veterinaria de emergencia.",
     progressOwner: "Dueño",
-    progressPet: "Perro",
+    progressPet: "Mascota",
     progressVet: "Veterinario",
     progressStay: "Estadía",
     progressReview: "Revisión",
@@ -790,7 +835,8 @@ const translations = {
     fieldEmail: "Correo",
     fieldPhone: "Número de teléfono",
     fieldEmergencyContact: "Contacto de emergencia (opcional)",
-    fieldPet: "Nombre del perro",
+    fieldPet: "Nombre de la mascota",
+    fieldPetType: "Tipo de mascota",
     fieldBreed: "Raza",
     fieldAge: "Edad (opcional)",
     fieldWeight: "Peso (opcional)",
@@ -849,7 +895,7 @@ const translations = {
     paymentMethodZelle: "Zelle",
     paymentMethodZelleHelp: "Envía el depósito manualmente. Tu solicitud queda pendiente hasta confirmarlo.",
     zelleInstructionsTitle: "Instrucciones para Zelle",
-    zelleInstructionsText: "Envía tu depósito a info@shingospalace.com e incluye el nombre de tu perro en la nota. Confirmaremos el pago manualmente y te contactaremos pronto.",
+    zelleInstructionsText: "Envía tu depósito a info@shingospalace.com e incluye el nombre de tu mascota en la nota. Confirmaremos el pago manualmente y te contactaremos pronto.",
     manualPaymentTitle: "Solicitud de reserva guardada.",
     manualPaymentText: "Tu solicitud queda pendiente de confirmación manual por Zelle. Por favor envía el depósito y te contactaremos pronto.",
     paymentLoading: "Cargando formulario de pago seguro...",
@@ -859,15 +905,15 @@ const translations = {
     paymentSuccessText: "Gracias. Tu solicitud de reserva y depósito fueron recibidos correctamente.",
     paymentVerifying: "Confirmando tu pago...",
     profileCtaKicker: "Siguiente paso",
-    profileCtaTitle: "Contanos más sobre tu perro 🐾",
-    profileCtaText: "Ayudanos a conocer a tu perro para que su estadía sea segura, cómoda y personalizada.",
-    profileCtaButton: "Completar perfil del perro",
-    profileFollowupTitle: "Contanos más sobre tu perro",
-    profileFollowupText: "Ayudanos a crear el perfil de tu perro para brindarle el cuidado más seguro y personalizado posible.",
-    profileSave: "Guardar perfil del perro",
+    profileCtaTitle: "Contanos más sobre tu mascota 🐾",
+    profileCtaText: "Ayudanos a conocer a tu mascota para que su estadía sea segura, cómoda y personalizada.",
+    profileCtaButton: "Completar perfil de mascota",
+    profileFollowupTitle: "Contanos más sobre tu mascota",
+    profileFollowupText: "Ayudanos a crear el perfil de tu mascota para brindarle el cuidado más seguro y personalizado posible.",
+    profileSave: "Guardar perfil de mascota",
     profileSaving: "Guardando perfil...",
     profileSkip: "Saltar por ahora",
-    profileSuccess: "Gracias. El perfil de tu perro fue actualizado.",
+    profileSuccess: "Gracias. El perfil de tu mascota fue actualizado.",
     profileSkipped: "No hay problema. Podemos pedir esos datos más adelante.",
     bookingConfigMissing: "La conexión de reservas no está disponible. Intentá nuevamente en unos minutos.",
     bookingError: "Algo salió mal. Intentá de nuevo o escribinos a info@shingospalace.com.",
@@ -875,7 +921,7 @@ const translations = {
     bookingSelectionRequired: "Por favor revisá disponibilidad primero para usar el servicio y las fechas correctas.",
     summaryLabel: "Resumen de reserva",
     summaryBase: "Base",
-    summaryDogCount: "Cantidad de perros",
+    summaryDogCount: "Cantidad de mascotas",
     summaryDates: "Fechas",
     summaryDatesEmpty: "Seleccioná fechas",
     summaryPickupFee: "Cargo de pick-up",
@@ -903,11 +949,17 @@ const translations = {
     multipleVisits: "visitas",
     oneDog: "1 perro",
     multipleDogs: "perros",
+    oneCat: "1 gato",
+    multipleCats: "gatos",
+    onePet: "1 mascota",
+    multiplePets: "mascotas",
     summaryLongStay: "Las estadías largas reciben una cotización personalizada según fechas, tipo de mascota y cuidados necesarios.",
     customQuote: "Cotización personalizada",
     paymentNote: "Los depósitos con tarjeta, Apple Pay y Google Pay se procesan de forma segura con Stripe. Los depósitos por Zelle se confirman manualmente.",
     optionBoarding: "Boarding",
     optionSelect: "Seleccionar",
+    optionDog: "Perro",
+    optionCat: "Gato",
     optionFemale: "Hembra",
     optionMale: "Macho",
     optionYes: "Sí",
@@ -966,6 +1018,7 @@ const occupiedSpots = {
 };
 
 const additionalDogRate = 35;
+const catBoardingRate = 30;
 const additionalCatRate = 20;
 const depositRate = 0.25;
 const BOOKING_ENDPOINT = "/api/booking-request";
@@ -1144,6 +1197,8 @@ const preferredWalkingTimeInput = document.querySelector("#preferredWalkingTime"
 const bookingLockedService = document.querySelector("#bookingLockedService");
 const bookingLockedDates = document.querySelector("#bookingLockedDates");
 const bookingLockedDogs = document.querySelector("#bookingLockedDogs");
+const bookingLockedPetType = document.querySelector("#bookingLockedPetType");
+const petTypeInputs = document.querySelectorAll('input[name="petType"]');
 const additionalDogsInput = document.querySelector("#additionalDogs");
 const additionalCatsInput = document.querySelector("#additionalCats");
 const longStayInput = document.querySelector("#longStay");
@@ -1165,6 +1220,8 @@ const showDogProfileButton = document.querySelector("#showDogProfileButton");
 const profileOwnerId = document.querySelector("#profileOwnerId");
 const profileDogId = document.querySelector("#profileDogId");
 const profileBookingId = document.querySelector("#profileBookingId");
+const profilePetType = document.querySelector("#profilePetType");
+const dogSpecificFields = document.querySelectorAll(".dog-specific-field");
 const paymentExperience = document.querySelector("#paymentExperience");
 const paymentConfirmation = document.querySelector("#paymentConfirmation");
 const manualPaymentConfirmation = document.querySelector("#manualPaymentConfirmation");
@@ -1476,12 +1533,52 @@ function unitsLabel(units, serviceKey = serviceSelect?.value) {
   return units === 1 ? t("oneNight") : `${units} ${t("multipleNights")}`;
 }
 
-function dogsLabel(count) {
-  if (count === 1) {
-    return t("oneDog");
+function getSelectedPetType() {
+  return [...petTypeInputs].find((input) => input.checked)?.value || "dog";
+}
+
+function setSelectedPetType(petType = "dog") {
+  const normalizedPetType = petType === "cat" ? "cat" : "dog";
+  petTypeInputs.forEach((input) => {
+    input.checked = input.value === normalizedPetType;
+  });
+  if (profilePetType) profilePetType.value = normalizedPetType;
+}
+
+function petTypeLabel(petType = getSelectedPetType()) {
+  return petType === "cat" ? t("optionCat") : t("optionDog");
+}
+
+function petsLabel(count, petType = getSelectedPetType()) {
+  const safeCount = Math.max(1, Number(count) || 1);
+  if (petType === "cat") {
+    return safeCount === 1 ? t("oneCat") : `${safeCount} ${t("multipleCats")}`;
+  }
+  if (petType === "dog") {
+    return safeCount === 1 ? t("oneDog") : `${safeCount} ${t("multipleDogs")}`;
   }
 
-  return `${count} ${t("multipleDogs")}`;
+  return safeCount === 1 ? t("onePet") : `${safeCount} ${t("multiplePets")}`;
+}
+
+function dogsLabel(count) {
+  return petsLabel(count, "dog");
+}
+
+function updatePetSpecificFields() {
+  const petType = getSelectedPetType();
+  const isDog = petType === "dog";
+
+  dogSpecificFields.forEach((field) => {
+    field.hidden = !isDog;
+    field.querySelectorAll("input, select, textarea").forEach((control) => {
+      control.disabled = !isDog;
+      if (!isDog) control.value = "";
+    });
+  });
+
+  if (profilePetType) profilePetType.value = petType;
+  if (bookingLockedPetType) bookingLockedPetType.textContent = petTypeLabel(petType);
 }
 
 function formatTime12Hour(timeValue) {
@@ -1525,6 +1622,7 @@ function updatePaymentMethodDisplay() {
 
 function updateServiceSpecificFields() {
   const walking = isWalkingService();
+  const petType = getSelectedPetType();
 
   boardingDaycareTimeFields.forEach((field) => {
     field.hidden = walking;
@@ -1534,7 +1632,7 @@ function updateServiceSpecificFields() {
   });
 
   if (pickupPolicyNote) pickupPolicyNote.hidden = walking;
-  if (additionalCatsField) additionalCatsField.hidden = walking;
+  if (additionalCatsField) additionalCatsField.hidden = walking || petType === "cat";
   if (longStayField) longStayField.hidden = walking;
 
   if (arrivalTimeInput) {
@@ -1555,8 +1653,8 @@ function updateServiceSpecificFields() {
   }
 
   if (additionalCatsInput) {
-    additionalCatsInput.disabled = walking;
-    if (walking) additionalCatsInput.value = 0;
+    additionalCatsInput.disabled = walking || petType === "cat";
+    if (walking || petType === "cat") additionalCatsInput.value = 0;
   }
 
   if (longStayInput) {
@@ -1564,6 +1662,7 @@ function updateServiceSpecificFields() {
     if (walking) longStayInput.checked = false;
   }
 
+  updatePetSpecificFields();
   updateSummary();
 }
 
@@ -1848,7 +1947,7 @@ function renderCustomerAccount() {
             <div>
               <span class="account-card-kicker">${t("accountDogProfile")}</span>
               <h3>${dog.name}</h3>
-              <p>${dog.breed || ""}${dog.spayedNeutered ? ` · ${dog.spayedNeutered}` : ""}</p>
+              <p>${petTypeLabel(dog.petType)}${dog.breed ? ` · ${dog.breed}` : ""}${dog.spayedNeutered ? ` · ${dog.spayedNeutered}` : ""}</p>
             </div>
             <div class="account-vaccine-line">
               <span>${t("accountVaccinationStatus")}</span>
@@ -1943,10 +2042,13 @@ function preloadAccountDog(dogId) {
 
   if (accountOwnerIdField) accountOwnerIdField.value = customerAccount.owner.id || "";
   if (accountDogIdField) accountDogIdField.value = dog.id || "";
+  setSelectedPetType(dog.petType || "dog");
   preloadAccountOwner();
   setFormField(bookingForm, "dogName", dog.name);
   setFormField(bookingForm, "breed", dog.breed);
   setFormField(bookingForm, "spayedNeutered", dog.spayedNeutered);
+  updatePetSpecificFields();
+  updateSummary();
 }
 
 function clearAccountDogSelection(clearDogFields = false) {
@@ -1957,6 +2059,9 @@ function clearAccountDogSelection(clearDogFields = false) {
   setFormField(bookingForm, "dogName", "");
   setFormField(bookingForm, "breed", "");
   setFormField(bookingForm, "spayedNeutered", "");
+  setSelectedPetType("dog");
+  updatePetSpecificFields();
+  updateSummary();
 }
 
 async function loadCustomerAccount() {
@@ -2046,6 +2151,7 @@ async function startStripePayment(payload) {
   if (profileOwnerId) profileOwnerId.value = currentBookingIds.ownerId;
   if (profileDogId) profileDogId.value = currentBookingIds.dogId;
   if (profileBookingId) profileBookingId.value = currentBookingIds.bookingId;
+  if (profilePetType) profilePetType.value = getSelectedPetType();
   if (bookingForm) bookingForm.hidden = true;
   if (paymentExperience) paymentExperience.hidden = false;
   if (manualPaymentConfirmation) manualPaymentConfirmation.hidden = true;
@@ -2107,6 +2213,7 @@ function showManualPaymentPending(payload) {
   if (profileOwnerId) profileOwnerId.value = currentBookingIds.ownerId;
   if (profileDogId) profileDogId.value = currentBookingIds.dogId;
   if (profileBookingId) profileBookingId.value = currentBookingIds.bookingId;
+  if (profilePetType) profilePetType.value = getSelectedPetType();
   if (bookingForm) bookingForm.hidden = true;
   if (paymentExperience) paymentExperience.hidden = false;
   if (paymentConfirmation) paymentConfirmation.hidden = true;
@@ -2127,7 +2234,9 @@ function setBookingSelection(selection = {}) {
   if (serviceSelect) serviceSelect.value = bookingSelection.service || "";
   if (dropoffDateInput) dropoffDateInput.value = bookingSelection.dropoffDate || "";
   if (pickupDateInput) pickupDateInput.value = bookingSelection.pickupDate || "";
-  if (additionalDogsInput) additionalDogsInput.value = Math.max(0, bookingSelection.numberOfDogs - 1);
+  const selectedPetType = getSelectedPetType();
+  if (additionalDogsInput) additionalDogsInput.value = selectedPetType === "dog" ? Math.max(0, bookingSelection.numberOfDogs - 1) : 0;
+  if (additionalCatsInput && selectedPetType === "cat") additionalCatsInput.value = Math.max(0, bookingSelection.numberOfDogs - 1);
 
   if (bookingLockedService) {
     bookingLockedService.textContent = bookingSelection.service ? serviceLabel(bookingSelection.service) : t("optionSelect");
@@ -2138,7 +2247,7 @@ function setBookingSelection(selection = {}) {
   }
 
   if (bookingLockedDogs) {
-    bookingLockedDogs.textContent = dogsLabel(bookingSelection.numberOfDogs);
+    bookingLockedDogs.textContent = petsLabel(bookingSelection.numberOfDogs, selectedPetType);
   }
 
   updateServiceSpecificFields();
@@ -2259,11 +2368,14 @@ function updateSummary() {
 
   const serviceKey = serviceSelect.value;
   const walking = serviceKey === "walking";
-  const service = serviceKey ? serviceRates[serviceKey] : 0;
+  const petType = getSelectedPetType();
+  const selectedPets = Math.max(1, Number(bookingSelection.numberOfDogs) || 1);
+  const extraPrimaryPets = Math.max(0, selectedPets - 1);
+  const service = petType === "cat" && serviceKey === "boarding" ? catBoardingRate : serviceRates[serviceKey] || 0;
   const isCustomQuote = false;
   const units = calculateBookingUnits();
-  const extraDogs = Math.max(0, Number(additionalDogsInput?.value) || 0);
-  const extraCats = Math.max(0, Number(additionalCatsInput?.value) || 0);
+  const extraDogs = petType === "dog" ? extraPrimaryPets : 0;
+  const extraCats = walking ? 0 : petType === "cat" ? extraPrimaryPets : Math.max(0, Number(additionalCatsInput?.value) || 0);
   const base = isCustomQuote ? 0 : service * units;
   const dogs = isCustomQuote ? 0 : extraDogs * additionalDogRate * units;
   const cats = isCustomQuote ? 0 : extraCats * additionalCatRate * units;
@@ -2275,8 +2387,11 @@ function updateSummary() {
   const totalLabel = isCustomQuote ? t("customQuote") : currency(total);
   const depositLabel = isCustomQuote ? t("customQuote") : currency(deposit);
   const remainingLabel = isCustomQuote ? t("customQuote") : currency(remaining);
-  const totalDogs = extraDogs + 1;
+  const totalPets = selectedPets;
   const additionalPetsTotal = dogs + cats;
+
+  if (additionalDogsInput) additionalDogsInput.value = extraDogs;
+  if (petType === "cat" && additionalCatsInput) additionalCatsInput.value = extraCats;
 
   unitsInput.value = units;
   const summaryService = document.querySelector("#summaryService");
@@ -2291,7 +2406,7 @@ function updateSummary() {
   const summaryLongStay = document.querySelector("#summaryLongStay");
 
   if (summaryService) summaryService.textContent = serviceKey ? serviceLabel(serviceKey) : t("optionSelect");
-  if (summaryDogCount) summaryDogCount.textContent = dogsLabel(totalDogs);
+  if (summaryDogCount) summaryDogCount.textContent = petsLabel(totalPets, petType);
   if (summaryDates) summaryDates.textContent = datesLabel();
   if (summaryNights) summaryNights.textContent = unitsLabel(units, serviceKey);
   if (summaryAfterFee) summaryAfterFee.textContent = currency(after);
@@ -2310,7 +2425,7 @@ function updateSummary() {
   if (mobileSummaryDeposit) mobileSummaryDeposit.textContent = depositLabel;
   if (mobileSummaryRemainingLabel) mobileSummaryRemainingLabel.textContent = remainingBalanceLabelForService(serviceKey);
   if (mobileSummaryRemaining) mobileSummaryRemaining.textContent = remainingLabel;
-  if (mobileSummaryDogCount) mobileSummaryDogCount.textContent = dogsLabel(totalDogs);
+  if (mobileSummaryDogCount) mobileSummaryDogCount.textContent = petsLabel(totalPets, petType);
   if (mobileSummaryDates) mobileSummaryDates.textContent = datesLabel();
   if (mobileSummaryAfterFee) mobileSummaryAfterFee.textContent = currency(after);
   if (mobileSummaryAdditionalPets) mobileSummaryAdditionalPets.textContent = currency(additionalPetsTotal);
@@ -2513,6 +2628,11 @@ preferredWalkingTimeInput?.addEventListener("change", updateSummary);
 additionalDogsInput?.addEventListener("input", updateSummary);
 additionalCatsInput?.addEventListener("input", updateSummary);
 longStayInput?.addEventListener("change", updateSummary);
+petTypeInputs.forEach((input) => {
+  input.addEventListener("change", () => {
+    updateServiceSpecificFields();
+  });
+});
 paymentMethodInputs.forEach((input) => {
   input.addEventListener("change", updatePaymentMethodDisplay);
 });

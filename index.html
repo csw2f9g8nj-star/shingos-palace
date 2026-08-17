@@ -3,15 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Shingo's Palace | Luxury Dog Boarding &amp; Daycare in Margate, Florida</title>
+    <title>Shingo's Palace | Luxury Pet Boarding &amp; Daycare in Margate, Florida</title>
     <meta
       name="description"
-      content="Luxury dog boarding and daycare in Margate, Florida. Large fenced yard, pool time, personalized care, daily updates, and a safe cage-free environment."
+      content="Luxury dog boarding, daycare, dog walking, and pet boarding in Margate, Florida, serving Coral Springs, Coconut Creek, Tamarac, and North Lauderdale."
     />
-    <meta property="og:title" content="Shingo's Palace | Luxury Dog Boarding &amp; Daycare in Margate, Florida" />
+    <meta property="og:title" content="Shingo's Palace | Luxury Pet Boarding &amp; Daycare in Margate, Florida" />
     <meta
       property="og:description"
-      content="Luxury dog boarding and daycare in Margate, Florida. Large fenced yard, pool time, personalized care, daily updates, and a safe cage-free environment."
+      content="Luxury dog boarding, daycare, dog walking, and pet boarding in Margate, Florida, serving Coral Springs, Coconut Creek, Tamarac, and North Lauderdale."
     />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="assets/shingo-original.jpg" />
@@ -24,7 +24,7 @@
         "@context": "https://schema.org",
         "@type": "PetCare",
         "name": "Shingo's Palace",
-        "description": "Luxury dog boarding and daycare in a safe, cage-free home environment with a large fenced yard, pool time, personalized care, and daily updates.",
+        "description": "Luxury pet boarding, dog daycare, and dog walking in a safe, cage-free home environment with a large fenced yard, pool time, personalized care, and daily updates.",
         "telephone": "+1-785-757-9475",
         "email": "info@shingospalace.com",
         "address": {
@@ -490,6 +490,50 @@
         <div class="home-gallery-grid" id="homeGallery"></div>
       </section>
 
+      <section class="faq-section" id="faq" aria-labelledby="faq-heading">
+        <div class="faq-head">
+          <p class="section-kicker" data-i18n="faqKicker">Good to know</p>
+          <h2 id="faq-heading" data-i18n="faqHeading">Frequently Asked Questions</h2>
+          <p data-i18n="faqIntro">
+            Clear answers before your first stay, with anything policy-specific confirmed personally by Carla.
+          </p>
+        </div>
+        <div class="faq-grid">
+          <details>
+            <summary data-i18n="faqVaccinesQuestion">Are vaccination records required?</summary>
+            <p data-i18n="faqVaccinesAnswer">Yes. Current vaccination records are required before a reservation can be confirmed. You can submit the booking request first and send records later.</p>
+          </details>
+          <details>
+            <summary data-i18n="faqPickupQuestion">How do drop-off and pick-up times work?</summary>
+            <p data-i18n="faqPickupAnswer">Check-in times are flexible and scheduled individually with each family. Check-out is complimentary until 12:00 PM.</p>
+          </details>
+          <details>
+            <summary data-i18n="faqLateQuestion">What is the late pick-up policy?</summary>
+            <p data-i18n="faqLateAnswer">Pick-ups from 12:01 PM through 6:00 PM add a $25 late pick-up fee. Pick-ups after 6:00 PM are charged as an additional day.</p>
+          </details>
+          <details>
+            <summary data-i18n="faqDepositQuestion">How do deposits and remaining balances work?</summary>
+            <p data-i18n="faqDepositAnswer">A deposit is collected to hold the reservation. For Boarding and Daycare, the remaining balance is due at check-in. For Dog Walking, the remaining balance is due before the first scheduled service.</p>
+          </details>
+          <details>
+            <summary data-i18n="faqCancellationQuestion">What is the cancellation policy?</summary>
+            <p data-i18n="faqCancellationAnswer">The final cancellation policy still needs to be confirmed by Shingo's Palace before it is published.</p>
+          </details>
+          <details>
+            <summary data-i18n="faqBringQuestion">What should owners bring?</summary>
+            <p data-i18n="faqBringAnswer">A final packing list should be confirmed with Carla before arrival so each pet has exactly what they need for their stay.</p>
+          </details>
+          <details>
+            <summary data-i18n="faqCatsQuestion">Do you accept cats?</summary>
+            <p data-i18n="faqCatsAnswer">Yes. Shingo's Palace accepts dogs and cats, with pet-specific care routines and pricing.</p>
+          </details>
+          <details>
+            <summary data-i18n="faqEmergencyQuestion">What happens in an emergency?</summary>
+            <p data-i18n="faqEmergencyAnswer">The booking form includes a required veterinary authorization so Shingo's Palace can seek emergency care if the owner cannot be reached.</p>
+          </details>
+        </div>
+      </section>
+
       <section class="service-area-strip" aria-labelledby="service-area-heading">
         <p class="section-kicker" data-i18n="homeServiceAreaKicker">Serving nearby families</p>
         <h2 id="service-area-heading" data-i18n="homeServiceAreaHeading">Boutique pet care close to home</h2>
@@ -677,11 +721,11 @@
                 </label>
               </div>
               <label>
-                <span data-i18n="fieldNumberDogs">Number of dogs</span>
+                <span data-i18n="fieldNumberDogs">Number of pets</span>
                 <input name="numberOfDogs" id="availabilityDogs" type="number" min="1" max="10" value="1" required />
               </label>
               <label>
-                <span data-i18n="fieldDogSize">Dog size</span>
+                <span data-i18n="fieldDogSize">Pet size</span>
                 <select name="dogSize" id="availabilitySize" required>
                   <option value="small" data-i18n="optionSmall">Small</option>
                   <option value="medium" data-i18n="optionMedium">Medium</option>
@@ -816,22 +860,34 @@
               <div class="booking-step-head">
                 <span>02</span>
                 <div>
-                  <h3 data-i18n="bookingStepDog">Dog information</h3>
-                  <p data-i18n="bookingStepDogHelp">Share health, behavior, and comfort details so we can care for your dog safely.</p>
+                  <h3 data-i18n="bookingStepDog">Pet information</h3>
+                  <p data-i18n="bookingStepDogHelp">A few essential details help us prepare your reservation quickly.</p>
                 </div>
               </div>
               <div class="booking-fields">
                 <div class="account-dog-picker wide-field" id="accountDogPicker" hidden>
                   <label>
-                    <span data-i18n="accountExistingDogLabel">Booking for a saved dog?</span>
+                    <span data-i18n="accountExistingDogLabel">Booking for a saved pet?</span>
                     <select id="accountDogSelect">
-                      <option value="" data-i18n="accountNewDogOption">New dog</option>
+                      <option value="" data-i18n="accountNewDogOption">New pet</option>
                     </select>
                   </label>
-                  <p data-i18n="accountExistingDogHelp">Choose a dog from My Account to preload their saved information.</p>
+                  <p data-i18n="accountExistingDogHelp">Choose a pet from My Account to preload their saved information.</p>
+                </div>
+                <div class="wide-field pet-type-options" role="radiogroup" aria-label="Pet type">
+                  <label class="pet-type-card">
+                    <input type="radio" name="petType" value="dog" checked />
+                    <span aria-hidden="true">🐶</span>
+                    <strong data-i18n="optionDog">Dog</strong>
+                  </label>
+                  <label class="pet-type-card">
+                    <input type="radio" name="petType" value="cat" />
+                    <span aria-hidden="true">🐱</span>
+                    <strong data-i18n="optionCat">Cat</strong>
+                  </label>
                 </div>
                 <label>
-                  <span data-i18n="fieldPet">Dog's Name</span>
+                  <span data-i18n="fieldPet">Pet's Name</span>
                   <input name="dogName" type="text" required />
                 </label>
                 <label>
@@ -871,8 +927,12 @@
                     <strong id="bookingLockedDates">Select dates</strong>
                   </div>
                   <div>
-                    <span data-i18n="fieldNumberDogs">Number of dogs</span>
-                    <strong id="bookingLockedDogs">1 dog</strong>
+                    <span data-i18n="fieldNumberDogs">Number of pets</span>
+                    <strong id="bookingLockedDogs">1 pet</strong>
+                  </div>
+                  <div>
+                    <span data-i18n="fieldPetType">Pet type</span>
+                    <strong id="bookingLockedPetType">Dog</strong>
                   </div>
                 </div>
                 <div class="booking-fields stay-grid wide-field" id="stayTimeFields">
@@ -1024,13 +1084,13 @@
           <section class="dog-profile-cta" id="dogProfileCta" hidden>
             <div>
               <p class="summary-kicker" data-i18n="profileCtaKicker">Next step</p>
-              <h3 data-i18n="profileCtaTitle">Tell us more about your dog 🐾</h3>
+              <h3 data-i18n="profileCtaTitle">Tell us more about your pet 🐾</h3>
               <p data-i18n="profileCtaText">
-                Help us get to know your dog so we can make their stay safe, comfortable and personalized.
+                Help us get to know your pet so we can make their stay safe, comfortable and personalized.
               </p>
             </div>
             <button class="submit-button" id="showDogProfileButton" type="button" data-i18n="profileCtaButton">
-              Complete Dog Profile
+              Complete Pet Profile
             </button>
           </section>
 
@@ -1038,12 +1098,13 @@
             <input type="hidden" name="ownerId" id="profileOwnerId" />
             <input type="hidden" name="dogId" id="profileDogId" />
             <input type="hidden" name="bookingId" id="profileBookingId" />
+            <input type="hidden" name="petType" id="profilePetType" />
             <div class="booking-step-head">
               <span>✓</span>
               <div>
-                <h3 data-i18n="profileFollowupTitle">Tell us more about your dog</h3>
+                <h3 data-i18n="profileFollowupTitle">Tell us more about your pet</h3>
                 <p data-i18n="profileFollowupText">
-                  Help us create your dog's profile so we can provide the safest and most personalized care possible.
+                  Help us create your pet's profile so we can provide the safest and most personalized care possible.
                 </p>
               </div>
             </div>
@@ -1089,7 +1150,7 @@
                 </div>
                 <p class="upload-status" id="vaccinationUploadStatus" aria-live="polite"></p>
               </label>
-              <label>
+              <label class="dog-specific-field">
                 <span data-i18n="fieldGoodCats">Good with cats? (optional)</span>
                 <select name="goodWithCats">
                   <option value="" data-i18n="optionSelect">Select</option>
@@ -1098,7 +1159,7 @@
                   <option value="Unknown" data-i18n="optionUnknown">Unknown</option>
                 </select>
               </label>
-              <label>
+              <label class="dog-specific-field">
                 <span data-i18n="fieldGoodSmallDogs">Good with small dogs? (optional)</span>
                 <select name="goodWithSmallDogs">
                   <option value="" data-i18n="optionSelect">Select</option>
@@ -1107,7 +1168,7 @@
                   <option value="Unknown" data-i18n="optionUnknown">Unknown</option>
                 </select>
               </label>
-              <label>
+              <label class="dog-specific-field">
                 <span data-i18n="fieldCanSwim">Can swim? (optional)</span>
                 <select name="canSwim">
                   <option value="" data-i18n="optionSelect">Select</option>
@@ -1162,7 +1223,7 @@
               </label>
             </div>
             <div class="profile-followup-actions full">
-              <button class="submit-button" id="dogProfileSubmit" type="submit" data-i18n="profileSave">Save dog profile</button>
+              <button class="submit-button" id="dogProfileSubmit" type="submit" data-i18n="profileSave">Save pet profile</button>
               <button class="ghost-button" id="dogProfileSkip" type="button" data-i18n="profileSkip">Skip for now</button>
             </div>
             <p class="status-line full" id="dogProfileStatus"></p>
@@ -1223,7 +1284,7 @@
 
         <section class="account-auth-panel" id="accountSignedOut">
           <p class="flow-intro" data-i18n="accountIntro">
-            Sign in with your email to see your dogs, reservations, vaccination status, and book again faster.
+            Sign in with your email to see your pets, reservations, vaccination status, and book again faster.
           </p>
           <form class="account-login-form" id="accountLoginForm">
             <label>
@@ -1239,20 +1300,20 @@
           <div class="account-dashboard-head">
             <div>
               <strong id="accountWelcome">Welcome back.</strong>
-              <p data-i18n="accountPrivateNote">Only your own dogs, reservations, and vaccination records are shown here.</p>
+              <p data-i18n="accountPrivateNote">Only your own pets, reservations, and vaccination records are shown here.</p>
             </div>
             <button class="ghost-button" id="accountSignOut" type="button" data-i18n="accountSignOut">Sign Out</button>
           </div>
 
           <div class="account-empty-state" id="accountEmptyState" hidden>
-            <strong data-i18n="accountEmptyTitle">No dog profiles yet.</strong>
-            <p data-i18n="accountEmptyText">Add your dog below or complete your first booking request.</p>
+            <strong data-i18n="accountEmptyTitle">No pet profiles yet.</strong>
+            <p data-i18n="accountEmptyText">Add your pet below or complete your first booking request.</p>
           </div>
 
           <div class="account-section">
             <div class="account-section-head">
-              <h3 data-i18n="accountMyDogs">My Dogs</h3>
-              <button class="ghost-button" id="accountAddDogToggle" type="button" data-i18n="accountAddDog">Add Another Dog</button>
+              <h3 data-i18n="accountMyDogs">My Pets</h3>
+              <button class="ghost-button" id="accountAddDogToggle" type="button" data-i18n="accountAddDog">Add Another Pet</button>
             </div>
             <div class="account-dog-grid" id="accountDogs"></div>
           </div>
@@ -1260,8 +1321,15 @@
           <form class="account-add-dog-form" id="accountAddDogForm" hidden>
             <div class="booking-fields">
               <label>
-                <span data-i18n="fieldPet">Dog's Name</span>
+                <span data-i18n="fieldPet">Pet's Name</span>
                 <input name="name" type="text" required />
+              </label>
+              <label>
+                <span data-i18n="fieldPetType">Pet type</span>
+                <select name="petType">
+                  <option value="dog" data-i18n="optionDog">Dog</option>
+                  <option value="cat" data-i18n="optionCat">Cat</option>
+                </select>
               </label>
               <label>
                 <span data-i18n="fieldBreed">Breed</span>
@@ -1276,7 +1344,7 @@
                 </select>
               </label>
               <label>
-                <span data-i18n="fieldDogSize">Dog size</span>
+                <span data-i18n="fieldDogSize">Pet size</span>
                 <select name="size">
                   <option value="" data-i18n="optionSelect">Select</option>
                   <option value="Small" data-i18n="optionSmall">Small</option>
@@ -1285,7 +1353,7 @@
                 </select>
               </label>
             </div>
-            <button class="submit-button full" type="submit" data-i18n="accountSaveDog">Save Dog</button>
+            <button class="submit-button full" type="submit" data-i18n="accountSaveDog">Save Pet</button>
             <p class="status-line" id="accountAddDogStatus"></p>
           </form>
 

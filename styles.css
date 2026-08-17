@@ -2738,6 +2738,62 @@ body.modal-open {
   box-shadow: none;
 }
 
+.pet-type-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.pet-type-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+  padding: 14px 16px;
+  border: 1px solid rgba(39, 50, 47, 0.11);
+  border-radius: 20px;
+  background: rgba(255, 250, 241, 0.76);
+  color: var(--charcoal);
+  cursor: pointer;
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+.pet-type-card:hover {
+  transform: translateY(-1px);
+  border-color: rgba(101, 123, 104, 0.26);
+  box-shadow: 0 16px 34px rgba(43, 45, 39, 0.08);
+}
+
+.pet-type-card input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.pet-type-card span {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(143, 191, 186, 0.18);
+  font-size: 1.15rem;
+}
+
+.pet-type-card strong {
+  font-family: var(--display);
+  font-size: 0.98rem;
+  font-weight: 650;
+}
+
+.pet-type-card:has(input:checked) {
+  border-color: rgba(101, 123, 104, 0.42);
+  background: rgba(168, 185, 165, 0.18);
+  box-shadow: inset 0 0 0 1px rgba(101, 123, 104, 0.14), 0 18px 36px rgba(43, 45, 39, 0.08);
+}
+
 .modal-kicker,
 .summary-kicker {
   margin: 0 0 8px;
@@ -3002,6 +3058,96 @@ h2 {
   background:
     radial-gradient(circle at 10% 0%, rgba(217, 197, 165, 0.16), transparent 30%),
     linear-gradient(180deg, rgba(255, 250, 241, 0.82), rgba(244, 238, 228, 0.72));
+}
+
+.faq-section {
+  display: grid;
+  gap: clamp(22px, 4vw, 34px);
+  padding: clamp(72px, 9vw, 124px) clamp(20px, 5vw, 72px);
+  background: rgba(255, 250, 241, 0.46);
+}
+
+.faq-head {
+  width: min(760px, 100%);
+}
+
+.faq-head h2 {
+  margin: 0;
+  color: var(--charcoal);
+  font-family: var(--display);
+  font-size: clamp(2.3rem, 5.5vw, 4.7rem);
+  line-height: 0.98;
+}
+
+.faq-head p:last-child {
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: clamp(1rem, 1.45vw, 1.16rem);
+  line-height: 1.72;
+}
+
+.faq-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.faq-grid details {
+  border: 1px solid rgba(39, 50, 47, 0.09);
+  border-radius: 24px;
+  background: rgba(255, 250, 241, 0.74);
+  box-shadow: 0 16px 42px rgba(43, 45, 39, 0.07);
+  overflow: hidden;
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+
+.faq-grid details:hover {
+  transform: translateY(-2px);
+  border-color: rgba(101, 123, 104, 0.2);
+  box-shadow: 0 24px 54px rgba(43, 45, 39, 0.11);
+}
+
+.faq-grid summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 20px 22px;
+  color: var(--charcoal);
+  cursor: pointer;
+  font-family: var(--display);
+  font-weight: 650;
+  list-style: none;
+}
+
+.faq-grid summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-grid summary::after {
+  content: "+";
+  display: grid;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(168, 185, 165, 0.2);
+  color: var(--sage-deep);
+  font-size: 1.05rem;
+  transition: transform 180ms ease, background 180ms ease;
+}
+
+.faq-grid details[open] summary::after {
+  transform: rotate(45deg);
+  background: rgba(143, 191, 186, 0.22);
+}
+
+.faq-grid p {
+  margin: 0;
+  padding: 0 22px 22px;
+  color: var(--muted);
+  line-height: 1.68;
 }
 
 .public-reviews-head {
@@ -4578,6 +4724,32 @@ textarea {
   .account-dog-picker {
     padding: 14px;
     border-radius: 18px;
+  }
+
+  .pet-type-options,
+  .faq-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pet-type-card {
+    min-height: 58px;
+    border-radius: 18px;
+  }
+
+  .faq-section {
+    padding: 58px 18px;
+  }
+
+  .faq-grid details {
+    border-radius: 20px;
+  }
+
+  .faq-grid summary {
+    padding: 18px;
+  }
+
+  .faq-grid p {
+    padding: 0 18px 18px;
   }
 
   .booking-form {

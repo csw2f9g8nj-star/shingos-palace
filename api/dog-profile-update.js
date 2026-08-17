@@ -37,6 +37,10 @@ function compactPayload(payload) {
   return Object.fromEntries(Object.entries(payload).filter(([, value]) => value !== ""));
 }
 
+function normalizePetType(value) {
+  return normalizeField(value).toLowerCase() === "cat" ? "cat" : "dog";
+}
+
 async function insertVaccinationRecord(supabase, config, owner, dog, bookingId, file, index) {
   const extension = (file.originalFilename || "").split(".").pop()?.toLowerCase() || "upload";
   const path = [
@@ -110,7 +114,7 @@ async function handler(req, res) {
     const records = toFileArray(files.vaccinationRecords);
 
     if (!ownerId || !dogId) {
-      sendJson(res, 400, { ok: false, error: "Missing dog profile reference. Please submit the booking request first." });
+      sendJson(res, 400, { ok: false, error: "Missing pet profile reference. Please submit the booking request first." });
       return;
     }
 
@@ -136,7 +140,7 @@ async function handler(req, res) {
       .eq("owner_id", ownerId)
       .single();
     if (dogReadError || !existingDog) {
-      throw publicApiError("We could not find the dog profile to update.", 404, "dog_not_found");
+      throw publicApiError("We could not find the pet profile to update.", 404, "dog_not_found");
     }
 
     const ownerPayload = compactPayload({
@@ -144,6 +148,7 @@ async function handler(req, res) {
     });
 
     const dogPayload = compactPayload({
+      pet_type: normalizePetType(fields.petType),
       age: normalizeField(fields.age),
       weight: normalizeField(fields.weight),
       sex: normalizeField(fields.sex),
@@ -180,7 +185,7 @@ async function handler(req, res) {
           ["id", dogId],
           ["owner_id", ownerId],
         ],
-        "We could not update the dog profile. Please check the dogs table in Supabase.",
+        "We could not update the pet profile. Please check the dogs table in Supabase.",
       )) || existingDog;
 
     const notes = normalizeField(fields.notes);
@@ -206,7 +211,7 @@ async function handler(req, res) {
 
     sendJson(res, 200, {
       ok: true,
-      message: "Thank you. Your dog's profile has been updated.",
+      message: "Thank you. Your pet's profile has been updated.",
       dogId,
       ownerId,
       bookingId,
