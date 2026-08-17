@@ -36,6 +36,7 @@ const translations = {
     accountBookAgain: "Book Again",
     accountPayBalance: "Pay remaining balance",
     accountFullyPaid: "Fully paid",
+    accountBalancePending: "Balance pending",
     accountAddDog: "Add Another Dog",
     accountSaveDog: "Save Dog",
     accountDogSaved: "Dog added to your account.",
@@ -486,6 +487,7 @@ const translations = {
     accountBookAgain: "Reservar de nuevo",
     accountPayBalance: "Pagar saldo restante",
     accountFullyPaid: "Reserva pagada completa",
+    accountBalancePending: "Saldo pendiente",
     accountAddDog: "Agregar otro perro",
     accountSaveDog: "Guardar perro",
     accountDogSaved: "Perro agregado a tu cuenta.",
@@ -1682,15 +1684,26 @@ function remainingBalanceLabelForService(service) {
   return service === "walking" ? t("summaryRemainingFirstService") : t("summaryRemainingCheckin");
 }
 
+function amountValue(value) {
+  const numeric = Number(String(value || "").replace(/[^0-9.]/g, ""));
+  return Number.isFinite(numeric) ? numeric : 0;
+}
+
+function customerPaymentStatusLabel(booking, hasRemainingBalance, balancePaid) {
+  if (balancePaid) return t("accountFullyPaid");
+  if (hasRemainingBalance) return t("accountBalancePending");
+  return booking.paymentStatus || booking.status || "";
+}
+
 function bookingCardMarkup(booking, dogName) {
   const balancePaid = booking.balancePaymentStatus === "paid";
-  const hasRemainingBalance = booking.remainingBalance && booking.remainingBalance !== "$0" && booking.remainingBalance !== "$0.00";
-  const depositStarted = ["deposit_paid", "paid_in_full"].includes(booking.paymentStatus) || booking.depositPaidAmount;
+  const hasRemainingBalance = amountValue(booking.remainingBalance) > 0;
+  const paymentStatusLabel = customerPaymentStatusLabel(booking, hasRemainingBalance, balancePaid);
   const balanceLine = balancePaid
     ? t("summaryRemainingPaid")
     : `${remainingBalanceLabelForService(booking.service)}: ${booking.remainingBalance || "-"}`;
   const balanceAction =
-    !balancePaid && hasRemainingBalance && depositStarted
+    !balancePaid && hasRemainingBalance
       ? `<a class="ghost-button account-pay-balance" href="balance-payment.html?booking_id=${encodeURIComponent(booking.id)}">${t("accountPayBalance")}</a>`
       : `<small>${balancePaid ? t("accountFullyPaid") : ""}</small>`;
 
@@ -1698,7 +1711,7 @@ function bookingCardMarkup(booking, dogName) {
     <article class="account-reservation-card">
       <strong>${serviceLabel(booking.service)} · ${dogName}</strong>
       <span>${booking.dropoffDate || t("summaryDatesEmpty")} → ${booking.pickupDate || ""}</span>
-      <small>${booking.paymentStatus || booking.status || ""}${booking.depositPaidAmount ? ` · ${booking.depositPaidAmount}` : ""}</small>
+      <small>${paymentStatusLabel}${booking.depositPaidAmount ? ` · ${booking.depositPaidAmount}` : ""}</small>
       <span>${balanceLine}</span>
       ${balanceAction}
     </article>

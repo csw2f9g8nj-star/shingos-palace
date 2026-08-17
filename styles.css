@@ -2704,6 +2704,11 @@ body.modal-open {
   color: var(--muted);
 }
 
+.account-pay-balance {
+  justify-self: start;
+  text-align: center;
+}
+
 .account-add-dog-form {
   padding: 18px;
 }
@@ -4460,7 +4465,8 @@ textarea {
 
   .account-dashboard-head .ghost-button,
   .account-section-head .ghost-button,
-  .account-book-again {
+  .account-book-again,
+  .account-pay-balance {
     width: 100%;
   }
 
