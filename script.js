@@ -55,7 +55,7 @@ const translations = {
     servicesTitle: "Services",
     servicesHint: "Pricing and availability",
     reviewsTitle: "Reviews",
-    reviewsHint: "Real Rover feedback",
+    reviewsHint: "What pet parents say",
     bookTitle: "Book",
     bookHint: "Full reservation request",
     storyTitle: "Our Story",
@@ -242,7 +242,7 @@ const translations = {
     publicReviewsHeading: "What Pet Parents Say",
     publicReviewsIntro:
       "Warm words from families whose pets have stayed, played, and felt at home at Shingo's Palace.",
-    publicReviewsEmpty: "Approved reviews will appear here soon.",
+    publicReviewsEmpty: "Reviews from our guests will appear here soon.",
     leaveReviewKicker: "Review",
     leaveReviewHeading: "Share your Shingo's Palace experience.",
     leaveReviewIntro: "Your review will be sent to Carla for approval before appearing publicly.",
@@ -526,7 +526,7 @@ const translations = {
     servicesTitle: "Servicios",
     servicesHint: "Precios y disponibilidad",
     reviewsTitle: "Reviews",
-    reviewsHint: "Comentarios reales de Rover",
+    reviewsHint: "Lo que dicen las familias",
     bookTitle: "Reservar",
     bookHint: "Solicitud de reserva completa",
     storyTitle: "Nuestra historia",
@@ -713,7 +713,7 @@ const translations = {
     publicReviewsHeading: "Lo que dicen las familias",
     publicReviewsIntro:
       "Comentarios de familias cuyas mascotas se hospedaron, jugaron y se sintieron en casa en Shingo's Palace.",
-    publicReviewsEmpty: "Las reviews aprobadas van a aparecer aquí pronto.",
+    publicReviewsEmpty: "Las reviews de nuestros huéspedes van a aparecer aquí pronto.",
     leaveReviewKicker: "Review",
     leaveReviewHeading: "Compartí tu experiencia en Shingo's Palace.",
     leaveReviewIntro: "Tu review será enviada a Carla para aprobación antes de aparecer públicamente.",
@@ -1127,7 +1127,6 @@ const galleryItems = [
   },
 ];
 
-const reviewList = document.querySelector("#reviewList");
 const publicReviewList = document.querySelector("#publicReviewList");
 const publicReviewEmpty = document.querySelector("#publicReviewEmpty");
 const homeGallery = document.querySelector("#homeGallery");
@@ -1299,10 +1298,6 @@ window.openSiteModal = (modalId) => {
     openModal.close();
   });
 
-  if (modalId === "reviewsModal") {
-    renderReviews();
-  }
-
   if (modalId === "accountModal") {
     loadCustomerAccount().catch((error) => {
       if (accountLoginStatus) accountLoginStatus.textContent = error.message || t("accountLoginUnavailable");
@@ -1413,10 +1408,6 @@ function reviewCardMarkup(review) {
 
 function renderReviews() {
   const markup = approvedReviews.map(reviewCardMarkup).join("");
-
-  if (reviewList) {
-    reviewList.innerHTML = markup || `<p class="public-reviews-empty">${t("publicReviewsEmpty")}</p>`;
-  }
 
   if (publicReviewList) {
     publicReviewList.innerHTML = markup;

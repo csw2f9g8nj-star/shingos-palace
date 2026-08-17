@@ -2998,6 +2998,7 @@ h2 {
   display: grid;
   gap: clamp(22px, 4vw, 34px);
   padding: clamp(72px, 9vw, 128px) clamp(20px, 5vw, 72px);
+  scroll-margin-top: 96px;
   background:
     radial-gradient(circle at 10% 0%, rgba(217, 197, 165, 0.16), transparent 30%),
     linear-gradient(180deg, rgba(255, 250, 241, 0.82), rgba(244, 238, 228, 0.72));

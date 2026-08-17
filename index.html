@@ -118,10 +118,10 @@
               <span data-i18n="explorePricing">View Pricing</span>
               <small data-i18n="servicesHint">Pricing and availability</small>
             </button>
-            <button class="action-tile" data-modal="reviewsModal" type="button" onclick="window.openSiteModal('reviewsModal')">
+            <a class="action-tile" href="#reviews">
               <span data-i18n="reviewsTitle">Reviews</span>
-              <small data-i18n="reviewsHint">Real Rover feedback</small>
-            </button>
+              <small data-i18n="reviewsHint">What pet parents say</small>
+            </a>
             <button class="action-tile" data-modal="storyModal" type="button">
               <span data-i18n="storyTitle">Our Story</span>
               <small data-i18n="storyHint">Why Shingo's Palace</small>
@@ -404,7 +404,7 @@
         </div>
       </section>
 
-      <section class="public-reviews-section" aria-labelledby="public-reviews-heading">
+      <section class="public-reviews-section" id="reviews" aria-labelledby="public-reviews-heading">
         <div class="public-reviews-head">
           <p class="section-kicker" data-i18n="publicReviewsKicker">Reviews</p>
           <h2 id="public-reviews-heading" data-i18n="publicReviewsHeading">What Pet Parents Say</h2>
@@ -414,7 +414,7 @@
         </div>
         <div class="public-reviews-grid" id="publicReviewList" aria-live="polite"></div>
         <p class="public-reviews-empty" id="publicReviewEmpty" data-i18n="publicReviewsEmpty" hidden>
-          Approved reviews will appear here soon.
+          Reviews from our guests will appear here soon.
         </p>
       </section>
 
@@ -641,7 +641,6 @@
             <a href="https://www.rover.com/sit/carlam33121" target="_blank" rel="noreferrer" data-i18n="reviewsLink">View Rover profile</a>
           </div>
         </div>
-        <div class="reviews-grid" id="reviewList"></div>
       </div>
     </dialog>
 
