@@ -1,6 +1,7 @@
 let supabaseClient;
 let adminSession;
 let adminDogs = [];
+let adminReviews = [];
 
 const adminLogin = document.querySelector("#adminLogin");
 const adminDashboard = document.querySelector("#adminDashboard");
@@ -9,6 +10,7 @@ const adminLoginStatus = document.querySelector("#adminLoginStatus");
 const adminStatus = document.querySelector("#adminStatus");
 const adminDogsEl = document.querySelector("#adminDogs");
 const adminMeetGreetsEl = document.querySelector("#adminMeetGreets");
+const adminReviewsEl = document.querySelector("#adminReviews");
 const adminTemplate = document.querySelector("#adminDogTemplate");
 const adminSearch = document.querySelector("#adminSearch");
 const adminRefresh = document.querySelector("#adminRefresh");
@@ -141,6 +143,45 @@ function renderMeetGreets(requests) {
     .join("");
 }
 
+function starRating(rating) {
+  const safeRating = Math.max(1, Math.min(5, Number(rating) || 5));
+  return "★".repeat(safeRating) + "☆".repeat(5 - safeRating);
+}
+
+function renderAdminReviews(reviews) {
+  if (!adminReviewsEl) return;
+
+  if (!reviews?.length) {
+    adminReviewsEl.innerHTML = "<p>No reviews yet.</p>";
+    return;
+  }
+
+  adminReviewsEl.innerHTML = reviews
+    .map((review) => {
+      const ownerName = [review.owner?.firstName, review.owner?.lastName].filter(Boolean).join(" ") || "Pet parent";
+      const petName = review.pet?.name || "Pet";
+      const created = review.createdAt ? new Date(review.createdAt).toLocaleString() : "No date";
+      const pending = review.status === "pending";
+      return `
+        <article class="admin-request-card admin-review-card" data-review-id="${escapeHtml(review.id)}">
+          <div class="admin-review-topline">
+            <strong>${safeText(ownerName)} · ${safeText(petName)}</strong>
+            <span class="admin-review-status is-${safeText(review.status)}">${safeText(review.status)}</span>
+          </div>
+          <span class="admin-review-stars">${starRating(review.rating)}</span>
+          <p>${safeText(review.reviewText)}</p>
+          <span>${safeText(review.booking?.service, "Reservation")} · ${safeText(review.booking?.dropoffDate, "No date")} → ${safeText(review.booking?.pickupDate, "No date")}</span>
+          <span>${safeText(review.owner?.email, "No email")} · Submitted ${escapeHtml(created)}</span>
+          <div class="admin-review-actions">
+            <button class="ghost-button" type="button" data-review-action="approved" ${pending ? "" : "disabled"}>Approve</button>
+            <button class="ghost-button" type="button" data-review-action="rejected" ${pending ? "" : "disabled"}>Reject</button>
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+}
+
 function populateDogOptions(select, currentDogId) {
   select.innerHTML = adminDogs
     .filter((dog) => dog.id !== currentDogId)
@@ -254,15 +295,45 @@ function renderDogs() {
 
 async function loadDogs() {
   setStatus(adminStatus, "Loading private records...");
-  const [dogsPayload, meetGreetsPayload] = await Promise.all([
+  const [dogsPayload, meetGreetsPayload, reviewsPayload] = await Promise.all([
     apiFetch("/api/admin/dogs"),
     apiFetch("/api/admin/meet-greets"),
+    apiFetch("/api/reviews?scope=admin"),
   ]);
   adminDogs = dogsPayload.dogs || [];
+  adminReviews = reviewsPayload.reviews || [];
   renderMeetGreets(meetGreetsPayload.requests || []);
+  renderAdminReviews(adminReviews);
   renderDogs();
   setStatus(adminStatus, "");
 }
+
+adminReviewsEl?.addEventListener("click", async (event) => {
+  const button = event.target.closest("[data-review-action]");
+  if (!button) return;
+
+  const card = button.closest("[data-review-id]");
+  const reviewId = card?.dataset.reviewId || "";
+  if (!reviewId) return;
+
+  button.disabled = true;
+  setStatus(adminStatus, "Updating review...");
+
+  try {
+    await apiFetch("/api/reviews", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        reviewId,
+        status: button.dataset.reviewAction,
+      }),
+    });
+    await loadDogs();
+  } catch (error) {
+    setStatus(adminStatus, error.message);
+    button.disabled = false;
+  }
+});
 
 adminLoginForm?.addEventListener("submit", async (event) => {
   event.preventDefault();

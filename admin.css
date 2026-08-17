@@ -129,6 +129,62 @@
   line-height: 1.45;
 }
 
+.admin-review-card {
+  background: rgba(255, 252, 246, 0.86);
+}
+
+.admin-review-topline {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.admin-review-stars {
+  color: #b28c4a;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.admin-review-status {
+  flex: 0 0 auto;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: rgba(39, 50, 47, 0.08);
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 760;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.admin-review-status.is-pending {
+  background: rgba(200, 166, 90, 0.18);
+  color: #8a6a2c;
+}
+
+.admin-review-status.is-approved {
+  background: rgba(122, 155, 117, 0.2);
+  color: var(--sage-deep);
+}
+
+.admin-review-status.is-rejected {
+  background: rgba(158, 90, 82, 0.14);
+  color: #8f4d46;
+}
+
+.admin-review-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.admin-review-actions .ghost-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+  transform: none;
+}
+
 .admin-dog-card {
   display: grid;
   gap: 18px;

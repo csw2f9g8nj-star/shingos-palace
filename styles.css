@@ -2709,6 +2709,26 @@ body.modal-open {
   text-align: center;
 }
 
+.account-reservation-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.account-reservation-actions .ghost-button {
+  min-height: 42px;
+}
+
+.account-review-status {
+  display: inline-flex;
+  width: fit-content;
+  padding: 8px 11px;
+  border-radius: 999px;
+  background: rgba(168, 185, 165, 0.15);
+  color: var(--sage-deep);
+}
+
 .account-add-dog-form {
   padding: 18px;
 }
@@ -2972,6 +2992,73 @@ h2 {
   margin-top: 10px;
   color: var(--muted);
   font-size: 0.86rem;
+}
+
+.public-reviews-section {
+  display: grid;
+  gap: clamp(22px, 4vw, 34px);
+  padding: clamp(72px, 9vw, 128px) clamp(20px, 5vw, 72px);
+  background:
+    radial-gradient(circle at 10% 0%, rgba(217, 197, 165, 0.16), transparent 30%),
+    linear-gradient(180deg, rgba(255, 250, 241, 0.82), rgba(244, 238, 228, 0.72));
+}
+
+.public-reviews-head {
+  width: min(760px, 100%);
+}
+
+.public-reviews-head h2 {
+  margin: 0;
+  color: var(--charcoal);
+  font-family: var(--display);
+  font-size: clamp(2.5rem, 6vw, 5.2rem);
+  line-height: 0.96;
+}
+
+.public-reviews-head p:last-child {
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  line-height: 1.72;
+}
+
+.public-reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.public-reviews-grid .review-card {
+  min-height: 300px;
+}
+
+.public-reviews-empty {
+  margin: 0;
+  padding: 24px;
+  border: 1px solid rgba(39, 50, 47, 0.08);
+  border-radius: 24px;
+  background: rgba(255, 250, 241, 0.72);
+  color: var(--muted);
+}
+
+.review-submit-card {
+  max-width: 620px;
+}
+
+.review-submit-form {
+  display: grid;
+  gap: 14px;
+}
+
+.review-submit-form textarea {
+  min-height: 130px;
+  resize: vertical;
+}
+
+@media (max-width: 1100px) {
+  .public-reviews-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .booking-layout {
@@ -3913,6 +4000,7 @@ textarea {
   .story-layout,
   .modal-feature,
   .reviews-headline,
+  .public-reviews-grid,
   .detail-grid,
   .pricing-list,
   .reviews-grid,
@@ -4466,8 +4554,14 @@ textarea {
   .account-dashboard-head .ghost-button,
   .account-section-head .ghost-button,
   .account-book-again,
-  .account-pay-balance {
+  .account-pay-balance,
+  .account-review-button {
     width: 100%;
+  }
+
+  .account-reservation-actions {
+    display: grid;
+    grid-template-columns: 1fr;
   }
 
   .account-auth-panel,

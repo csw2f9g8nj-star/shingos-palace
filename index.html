@@ -404,6 +404,20 @@
         </div>
       </section>
 
+      <section class="public-reviews-section" aria-labelledby="public-reviews-heading">
+        <div class="public-reviews-head">
+          <p class="section-kicker" data-i18n="publicReviewsKicker">Reviews</p>
+          <h2 id="public-reviews-heading" data-i18n="publicReviewsHeading">What Pet Parents Say</h2>
+          <p data-i18n="publicReviewsIntro">
+            Warm words from families whose pets have stayed, played, and felt at home at Shingo's Palace.
+          </p>
+        </div>
+        <div class="public-reviews-grid" id="publicReviewList" aria-live="polite"></div>
+        <p class="public-reviews-empty" id="publicReviewEmpty" data-i18n="publicReviewsEmpty" hidden>
+          Approved reviews will appear here soon.
+        </p>
+      </section>
+
       <section class="home-story-section" aria-labelledby="home-story-heading">
         <div class="home-story-image">
           <img src="assets/shingo-story.jpeg" alt="Shingo, the chocolate Labrador who inspired Shingo's Palace" loading="lazy" />
@@ -1287,6 +1301,40 @@
             </section>
           </div>
         </section>
+      </div>
+    </dialog>
+
+    <dialog class="modal" id="leaveReviewModal">
+      <div class="modal-card compact-modal review-submit-card">
+        <button class="modal-close" type="button" aria-label="Close" onclick="window.closeSiteModal(this)">×</button>
+        <p class="modal-kicker" data-i18n="leaveReviewKicker">Review</p>
+        <h2 data-i18n="leaveReviewHeading">Share your Shingo's Palace experience.</h2>
+        <p class="flow-intro" data-i18n="leaveReviewIntro">
+          Your review will be sent to Carla for approval before appearing publicly.
+        </p>
+        <form class="review-submit-form" id="reviewForm">
+          <input type="hidden" name="bookingId" id="reviewBookingId" />
+          <label>
+            <span data-i18n="reviewPetLabel">Pet</span>
+            <select name="petId" id="reviewPetId"></select>
+          </label>
+          <label>
+            <span data-i18n="reviewRatingLabel">Rating</span>
+            <select name="rating" id="reviewRating" required>
+              <option value="5">★★★★★</option>
+              <option value="4">★★★★☆</option>
+              <option value="3">★★★☆☆</option>
+              <option value="2">★★☆☆☆</option>
+              <option value="1">★☆☆☆☆</option>
+            </select>
+          </label>
+          <label>
+            <span data-i18n="reviewCommentLabel">Comment</span>
+            <textarea name="reviewText" id="reviewText" rows="5" required></textarea>
+          </label>
+          <button class="submit-button" id="reviewSubmit" type="submit" data-i18n="reviewSubmit">Submit Review</button>
+          <p class="status-line" id="reviewStatus"></p>
+        </form>
       </div>
     </dialog>
 

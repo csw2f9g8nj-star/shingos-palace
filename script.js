@@ -37,6 +37,10 @@ const translations = {
     accountPayBalance: "Pay remaining balance",
     accountFullyPaid: "Fully paid",
     accountBalancePending: "Balance pending",
+    accountLeaveReview: "Leave a Review",
+    accountReviewPending: "Review pending approval",
+    accountReviewApproved: "Review approved",
+    accountReviewRejected: "Review not approved",
     accountAddDog: "Add Another Dog",
     accountSaveDog: "Save Dog",
     accountDogSaved: "Dog added to your account.",
@@ -234,6 +238,22 @@ const translations = {
     reviewsSummary:
       "Families mention warmth, communication, photos, and the peace of knowing their pets feel at home.",
     reviewsLink: "View Rover profile",
+    publicReviewsKicker: "Kind words",
+    publicReviewsHeading: "What Pet Parents Say",
+    publicReviewsIntro:
+      "Warm words from families whose pets have stayed, played, and felt at home at Shingo's Palace.",
+    publicReviewsEmpty: "Approved reviews will appear here soon.",
+    leaveReviewKicker: "Review",
+    leaveReviewHeading: "Share your Shingo's Palace experience.",
+    leaveReviewIntro: "Your review will be sent to Carla for approval before appearing publicly.",
+    reviewPetLabel: "Pet",
+    reviewRatingLabel: "Rating",
+    reviewCommentLabel: "Comment",
+    reviewSubmit: "Submit Review",
+    reviewSubmitting: "Sending review...",
+    reviewSubmitted: "Thank you. Your review is pending approval.",
+    reviewRequired: "Please choose a rating and write a short review.",
+    reviewAlreadySubmitted: "A review has already been submitted for this reservation.",
     availabilityTitle: "Check Availability",
     availabilityHeading: "Check your dates first.",
     availabilityIntro: "See if we have space before completing a full reservation request.",
@@ -488,6 +508,10 @@ const translations = {
     accountPayBalance: "Pagar saldo restante",
     accountFullyPaid: "Reserva pagada completa",
     accountBalancePending: "Saldo pendiente",
+    accountLeaveReview: "Dejar review",
+    accountReviewPending: "Review pendiente de aprobación",
+    accountReviewApproved: "Review aprobada",
+    accountReviewRejected: "Review no aprobada",
     accountAddDog: "Agregar otro perro",
     accountSaveDog: "Guardar perro",
     accountDogSaved: "Perro agregado a tu cuenta.",
@@ -685,6 +709,22 @@ const translations = {
     reviewsSummary:
       "Las familias hablan de calidez, comunicación, fotos y la tranquilidad de saber que sus mascotas se sienten en casa.",
     reviewsLink: "Ver perfil de Rover",
+    publicReviewsKicker: "Palabras lindas",
+    publicReviewsHeading: "Lo que dicen las familias",
+    publicReviewsIntro:
+      "Comentarios de familias cuyas mascotas se hospedaron, jugaron y se sintieron en casa en Shingo's Palace.",
+    publicReviewsEmpty: "Las reviews aprobadas van a aparecer aquí pronto.",
+    leaveReviewKicker: "Review",
+    leaveReviewHeading: "Compartí tu experiencia en Shingo's Palace.",
+    leaveReviewIntro: "Tu review será enviada a Carla para aprobación antes de aparecer públicamente.",
+    reviewPetLabel: "Mascota",
+    reviewRatingLabel: "Calificación",
+    reviewCommentLabel: "Comentario",
+    reviewSubmit: "Enviar review",
+    reviewSubmitting: "Enviando review...",
+    reviewSubmitted: "Gracias. Tu review queda pendiente de aprobación.",
+    reviewRequired: "Elegí una calificación y escribí un comentario breve.",
+    reviewAlreadySubmitted: "Ya se envió una review para esta reserva.",
     availabilityTitle: "Ver disponibilidad",
     availabilityHeading: "Primero revisá tus fechas.",
     availabilityIntro: "Confirmá si tenemos espacio antes de completar una solicitud de reserva.",
@@ -935,6 +975,7 @@ const STRIPE_VERIFY_ENDPOINT = "/api/verify-checkout-session";
 const PUBLIC_CONFIG_ENDPOINT = "/api/public-config";
 const ACCOUNT_ENDPOINT = "/api/account/me";
 const ACCOUNT_DOGS_ENDPOINT = "/api/account/dogs";
+const REVIEWS_ENDPOINT = "/api/reviews";
 const defaultBookingSelection = {
   service: "",
   dropoffDate: "",
@@ -1087,6 +1128,8 @@ const galleryItems = [
 ];
 
 const reviewList = document.querySelector("#reviewList");
+const publicReviewList = document.querySelector("#publicReviewList");
+const publicReviewEmpty = document.querySelector("#publicReviewEmpty");
 const homeGallery = document.querySelector("#homeGallery");
 const langButtons = document.querySelectorAll(".lang-button");
 const modalButtons = document.querySelectorAll("[data-modal]");
@@ -1187,12 +1230,20 @@ const accountDogPicker = document.querySelector("#accountDogPicker");
 const accountDogSelect = document.querySelector("#accountDogSelect");
 const accountOwnerIdField = document.querySelector("#accountOwnerId");
 const accountDogIdField = document.querySelector("#accountDogId");
+const reviewForm = document.querySelector("#reviewForm");
+const reviewBookingId = document.querySelector("#reviewBookingId");
+const reviewPetId = document.querySelector("#reviewPetId");
+const reviewRating = document.querySelector("#reviewRating");
+const reviewText = document.querySelector("#reviewText");
+const reviewSubmit = document.querySelector("#reviewSubmit");
+const reviewStatus = document.querySelector("#reviewStatus");
 
 let currentLang = localStorage.getItem("shingos-language") || "en";
 let currentBookingStep = 1;
 let customerSupabase = null;
 let customerSession = null;
 let customerAccount = { owner: null, dogs: [] };
+let approvedReviews = [];
 const allowedVaccinationTypes = new Set([
   "application/pdf",
   "image/jpeg",
@@ -1321,24 +1372,71 @@ window.closeSiteModal = (button) => {
   }
 };
 
-function renderReviews() {
-  if (!reviewList) return;
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
-  reviewList.innerHTML = reviews
-    .map(
-      (review) => `
-        <article class="review-card">
-          <div class="review-stars">★★★★★</div>
-          <p class="review-quote">${currentLang === "en" ? review.en : review.es}</p>
-          <strong>${review.name}</strong>
-          <div class="review-meta">
-            <span>${t("reviewService")}: ${review.service}</span>
-            <span>${review.date}</span>
-          </div>
-        </article>
-      `,
-    )
-    .join("");
+function formatReviewDate(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toLocaleDateString(currentLang === "es" ? "es-US" : "en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+function starRating(rating) {
+  const safeRating = Math.max(1, Math.min(5, Number(rating) || 5));
+  return "★".repeat(safeRating) + "☆".repeat(5 - safeRating);
+}
+
+function reviewCardMarkup(review) {
+  const ownerName = review.ownerFirstName || (currentLang === "es" ? "Familia" : "Pet parent");
+  const petName = review.petName ? ` · ${escapeHtml(review.petName)}` : "";
+  const date = formatReviewDate(review.createdAt);
+  return `
+    <article class="review-card">
+      <div class="review-stars" aria-label="${escapeHtml(String(review.rating || 5))} out of 5 stars">${starRating(review.rating)}</div>
+      <p class="review-quote">${escapeHtml(review.reviewText)}</p>
+      <strong>${escapeHtml(ownerName)}${petName}</strong>
+      ${date ? `<div class="review-meta"><span>${escapeHtml(date)}</span></div>` : ""}
+    </article>
+  `;
+}
+
+function renderReviews() {
+  const markup = approvedReviews.map(reviewCardMarkup).join("");
+
+  if (reviewList) {
+    reviewList.innerHTML = markup || `<p class="public-reviews-empty">${t("publicReviewsEmpty")}</p>`;
+  }
+
+  if (publicReviewList) {
+    publicReviewList.innerHTML = markup;
+  }
+
+  if (publicReviewEmpty) {
+    publicReviewEmpty.hidden = Boolean(approvedReviews.length);
+  }
+}
+
+async function loadApprovedReviews() {
+  try {
+    const response = await fetch(REVIEWS_ENDPOINT, { headers: { Accept: "application/json" } });
+    const payload = await response.json().catch(() => ({}));
+    approvedReviews = response.ok && payload.ok !== false ? payload.reviews || [] : [];
+  } catch (error) {
+    approvedReviews = [];
+  }
+
+  renderReviews();
 }
 
 function renderHomeGallery() {
@@ -1695,7 +1793,14 @@ function customerPaymentStatusLabel(booking, hasRemainingBalance, balancePaid) {
   return booking.paymentStatus || booking.status || "";
 }
 
-function bookingCardMarkup(booking, dogName) {
+function reviewStatusLabel(review) {
+  if (!review?.status) return "";
+  if (review.status === "approved") return t("accountReviewApproved");
+  if (review.status === "rejected") return t("accountReviewRejected");
+  return t("accountReviewPending");
+}
+
+function bookingCardMarkup(booking, dogName, options = {}) {
   const balancePaid = booking.balancePaymentStatus === "paid";
   const hasRemainingBalance = amountValue(booking.remainingBalance) > 0;
   const paymentStatusLabel = customerPaymentStatusLabel(booking, hasRemainingBalance, balancePaid);
@@ -1706,6 +1811,12 @@ function bookingCardMarkup(booking, dogName) {
     !balancePaid && hasRemainingBalance
       ? `<a class="ghost-button account-pay-balance" href="balance-payment.html?booking_id=${encodeURIComponent(booking.id)}">${t("accountPayBalance")}</a>`
       : `<small>${balancePaid ? t("accountFullyPaid") : ""}</small>`;
+  const reviewAction =
+    options.allowReview && !booking.review
+      ? `<button class="ghost-button account-review-button" type="button" data-booking-id="${escapeHtml(booking.id)}" data-dog-id="${escapeHtml(options.dogId || "")}">${t("accountLeaveReview")}</button>`
+      : booking.review
+        ? `<small class="account-review-status">${reviewStatusLabel(booking.review)}</small>`
+        : "";
 
   return `
     <article class="account-reservation-card">
@@ -1713,7 +1824,10 @@ function bookingCardMarkup(booking, dogName) {
       <span>${booking.dropoffDate || t("summaryDatesEmpty")} → ${booking.pickupDate || ""}</span>
       <small>${paymentStatusLabel}${booking.depositPaidAmount ? ` · ${booking.depositPaidAmount}` : ""}</small>
       <span>${balanceLine}</span>
-      ${balanceAction}
+      <div class="account-reservation-actions">
+        ${balanceAction}
+        ${reviewAction}
+      </div>
     </article>
   `;
 }
@@ -1761,7 +1875,7 @@ function renderCustomerAccount() {
   const past = [];
   (customerAccount.dogs || []).forEach((dog) => {
     (dog.bookings || []).forEach((booking) => {
-      (bookingIsUpcoming(booking) ? upcoming : past).push({ booking, dogName: dog.name });
+      (bookingIsUpcoming(booking) ? upcoming : past).push({ booking, dogName: dog.name, dogId: dog.id });
     });
   });
 
@@ -1773,7 +1887,7 @@ function renderCustomerAccount() {
 
   if (accountPastReservations) {
     accountPastReservations.innerHTML = past.length
-      ? past.map(({ booking, dogName }) => bookingCardMarkup(booking, dogName)).join("")
+      ? past.map(({ booking, dogName, dogId }) => bookingCardMarkup(booking, dogName, { allowReview: true, dogId })).join("")
       : `<p>${t("accountNoReservations")}</p>`;
   }
 
@@ -1790,6 +1904,32 @@ function populateAccountDogPicker() {
     ...dogs.map((dog) => `<option value="${dog.id}">${dog.name}${dog.breed ? ` · ${dog.breed}` : ""}</option>`),
   ].join("");
   accountDogSelect.value = dogs.some((dog) => dog.id === currentValue) ? currentValue : "";
+}
+
+function findAccountBooking(bookingId) {
+  for (const dog of customerAccount.dogs || []) {
+    const booking = (dog.bookings || []).find((item) => item.id === bookingId);
+    if (booking) return { booking, dog };
+  }
+  return null;
+}
+
+function openReviewModal(bookingId, dogId = "") {
+  const match = findAccountBooking(bookingId);
+  if (!match || match.booking.review || bookingIsUpcoming(match.booking)) return;
+
+  if (reviewBookingId) reviewBookingId.value = bookingId;
+  if (reviewRating) reviewRating.value = "5";
+  if (reviewText) reviewText.value = "";
+  if (reviewStatus) reviewStatus.textContent = "";
+
+  if (reviewPetId) {
+    const selectedDogId = dogId || match.dog.id;
+    reviewPetId.innerHTML = `<option value="${escapeHtml(selectedDogId)}">${escapeHtml(match.dog.name || t("fieldPet"))}</option>`;
+    reviewPetId.value = selectedDogId;
+  }
+
+  window.openSiteModal("leaveReviewModal");
 }
 
 function setFormField(form, name, value) {
@@ -2312,6 +2452,58 @@ accountDogs?.addEventListener("click", (event) => {
   window.openSiteModal("availabilityModal");
 });
 
+accountPastReservations?.addEventListener("click", (event) => {
+  const button = event.target.closest(".account-review-button");
+  if (!button) return;
+  openReviewModal(button.dataset.bookingId, button.dataset.dogId);
+});
+
+reviewForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (!reviewForm.checkValidity()) {
+    reviewForm.reportValidity();
+    if (reviewStatus) reviewStatus.textContent = t("reviewRequired");
+    return;
+  }
+
+  const body = {
+    bookingId: reviewBookingId?.value || "",
+    petId: reviewPetId?.value || "",
+    rating: Number(reviewRating?.value || 5),
+    reviewText: reviewText?.value || "",
+  };
+
+  if (!body.bookingId || !body.reviewText.trim()) {
+    if (reviewStatus) reviewStatus.textContent = t("reviewRequired");
+    return;
+  }
+
+  if (reviewSubmit) {
+    reviewSubmit.disabled = true;
+    reviewSubmit.textContent = t("reviewSubmitting");
+  }
+  if (reviewStatus) reviewStatus.textContent = "";
+
+  try {
+    await customerApiFetch(REVIEWS_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    if (reviewStatus) reviewStatus.textContent = t("reviewSubmitted");
+    await loadCustomerAccount();
+  } catch (error) {
+    if (reviewStatus) {
+      reviewStatus.textContent = error.message || t("bookingError");
+    }
+  } finally {
+    if (reviewSubmit) {
+      reviewSubmit.disabled = false;
+      reviewSubmit.textContent = t("reviewSubmit");
+    }
+  }
+});
+
 accountDogSelect?.addEventListener("change", () => {
   if (accountDogSelect.value) {
     preloadAccountDog(accountDogSelect.value);
@@ -2492,4 +2684,5 @@ populateTimeSelect(preferredWalkingTimeInput);
 updatePaymentMethodDisplay();
 updateServiceSpecificFields();
 applyLanguage();
+loadApprovedReviews();
 initializeCustomerAuth();
