@@ -1,5 +1,5 @@
 const fs = require("fs/promises");
-const { findOwnerForUser } = require("../lib/api-utils/account");
+const { findOwnerForUser, findOwnersByEmail, normalizeEmail } = require("../lib/api-utils/account");
 const {
   getAdminClient,
   getSupabaseConfig,
@@ -106,6 +106,33 @@ async function getLinkedBookingAccount(supabase, req, fields) {
   return { owner: linkedOwner, dog };
 }
 
+async function getCustomerUserIfPresent(supabase, req) {
+  const authorization = req.headers.authorization || "";
+  const token = authorization.replace(/^Bearer\s+/i, "").trim();
+  if (!token) return null;
+
+  return requireCustomerUser(req, supabase);
+}
+
+async function findReusableOwnerForBooking(supabase, req, ownerPayload) {
+  const email = normalizeEmail(ownerPayload.email);
+  if (!email) return null;
+
+  const user = await getCustomerUserIfPresent(supabase, req);
+  if (user) {
+    const userEmail = normalizeEmail(user.email);
+    if (userEmail && userEmail !== email) {
+      throw publicApiError("The booking email must match the signed-in account email.", 403, "booking_email_account_mismatch");
+    }
+
+    const linkedOwner = await findOwnerForUser(supabase, user);
+    if (linkedOwner) return linkedOwner;
+  }
+
+  const owners = await findOwnersByEmail(supabase, email);
+  return owners[0] || null;
+}
+
 async function handler(req, res) {
   if (req.method !== "POST") {
     sendJson(res, 405, { ok: false, error: "Method not allowed." });
@@ -135,7 +162,7 @@ async function handler(req, res) {
     const ownerPayload = {
       first_name: normalizeField(fields.firstName),
       last_name: normalizeField(fields.lastName),
-      email: normalizeField(fields.email).toLowerCase(),
+      email: normalizeEmail(fields.email),
       phone: normalizeField(fields.phone),
       emergency_contact: normalizeField(fields.emergencyContact),
     };
@@ -206,18 +233,25 @@ async function handler(req, res) {
     }
 
     try {
-      let owner = linkedAccount?.owner || null;
+      let owner = linkedAccount?.owner || (await findReusableOwnerForBooking(supabase, req, ownerPayload));
       let dog = linkedAccount?.dog || null;
 
       if (owner) {
+        const ownerUpdatePayload = {
+          first_name: ownerPayload.first_name,
+          last_name: ownerPayload.last_name,
+          email: ownerPayload.email,
+          phone: ownerPayload.phone,
+        };
+
+        const signedInUser = await getCustomerUserIfPresent(supabase, req);
+        if (signedInUser && normalizeEmail(signedInUser.email) === ownerPayload.email && !owner.auth_user_id) {
+          ownerUpdatePayload.auth_user_id = signedInUser.id;
+        }
+
         const { data: updatedOwner, error: ownerUpdateError } = await supabase
           .from("owners")
-          .update({
-            first_name: ownerPayload.first_name,
-            last_name: ownerPayload.last_name,
-            email: ownerPayload.email,
-            phone: ownerPayload.phone,
-          })
+          .update(ownerUpdatePayload)
           .eq("id", owner.id)
           .select()
           .single();
