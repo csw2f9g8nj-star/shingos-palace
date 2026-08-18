@@ -30,6 +30,7 @@ module.exports = async function handler(req, res) {
         estimated_total,
         deposit_due_today,
         remaining_balance,
+        pet_type,
         balance_payment_status,
         owner:owners(first_name,last_name,email),
         dog:dogs(name)
@@ -42,6 +43,7 @@ module.exports = async function handler(req, res) {
         estimated_total,
         deposit_due_today,
         remaining_balance,
+        pet_type,
         owner:owners(first_name,last_name,email),
         dog:dogs(name)
       `;
@@ -70,7 +72,7 @@ module.exports = async function handler(req, res) {
     const stripe = getStripeClient();
     const origin = getOrigin(req);
     const customerEmail = booking.owner?.email || undefined;
-    const dogName = booking.dog?.name || "Guest dog";
+    const petName = booking.dog?.name || "Guest pet";
     const serviceLabel = booking.service ? booking.service.charAt(0).toUpperCase() + booking.service.slice(1) : "Booking";
     const paymentLabel = isBalancePayment ? "Remaining Balance" : "Deposit";
 
@@ -88,7 +90,7 @@ module.exports = async function handler(req, res) {
             unit_amount: amountCents,
             product_data: {
               name: `Shingo's Palace ${serviceLabel} ${paymentLabel}`,
-              description: `${dogName} · ${booking.dropoff_date || ""} to ${booking.pickup_date || ""}`,
+              description: `${petName} · ${booking.dropoff_date || ""} to ${booking.pickup_date || ""}`,
             },
           },
         },
@@ -96,7 +98,9 @@ module.exports = async function handler(req, res) {
       metadata: {
         booking_id: booking.id,
         payment_type: isBalancePayment ? "balance" : "deposit",
-        dog_name: dogName,
+        pet_name: petName,
+        dog_name: petName,
+        pet_type: booking.pet_type || "dog",
         estimated_total: booking.estimated_total || "",
         deposit_due_today: booking.deposit_due_today || "",
         remaining_balance: booking.remaining_balance || "",

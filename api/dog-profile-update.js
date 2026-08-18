@@ -153,6 +153,7 @@ async function handler(req, res) {
       weight: normalizeField(fields.weight),
       sex: normalizeField(fields.sex),
       vaccinations_up_to_date: normalizeField(fields.vaccinationsUpToDate),
+      rabies_vaccination_up_to_date: normalizeField(fields.rabiesVaccinationUpToDate),
       good_with_cats: normalizeField(fields.goodWithCats),
       good_with_small_dogs: normalizeField(fields.goodWithSmallDogs),
       can_swim: normalizeField(fields.canSwim),

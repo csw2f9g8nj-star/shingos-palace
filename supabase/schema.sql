@@ -27,6 +27,7 @@ create table if not exists public.dogs (
   sex text,
   spayed_neutered text,
   vaccinations_up_to_date text,
+  rabies_vaccination_up_to_date text,
   medications text,
   allergies text,
   behavioral_concerns text,

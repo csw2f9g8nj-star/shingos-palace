@@ -35,7 +35,7 @@
               <strong id="successService">-</strong>
             </div>
             <div>
-              <span>Dog name</span>
+              <span id="successPetNameLabel">Pet name</span>
               <strong id="successDogName">-</strong>
             </div>
             <div>
@@ -55,10 +55,10 @@
           <section class="dog-profile-cta payment-success-profile-cta" id="successDogProfileCta">
             <div>
               <p class="summary-kicker">Next step</p>
-              <h2>Tell us more about your dog 🐾</h2>
-              <p>Help us get to know your dog so we can make their stay safe, comfortable and personalized.</p>
+              <h2 id="successProfileCtaTitle">Tell us more about your pet 🐾</h2>
+              <p id="successProfileCtaText">Help us get to know your pet so we can make their stay safe, comfortable and personalized.</p>
             </div>
-            <button class="submit-button" id="successProfileButton" type="button">Complete Dog Profile</button>
+            <button class="submit-button" id="successProfileButton" type="button">Complete Pet Profile</button>
           </section>
 
           <section class="dog-profile-cta payment-success-profile-cta account-create-cta" id="successAccountCta">
@@ -66,7 +66,7 @@
               <p class="summary-kicker">My Account</p>
               <h2>Create your Shingo's Palace account</h2>
               <p>
-                Use the same email from your reservation to see your booking, dog profile, vaccination status, and book again faster.
+                Use the same email from your reservation to see your booking, pet profile, vaccination status, and book again faster.
               </p>
               <small id="successAccountEmail"></small>
             </div>
@@ -78,10 +78,11 @@
             <input type="hidden" name="ownerId" id="successOwnerId" />
             <input type="hidden" name="dogId" id="successDogId" />
             <input type="hidden" name="bookingId" id="successBookingId" />
+            <input type="hidden" name="petType" id="successPetType" />
             <div class="booking-step-head">
               <span>✓</span>
               <div>
-                <h3>Tell us more about your dog</h3>
+                <h3 id="successProfileFormTitle">Tell us more about your pet</h3>
                 <p>These details help us personalize care. You can also send them later.</p>
               </div>
             </div>
@@ -105,6 +106,14 @@
               <label>
                 <span>Vaccinations up to date? (optional)</span>
                 <select name="vaccinationsUpToDate">
+                  <option value="">Select</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </label>
+              <label>
+                <span>Rabies vaccination up to date? (optional)</span>
+                <select name="rabiesVaccinationUpToDate">
                   <option value="">Select</option>
                   <option value="Yes">Yes</option>
                   <option value="No">No</option>
@@ -198,7 +207,7 @@
               </label>
             </div>
             <div class="profile-followup-actions full">
-              <button class="submit-button" id="successProfileSubmit" type="submit">Save dog profile</button>
+              <button class="submit-button" id="successProfileSubmit" type="submit">Save pet profile</button>
               <a class="ghost-button payment-home-link" href="index.html">Skip for now</a>
             </div>
             <p class="status-line full" id="successProfileStatus"></p>

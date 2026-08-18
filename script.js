@@ -316,7 +316,7 @@ const translations = {
     bookingStepDog: "Pet information",
     bookingStepDogHelp: "A few essential details help us prepare your reservation quickly.",
     bookingStepVet: "Veterinarian information",
-    bookingStepVetHelp: "This helps us act quickly and responsibly if your dog ever needs care.",
+    bookingStepVetHelp: "This helps us act quickly and responsibly if your pet ever needs care.",
     bookingStepService: "Booking information",
     bookingStepServiceHelp: "Choose the care type, dates, times, and service area.",
     bookingStepExtras: "Additional notes",
@@ -349,6 +349,8 @@ const translations = {
     fieldSex: "Sex (optional)",
     fieldSpayedNeutered: "Spayed / Neutered",
     fieldVaccinations: "Vaccinations up to date? (optional)",
+    fieldRabiesVaccination: "Rabies vaccination up to date?",
+    fieldRabiesVaccinationOptional: "Rabies vaccination up to date? (optional)",
     fieldGoodCats: "Good with cats? (optional)",
     fieldGoodSmallDogs: "Good with small dogs? (optional)",
     fieldCanSwim: "Can swim? (optional)",
@@ -852,6 +854,8 @@ const translations = {
     fieldSex: "Sexo (opcional)",
     fieldSpayedNeutered: "Castrado / esterilizada",
     fieldVaccinations: "¿Vacunas al día? (opcional)",
+    fieldRabiesVaccination: "¿Vacuna contra la rabia al día?",
+    fieldRabiesVaccinationOptional: "¿Vacuna contra la rabia al día? (opcional)",
     fieldGoodCats: "¿Se lleva bien con gatos? (opcional)",
     fieldGoodSmallDogs: "¿Se lleva bien con perros pequeños? (opcional)",
     fieldCanSwim: "¿Sabe nadar? (opcional)",
@@ -2338,6 +2342,7 @@ function preloadAccountDog(dogId) {
   setFormField(bookingForm, "dogName", dog.name);
   setFormField(bookingForm, "breed", dog.breed);
   setFormField(bookingForm, "spayedNeutered", dog.spayedNeutered);
+  setFormField(bookingForm, "rabiesVaccinationUpToDate", dog.rabiesVaccinationUpToDate);
   updatePetSpecificFields();
   updateSummary();
 }
@@ -2350,6 +2355,7 @@ function clearAccountDogSelection(clearDogFields = false) {
   setFormField(bookingForm, "dogName", "");
   setFormField(bookingForm, "breed", "");
   setFormField(bookingForm, "spayedNeutered", "");
+  setFormField(bookingForm, "rabiesVaccinationUpToDate", "");
   setSelectedPetType("dog");
   updatePetSpecificFields();
   updateSummary();

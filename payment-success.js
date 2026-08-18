@@ -24,6 +24,7 @@ const errorState = document.querySelector("#paymentErrorState");
 const errorText = document.querySelector("#paymentErrorText");
 const successService = document.querySelector("#successService");
 const successDogName = document.querySelector("#successDogName");
+const successPetNameLabel = document.querySelector("#successPetNameLabel");
 const successDates = document.querySelector("#successDates");
 const successDeposit = document.querySelector("#successDeposit");
 const paymentSuccessKicker = document.querySelector("#paymentSuccessKicker");
@@ -35,9 +36,13 @@ const successRemaining = document.querySelector("#successRemaining");
 const successOwnerId = document.querySelector("#successOwnerId");
 const successDogId = document.querySelector("#successDogId");
 const successBookingId = document.querySelector("#successBookingId");
+const successPetType = document.querySelector("#successPetType");
 const successDogProfileCta = document.querySelector("#successDogProfileCta");
+const successProfileCtaTitle = document.querySelector("#successProfileCtaTitle");
+const successProfileCtaText = document.querySelector("#successProfileCtaText");
 const successProfileButton = document.querySelector("#successProfileButton");
 const successDogProfileForm = document.querySelector("#successDogProfileForm");
+const successProfileFormTitle = document.querySelector("#successProfileFormTitle");
 const successProfileSubmit = document.querySelector("#successProfileSubmit");
 const successProfileStatus = document.querySelector("#successProfileStatus");
 const successVaccinationRecords = document.querySelector("#successVaccinationRecords");
@@ -66,6 +71,25 @@ function serviceLabel(service) {
     grooming: "Grooming",
   };
   return labels[service] || service || "-";
+}
+
+function normalizePetType(value) {
+  return String(value || "").toLowerCase() === "cat" ? "cat" : "dog";
+}
+
+function updatePetWording(petType) {
+  const normalizedPetType = normalizePetType(petType);
+  const petLabel = normalizedPetType === "cat" ? "cat" : "pet";
+  const profileLabel = normalizedPetType === "cat" ? "Cat Profile" : "Pet Profile";
+
+  if (successPetNameLabel) successPetNameLabel.textContent = "Pet name";
+  if (successProfileCtaTitle) successProfileCtaTitle.textContent = `Tell us more about your ${petLabel} 🐾`;
+  if (successProfileCtaText) {
+    successProfileCtaText.textContent = `Help us get to know your ${petLabel} so we can make their stay safe, comfortable and personalized.`;
+  }
+  if (successProfileButton) successProfileButton.textContent = `Complete ${profileLabel}`;
+  if (successProfileFormTitle) successProfileFormTitle.textContent = `Tell us more about your ${petLabel}`;
+  if (successProfileSubmit) successProfileSubmit.textContent = `Save ${profileLabel.toLowerCase()}`;
 }
 
 function validateVaccinationFiles() {
@@ -180,6 +204,8 @@ async function verifyPayment() {
     }
 
     const isBalancePayment = payload.paymentType === "balance";
+    const petType = normalizePetType(payload.petType);
+    updatePetWording(petType);
 
     if (paymentSuccessKicker) paymentSuccessKicker.textContent = isBalancePayment ? "Balance paid" : "Deposit received";
     if (paymentSuccessHeading) {
@@ -195,13 +221,14 @@ async function verifyPayment() {
     if (successDepositLabel) successDepositLabel.textContent = isBalancePayment ? "Balance paid" : "Deposit paid";
     if (successRemainingLabel) successRemainingLabel.textContent = isBalancePayment ? "Remaining balance" : "Remaining balance";
     if (successService) successService.textContent = serviceLabel(payload.service);
-    if (successDogName) successDogName.textContent = payload.dogName || "-";
+    if (successDogName) successDogName.textContent = payload.petName || payload.dogName || "-";
     if (successDates) successDates.textContent = payload.dates || "-";
     if (successDeposit) successDeposit.textContent = isBalancePayment ? payload.balancePaid || "-" : payload.depositPaid || "-";
     if (successRemaining) successRemaining.textContent = payload.remainingBalance || "-";
     if (successOwnerId) successOwnerId.value = payload.ownerId || "";
     if (successDogId) successDogId.value = payload.dogId || "";
     if (successBookingId) successBookingId.value = payload.bookingId || "";
+    if (successPetType) successPetType.value = petType;
     verifiedOwnerEmail = payload.ownerEmail || "";
     if (successAccountEmail) {
       successAccountEmail.textContent = verifiedOwnerEmail ? `We'll send the secure link to ${verifiedOwnerEmail}.` : "";
@@ -276,7 +303,7 @@ successDogProfileForm?.addEventListener("submit", async (event) => {
 
   try {
     const payload = await submitProfileWithProgress();
-    if (successProfileStatus) successProfileStatus.textContent = payload.message || "Thank you. Your dog's profile has been updated.";
+    if (successProfileStatus) successProfileStatus.textContent = payload.message || "Thank you. Your pet's profile has been updated.";
     successDogProfileForm.reset();
     if (successUploadProgress) successUploadProgress.hidden = true;
     if (successUploadBar) successUploadBar.style.width = "0%";
@@ -285,7 +312,7 @@ successDogProfileForm?.addEventListener("submit", async (event) => {
   } finally {
     if (successProfileSubmit) {
       successProfileSubmit.disabled = false;
-      successProfileSubmit.textContent = "Save dog profile";
+      updatePetWording(successPetType?.value);
     }
   }
 });

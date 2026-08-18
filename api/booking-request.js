@@ -181,6 +181,7 @@ async function handler(req, res) {
       sex: normalizeField(fields.sex),
       spayed_neutered: normalizeField(fields.spayedNeutered),
       vaccinations_up_to_date: normalizeField(fields.vaccinationsUpToDate),
+      rabies_vaccination_up_to_date: normalizeField(fields.rabiesVaccinationUpToDate),
       good_with_cats: normalizeField(fields.goodWithCats),
       good_with_small_dogs: normalizeField(fields.goodWithSmallDogs),
       can_swim: normalizeField(fields.canSwim),
@@ -285,6 +286,7 @@ async function handler(req, res) {
             pet_type: dogPayload.pet_type,
             breed: dogPayload.breed,
             spayed_neutered: dogPayload.spayed_neutered,
+            rabies_vaccination_up_to_date: dogPayload.rabies_vaccination_up_to_date,
           })
           .eq("id", dog.id)
           .eq("owner_id", owner.id)
@@ -292,7 +294,7 @@ async function handler(req, res) {
           .single();
 
         if (dogUpdateError) {
-          throw publicApiError("We could not update the dog profile for this account.", 500, "dog_update_failed");
+          throw publicApiError("We could not update the pet profile for this account.", 500, "dog_update_failed");
         }
         dog = updatedDog;
       } else {
