@@ -51,6 +51,91 @@ function normalizePetType(value) {
   return normalizeField(value).toLowerCase() === "cat" ? "cat" : "dog";
 }
 
+const serviceRates = {
+  boarding: 50,
+  daycare: 35,
+  walking: 18,
+  grooming: 30,
+};
+const additionalDogRate = 35;
+const catBoardingRate = 30;
+const additionalCatRate = 20;
+
+function parseBookingPets(fields) {
+  let pets = [];
+  try {
+    pets = JSON.parse(normalizeField(fields.petsJson) || "[]");
+  } catch (error) {
+    pets = [];
+  }
+
+  if (!Array.isArray(pets) || !pets.length) {
+    pets = [
+      {
+        dogId: normalizeField(fields.dogId),
+        petType: normalizePetType(fields.petType),
+        name: normalizeField(fields.dogName),
+        breed: normalizeField(fields.breed),
+        spayedNeutered: normalizeField(fields.spayedNeutered),
+        rabiesVaccinationUpToDate: normalizeField(fields.rabiesVaccinationUpToDate),
+      },
+    ];
+  }
+
+  return pets.slice(0, 6).map((pet) => ({
+    dogId: normalizeField(pet.dogId),
+    petType: normalizePetType(pet.petType),
+    name: normalizeField(pet.name),
+    breed: normalizeField(pet.breed),
+    spayedNeutered: normalizeField(pet.spayedNeutered),
+    rabiesVaccinationUpToDate: normalizeField(pet.rabiesVaccinationUpToDate),
+  }));
+}
+
+function petCountLabel(count, petType) {
+  if (!count) return "";
+  const label = petType === "cat" ? (count === 1 ? "cat" : "cats") : count === 1 ? "dog" : "dogs";
+  return `${count} ${label}`;
+}
+
+function petSummary(pets) {
+  const counts = pets.reduce(
+    (result, pet) => {
+      result[pet.petType] += 1;
+      return result;
+    },
+    { dog: 0, cat: 0 },
+  );
+
+  return [petCountLabel(counts.dog, "dog"), petCountLabel(counts.cat, "cat")].filter(Boolean).join(" + ");
+}
+
+function bookingRateForPet(petType, role, service) {
+  if (service === "boarding") {
+    if (petType === "cat") return role === "additional" ? additionalCatRate : catBoardingRate;
+    return role === "additional" ? additionalDogRate : serviceRates.boarding;
+  }
+
+  return serviceRates[service] || serviceRates.boarding;
+}
+
+function pricingBreakdownForPets(pets, service, units) {
+  const seen = { dog: 0, cat: 0 };
+  return pets.map((pet) => {
+    seen[pet.petType] += 1;
+    const role = seen[pet.petType] === 1 ? "primary" : "additional";
+    const rate = bookingRateForPet(pet.petType, role, service);
+    return {
+      petName: pet.name,
+      petType: pet.petType,
+      role,
+      units,
+      rate,
+      subtotal: rate * units,
+    };
+  });
+}
+
 async function insertSingle(supabase, table, payload, message) {
   const { data, error } = await supabase.from(table).insert(payload).select().single();
   if (error) {
@@ -71,7 +156,7 @@ async function removeCreatedRecords(supabase, created) {
     cleanupTasks.push(supabase.storage.from(created.bucket).remove(created.storagePaths));
   }
   if (created.bookingId) cleanupTasks.push(supabase.from("bookings").delete().eq("id", created.bookingId));
-  if (created.dogId) cleanupTasks.push(supabase.from("dogs").delete().eq("id", created.dogId));
+  if (created.dogIds?.length) cleanupTasks.push(supabase.from("dogs").delete().in("id", created.dogIds));
   if (created.ownerId) cleanupTasks.push(supabase.from("owners").delete().eq("id", created.ownerId));
 
   await Promise.allSettled(cleanupTasks);
@@ -152,7 +237,7 @@ async function handler(req, res) {
     const created = {
       bucket: config.bucket,
       ownerId: "",
-      dogId: "",
+      dogIds: [],
       bookingId: "",
       storagePaths: [],
     };
@@ -171,17 +256,19 @@ async function handler(req, res) {
       emergency_contact: normalizeField(fields.emergencyContact),
     };
 
-    const petType = normalizePetType(fields.petType);
+    const pets = parseBookingPets(fields);
+    const primaryPet = pets[0] || {};
+    const petType = normalizePetType(primaryPet.petType || fields.petType);
     const dogPayload = {
-      name: normalizeField(fields.dogName),
+      name: normalizeField(primaryPet.name || fields.dogName),
       pet_type: petType,
-      breed: normalizeField(fields.breed),
+      breed: normalizeField(primaryPet.breed || fields.breed),
       age: normalizeField(fields.age),
       weight: normalizeField(fields.weight),
       sex: normalizeField(fields.sex),
-      spayed_neutered: normalizeField(fields.spayedNeutered),
+      spayed_neutered: normalizeField(primaryPet.spayedNeutered || fields.spayedNeutered),
       vaccinations_up_to_date: normalizeField(fields.vaccinationsUpToDate),
-      rabies_vaccination_up_to_date: normalizeField(fields.rabiesVaccinationUpToDate),
+      rabies_vaccination_up_to_date: normalizeField(primaryPet.rabiesVaccinationUpToDate || fields.rabiesVaccinationUpToDate),
       good_with_cats: normalizeField(fields.goodWithCats),
       good_with_small_dogs: normalizeField(fields.goodWithSmallDogs),
       can_swim: normalizeField(fields.canSwim),
@@ -199,6 +286,15 @@ async function handler(req, res) {
 
     const service = normalizeField(fields.service);
     const preferredWalkingTime = normalizeField(fields.preferredWalkingTime);
+    const units = Number(normalizeField(fields.units)) || 1;
+    const pricingBreakdown = pricingBreakdownForPets(pets, service, units);
+    const petCounts = pets.reduce(
+      (counts, pet) => {
+        counts[pet.petType] += 1;
+        return counts;
+      },
+      { dog: 0, cat: 0 },
+    );
     const bookingPayload = {
       service,
       pet_type: petType,
@@ -207,9 +303,12 @@ async function handler(req, res) {
       arrival_time: service === "walking" ? (preferredWalkingTime || null) : normalizeField(fields.arrivalTime) || null,
       departure_time: service === "walking" ? null : normalizeField(fields.departureTime) || null,
       area: normalizeField(fields.area) || "Margate",
-      units: Number(normalizeField(fields.units)) || 1,
-      additional_dogs: Number(normalizeField(fields.additionalDogs)) || 0,
-      additional_cats: service === "walking" ? 0 : Number(normalizeField(fields.additionalCats)) || 0,
+      units,
+      additional_dogs: Math.max(0, petCounts.dog - 1),
+      additional_cats: service === "walking" ? 0 : Math.max(0, petCounts.cat - 1),
+      pet_count: pets.length,
+      booking_pet_summary: petSummary(pets),
+      pricing_breakdown: pricingBreakdown,
       after_hours: service === "walking" ? false : isLatePickup(fields.departureTime),
       long_stay: service === "walking" ? false : normalizeField(fields.longStay) === "on",
       notes: normalizeField(fields.notes),
@@ -226,9 +325,15 @@ async function handler(req, res) {
       !ownerPayload.last_name ||
       !ownerPayload.email ||
       !ownerPayload.phone ||
-      !dogPayload.name ||
-      !dogPayload.breed ||
-      !dogPayload.spayed_neutered ||
+      !pets.length ||
+      pets.some(
+        (pet) =>
+          !pet.name ||
+          !pet.breed ||
+          !pet.spayedNeutered ||
+          !pet.rabiesVaccinationUpToDate ||
+          (bookingPayload.service === "walking" && pet.petType !== "dog"),
+      ) ||
       !bookingPayload.service ||
       !bookingPayload.dropoff_date ||
       !bookingPayload.pickup_date ||
@@ -242,7 +347,6 @@ async function handler(req, res) {
 
     try {
       let owner = linkedAccount?.owner || (await findReusableOwnerForBooking(supabase, req, ownerPayload));
-      let dog = linkedAccount?.dog || null;
 
       if (owner) {
         const ownerUpdatePayload = {
@@ -278,34 +382,77 @@ async function handler(req, res) {
         created.ownerId = owner.id;
       }
 
-      if (dog) {
-        const { data: updatedDog, error: dogUpdateError } = await supabase
-          .from("dogs")
-          .update({
-            name: dogPayload.name,
-            pet_type: dogPayload.pet_type,
-            breed: dogPayload.breed,
-            spayed_neutered: dogPayload.spayed_neutered,
-            rabies_vaccination_up_to_date: dogPayload.rabies_vaccination_up_to_date,
-          })
-          .eq("id", dog.id)
-          .eq("owner_id", owner.id)
-          .select()
-          .single();
+      const savedPets = [];
+      for (const [index, pet] of pets.entries()) {
+        const payload = {
+          name: pet.name,
+          pet_type: pet.petType,
+          breed: pet.breed,
+          spayed_neutered: pet.spayedNeutered,
+          rabies_vaccination_up_to_date: pet.rabiesVaccinationUpToDate,
+        };
 
-        if (dogUpdateError) {
-          throw publicApiError("We could not update the pet profile for this account.", 500, "dog_update_failed");
+        if (index === 0) {
+          Object.assign(payload, {
+            age: dogPayload.age,
+            weight: dogPayload.weight,
+            sex: dogPayload.sex,
+            vaccinations_up_to_date: dogPayload.vaccinations_up_to_date,
+            good_with_cats: dogPayload.good_with_cats,
+            good_with_small_dogs: dogPayload.good_with_small_dogs,
+            can_swim: dogPayload.can_swim,
+            veterinary_clinic: dogPayload.veterinary_clinic,
+            veterinarian_name: dogPayload.veterinarian_name,
+            clinic_phone: dogPayload.clinic_phone,
+            clinic_address: dogPayload.clinic_address,
+            medications: dogPayload.medications,
+            allergies: dogPayload.allergies,
+            behavioral_concerns: dogPayload.behavioral_concerns,
+            favorite_activities: dogPayload.favorite_activities,
+            feeding_instructions: dogPayload.feeding_instructions,
+            sleeping_routine: dogPayload.sleeping_routine,
+          });
         }
-        dog = updatedDog;
-      } else {
-        dog = await insertSingle(
-          supabase,
-          "dogs",
-          { ...dogPayload, owner_id: owner.id },
-          "We could not save the pet profile. Please check the dogs table in Supabase.",
-        );
-        created.dogId = dog.id;
+
+        let savedPet = null;
+        if (pet.dogId) {
+          const { data: existingPet, error: existingPetError } = await supabase
+            .from("dogs")
+            .select("*")
+            .eq("id", pet.dogId)
+            .eq("owner_id", owner.id)
+            .single();
+
+          if (existingPetError || !existingPet) {
+            throw publicApiError("One of the selected saved pets does not belong to your account.", 403, "saved_pet_forbidden");
+          }
+
+          const { data: updatedPet, error: petUpdateError } = await supabase
+            .from("dogs")
+            .update(payload)
+            .eq("id", existingPet.id)
+            .eq("owner_id", owner.id)
+            .select()
+            .single();
+
+          if (petUpdateError) {
+            throw publicApiError("We could not update one of the saved pet profiles.", 500, "pet_update_failed");
+          }
+          savedPet = updatedPet;
+        } else {
+          savedPet = await insertSingle(
+            supabase,
+            "dogs",
+            { ...payload, owner_id: owner.id },
+            "We could not save one of the pet profiles. Please check the dogs table in Supabase.",
+          );
+          created.dogIds.push(savedPet.id);
+        }
+
+        savedPets.push(savedPet);
       }
+
+      const dog = savedPets[0];
 
       const booking = await insertSingle(
         supabase,
@@ -314,6 +461,27 @@ async function handler(req, res) {
         "We could not save the booking request. Please check the bookings table in Supabase.",
       );
       created.bookingId = booking.id;
+
+      const bookingPetRows = savedPets.map((pet, index) => {
+        const breakdown = pricingBreakdown[index] || {};
+        return {
+          booking_id: booking.id,
+          dog_id: pet.id,
+          owner_id: owner.id,
+          pet_type: pet.pet_type || "dog",
+          role: breakdown.role || (index === 0 ? "primary" : "guest"),
+          nightly_rate: breakdown.rate || null,
+        };
+      });
+
+      const { error: bookingPetsError } = await supabase.from("booking_pets").insert(bookingPetRows);
+      if (bookingPetsError) {
+        throw publicApiError(
+          "We saved the reservation, but could not link every pet to it. Please run the multi-pet booking migration in Supabase.",
+          500,
+          "booking_pets_insert_failed",
+        );
+      }
 
       const uploadedRecords = [];
       for (const [index, file] of records.entries()) {
@@ -368,6 +536,8 @@ async function handler(req, res) {
         bookingId: booking.id,
         ownerId: owner.id,
         dogId: dog.id,
+        petIds: savedPets.map((pet) => pet.id),
+        petSummary: bookingPayload.booking_pet_summary,
         recordsUploaded: uploadedRecords.length,
       });
     } catch (error) {

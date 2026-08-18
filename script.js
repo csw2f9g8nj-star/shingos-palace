@@ -338,7 +338,9 @@ const translations = {
     fieldEmail: "Email",
     fieldPhone: "Phone Number",
     fieldEmergencyContact: "Emergency Contact (optional)",
+    fieldNumberPets: "Number of Pets",
     fieldPet: "Pet's Name",
+    petCardTitle: "Pet",
     fieldPetType: "Pet type",
     fieldBreed: "Breed",
     fieldBreedOther: "Please specify breed",
@@ -351,6 +353,9 @@ const translations = {
     fieldVaccinations: "Vaccinations up to date? (optional)",
     fieldRabiesVaccination: "Rabies vaccination up to date?",
     fieldRabiesVaccinationOptional: "Rabies vaccination up to date? (optional)",
+    rabiesVerificationTitle: "Vaccination verification required",
+    rabiesVerificationText:
+      "Proof of current rabies vaccination will be required before your pet's stay. You may upload the vaccination record through your pet profile or provide a copy at check-in.",
     fieldGoodCats: "Good with cats? (optional)",
     fieldGoodSmallDogs: "Good with small dogs? (optional)",
     fieldCanSwim: "Can swim? (optional)",
@@ -464,6 +469,11 @@ const translations = {
     multipleCats: "cats",
     onePet: "1 pet",
     multiplePets: "pets",
+    pricingFirstDog: "First dog",
+    pricingAdditionalDogs: "Additional dogs",
+    pricingFirstCat: "First cat",
+    pricingAdditionalCats: "Additional cats",
+    pricingAdditionalPets: "Additional pets",
     summaryLongStay: "Long stays receive a custom quote after reviewing dates, pet type, and care needs.",
     customQuote: "Custom quote",
     paymentNote: "Card, Apple Pay, and Google Pay deposits are processed securely by Stripe. Zelle deposits are confirmed manually.",
@@ -843,7 +853,9 @@ const translations = {
     fieldEmail: "Correo",
     fieldPhone: "Número de teléfono",
     fieldEmergencyContact: "Contacto de emergencia (opcional)",
+    fieldNumberPets: "Cantidad de mascotas",
     fieldPet: "Nombre de la mascota",
+    petCardTitle: "Mascota",
     fieldPetType: "Tipo de mascota",
     fieldBreed: "Raza",
     fieldBreedOther: "Especificá la raza",
@@ -856,6 +868,9 @@ const translations = {
     fieldVaccinations: "¿Vacunas al día? (opcional)",
     fieldRabiesVaccination: "¿Vacuna contra la rabia al día?",
     fieldRabiesVaccinationOptional: "¿Vacuna contra la rabia al día? (opcional)",
+    rabiesVerificationTitle: "Verificación de vacunación requerida",
+    rabiesVerificationText:
+      "Se requerirá prueba de vacunación contra la rabia vigente antes de la estadía de tu mascota. Podés subir el registro desde el perfil de tu mascota o traer una copia en el check-in.",
     fieldGoodCats: "¿Se lleva bien con gatos? (opcional)",
     fieldGoodSmallDogs: "¿Se lleva bien con perros pequeños? (opcional)",
     fieldCanSwim: "¿Sabe nadar? (opcional)",
@@ -969,6 +984,11 @@ const translations = {
     multipleCats: "gatos",
     onePet: "1 mascota",
     multiplePets: "mascotas",
+    pricingFirstDog: "Primer perro",
+    pricingAdditionalDogs: "Perros adicionales",
+    pricingFirstCat: "Primer gato",
+    pricingAdditionalCats: "Gatos adicionales",
+    pricingAdditionalPets: "Mascotas adicionales",
     summaryLongStay: "Las estadías largas reciben una cotización personalizada según fechas, tipo de mascota y cuidados necesarios.",
     customQuote: "Cotización personalizada",
     paymentNote: "Los depósitos con tarjeta, Apple Pay y Google Pay se procesan de forma segura con Stripe. Los depósitos por Zelle se confirman manualmente.",
@@ -1384,7 +1404,16 @@ const bookingLockedService = document.querySelector("#bookingLockedService");
 const bookingLockedDates = document.querySelector("#bookingLockedDates");
 const bookingLockedDogs = document.querySelector("#bookingLockedDogs");
 const bookingLockedPetType = document.querySelector("#bookingLockedPetType");
-const petTypeInputs = document.querySelectorAll('input[name="petType"]');
+const bookingPetCount = document.querySelector("#bookingPetCount");
+const bookingPetCountField = document.querySelector("#bookingPetCountField");
+const bookingPetsJson = document.querySelector("#bookingPetsJson");
+const bookingPetsContainer = document.querySelector("#bookingPetsContainer");
+const primaryPetTypeField = bookingForm?.querySelector('input[name="petType"]');
+const primaryPetNameField = bookingForm?.querySelector('input[name="dogName"]');
+const primaryBreedField = bookingForm?.querySelector('input[name="breed"]');
+const primarySpayedNeuteredField = bookingForm?.querySelector('input[name="spayedNeutered"]');
+const primaryRabiesField = bookingForm?.querySelector('input[name="rabiesVaccinationUpToDate"]');
+let petTypeInputs = document.querySelectorAll('input[name="bookingPetType"]');
 const additionalDogsInput = document.querySelector("#additionalDogs");
 const additionalCatsInput = document.querySelector("#additionalCats");
 const longStayInput = document.querySelector("#longStay");
@@ -1487,6 +1516,7 @@ const accountBreedOptions = document.querySelector("#accountBreedOptions");
 
 let currentLang = localStorage.getItem("shingos-language") || "en";
 let currentBookingStep = 1;
+let bookingPets = [];
 let customerSupabase = null;
 let customerSession = null;
 let customerAccount = { owner: null, dogs: [] };
@@ -1735,15 +1765,88 @@ function stayPricingBreakdown(units, rate, subtotal, serviceKey = serviceSelect?
   return `${unitsLabel(safeUnits, serviceKey)} × ${currency(rate)}/${rateUnitLabel(serviceKey)} = ${currency(subtotal)}`;
 }
 
+function normalizePetTypeValue(petType = "dog") {
+  return petType === "cat" ? "cat" : "dog";
+}
+
+function petCardElements(card) {
+  return {
+    savedPet: card?.querySelector('[data-pet-field="savedPet"]'),
+    petType: card?.querySelector('[data-pet-field="petType"]'),
+    name: card?.querySelector('[data-pet-field="name"]'),
+    breed: card?.querySelector('[data-pet-field="breed"]'),
+    breedOther: card?.querySelector('[data-pet-field="breedOther"]'),
+    breedOtherWrap: card?.querySelector(".breed-other-field"),
+    spayedNeutered: card?.querySelector('[data-pet-field="spayedNeutered"]'),
+    rabies: card?.querySelector('[data-pet-field="rabiesVaccinationUpToDate"]'),
+    rabiesNotice: card?.querySelector(".rabies-verification-note"),
+    datalist: card?.querySelector("datalist"),
+  };
+}
+
+function bookingPetCards() {
+  return [...(bookingPetsContainer?.querySelectorAll(".booking-pet-card") || [])];
+}
+
+function blankBookingPet(index = 0) {
+  return {
+    dogId: "",
+    petType: "dog",
+    name: "",
+    breed: "",
+    breedOther: "",
+    spayedNeutered: "",
+    rabiesVaccinationUpToDate: "",
+    label: `Pet ${index + 1}`,
+  };
+}
+
+function dogToBookingPet(dog, index = 0) {
+  return {
+    dogId: dog?.id || "",
+    petType: normalizePetTypeValue(dog?.petType || "dog"),
+    name: dog?.name || "",
+    breed: dog?.breed || "",
+    breedOther: "",
+    spayedNeutered: dog?.spayedNeutered || "",
+    rabiesVaccinationUpToDate: dog?.rabiesVaccinationUpToDate || "",
+    label: `Pet ${index + 1}`,
+  };
+}
+
+function getBookingPetsFromCards() {
+  const pets = bookingPetCards().map((card, index) => {
+    const fields = petCardElements(card);
+    const rawBreed = fields.breed?.value?.trim() || "";
+    const otherBreed = fields.breedOther?.value?.trim() || "";
+    return {
+      dogId: fields.savedPet?.value || card.dataset.dogId || "",
+      petType: normalizePetTypeValue(fields.petType?.value),
+      name: fields.name?.value?.trim() || "",
+      breed: rawBreed.toLowerCase() === "other" && otherBreed ? otherBreed : rawBreed,
+      breedOther: otherBreed,
+      spayedNeutered: fields.spayedNeutered?.value || "",
+      rabiesVaccinationUpToDate: fields.rabies?.value || "",
+      label: `Pet ${index + 1}`,
+    };
+  });
+
+  return pets.length ? pets : [blankBookingPet()];
+}
+
+function getPrimaryBookingPet() {
+  return getBookingPetsFromCards()[0] || blankBookingPet();
+}
+
 function getSelectedPetType() {
-  return [...petTypeInputs].find((input) => input.checked)?.value || "dog";
+  return getPrimaryBookingPet().petType || "dog";
 }
 
 function setSelectedPetType(petType = "dog") {
-  const normalizedPetType = petType === "cat" ? "cat" : "dog";
-  petTypeInputs.forEach((input) => {
-    input.checked = input.value === normalizedPetType;
-  });
+  const primaryCard = bookingPetCards()[0];
+  const normalizedPetType = normalizePetTypeValue(petType);
+  const fields = petCardElements(primaryCard);
+  if (fields.petType) fields.petType.value = normalizedPetType;
   if (profilePetType) profilePetType.value = normalizedPetType;
 }
 
@@ -1751,20 +1854,38 @@ function petTypeLabel(petType = getSelectedPetType()) {
   return petType === "cat" ? t("optionCat") : t("optionDog");
 }
 
-function petsLabel(count, petType = getSelectedPetType()) {
-  const safeCount = Math.max(1, Number(count) || 1);
+function petCountText(count, petType) {
+  const safeCount = Math.max(0, Number(count) || 0);
+  if (!safeCount) return "";
   if (petType === "cat") {
     return safeCount === 1 ? t("oneCat") : `${safeCount} ${t("multipleCats")}`;
   }
-  if (petType === "dog") {
-    return safeCount === 1 ? t("oneDog") : `${safeCount} ${t("multipleDogs")}`;
+  return safeCount === 1 ? t("oneDog") : `${safeCount} ${t("multipleDogs")}`;
+}
+
+function countPetsByType(pets = getBookingPetsFromCards()) {
+  return pets.reduce(
+    (counts, pet) => {
+      counts[normalizePetTypeValue(pet.petType)] += 1;
+      return counts;
+    },
+    { dog: 0, cat: 0 },
+  );
+}
+
+function petsLabel(countOrPets, petType = getSelectedPetType()) {
+  if (Array.isArray(countOrPets)) {
+    const counts = countPetsByType(countOrPets);
+    return [petCountText(counts.dog, "dog"), petCountText(counts.cat, "cat")].filter(Boolean).join(" + ") || t("onePet");
   }
 
-  return safeCount === 1 ? t("onePet") : `${safeCount} ${t("multiplePets")}`;
+  const safeCount = Math.max(1, Number(countOrPets) || 1);
+  return petCountText(safeCount, petType) || (safeCount === 1 ? t("onePet") : `${safeCount} ${t("multiplePets")}`);
 }
 
 function updateLockedBookingSummary() {
-  const petType = getSelectedPetType();
+  const pets = getBookingPetsFromCards();
+  const counts = countPetsByType(pets);
 
   if (bookingLockedService) {
     bookingLockedService.textContent = bookingSelection.service ? serviceLabel(bookingSelection.service) : t("optionSelect");
@@ -1775,11 +1896,12 @@ function updateLockedBookingSummary() {
   }
 
   if (bookingLockedDogs) {
-    bookingLockedDogs.textContent = petsLabel(bookingSelection.numberOfDogs, petType);
+    bookingLockedDogs.textContent = petsLabel(pets);
   }
 
   if (bookingLockedPetType) {
-    bookingLockedPetType.textContent = petTypeLabel(petType);
+    bookingLockedPetType.textContent =
+      counts.dog && counts.cat ? `${petTypeLabel("dog")} + ${petTypeLabel("cat")}` : petTypeLabel(counts.cat ? "cat" : "dog");
   }
 }
 
@@ -1815,6 +1937,10 @@ function formPetType(form) {
 }
 
 function updateBreedDatalists() {
+  bookingPetCards().forEach((card) => {
+    const fields = petCardElements(card);
+    renderBreedOptions(fields.datalist, fields.petType?.value || "dog");
+  });
   renderBreedOptions(bookingBreedOptions, getSelectedPetType());
   renderBreedOptions(accountBreedOptions, accountAddDogForm?.elements?.petType?.value || "dog");
 }
@@ -1872,9 +1998,169 @@ function finalBreedValue(form) {
   return canonicalBreed || breedInput.value.trim();
 }
 
+function updatePetCardBreedOther(card) {
+  const fields = petCardElements(card);
+  if (!fields.breed || !fields.breedOther) return;
+
+  fields.breed.setCustomValidity("");
+  const showOther = fields.breed.value.trim().toLowerCase() === "other";
+  if (fields.breedOtherWrap) fields.breedOtherWrap.hidden = !showOther;
+  fields.breedOther.required = showOther;
+  fields.breedOther.disabled = !showOther;
+  if (!showOther) fields.breedOther.value = "";
+}
+
+function validatePetCardBreed(card) {
+  const fields = petCardElements(card);
+  if (!fields.breed) return true;
+
+  updatePetCardBreedOther(card);
+  const value = fields.breed.value.trim();
+  const petType = normalizePetTypeValue(fields.petType?.value);
+  if (!value || breedIsValidForPetType(value, petType)) {
+    fields.breed.setCustomValidity("");
+    return true;
+  }
+
+  fields.breed.setCustomValidity(t("breedInvalid"));
+  return false;
+}
+
+function updateRabiesNotices() {
+  bookingPetCards().forEach((card) => {
+    const fields = petCardElements(card);
+    if (fields.rabiesNotice) fields.rabiesNotice.hidden = fields.rabies?.value !== "Yes";
+  });
+}
+
+function savedPetOptions(selectedId = "") {
+  const dogs = customerAccount.dogs || [];
+  return [
+    `<option value="">${t("accountNewDogOption")}</option>`,
+    ...dogs.map(
+      (dog) =>
+        `<option value="${escapeHtml(dog.id)}"${dog.id === selectedId ? " selected" : ""}>${escapeHtml(dog.name)}${
+          dog.breed ? ` · ${escapeHtml(dog.breed)}` : ""
+        }</option>`,
+    ),
+  ].join("");
+}
+
+function bookingPetCardMarkup(pet, index) {
+  const datalistId = `bookingBreedOptions-${index}`;
+  const savedSelector = customerSession && (customerAccount.dogs || []).length
+    ? `
+      <label class="wide-field saved-pet-field">
+        <span>${t("accountExistingDogLabel")}</span>
+        <select data-pet-field="savedPet">
+          ${savedPetOptions(pet.dogId)}
+        </select>
+      </label>
+    `
+    : "";
+
+  return `
+    <article class="booking-pet-card" data-pet-index="${index}" data-dog-id="${escapeHtml(pet.dogId || "")}">
+      <div class="booking-pet-card-head">
+        <span>${t("petCardTitle")} ${index + 1}</span>
+        <strong>${escapeHtml(pet.name || `Pet ${index + 1}`)}</strong>
+      </div>
+      <div class="booking-fields">
+        ${savedSelector}
+        <label>
+          <span>${t("fieldPetType")}</span>
+          <select data-pet-field="petType" required>
+            <option value="dog"${pet.petType !== "cat" ? " selected" : ""}>${t("optionDog")}</option>
+            <option value="cat"${pet.petType === "cat" ? " selected" : ""}>${t("optionCat")}</option>
+          </select>
+        </label>
+        <label>
+          <span>${t("fieldPet")}</span>
+          <input data-pet-field="name" type="text" value="${escapeHtml(pet.name || "")}" required />
+        </label>
+        <label class="breed-field">
+          <span>${t("fieldBreed")}</span>
+          <input data-pet-field="breed" type="text" list="${datalistId}" autocomplete="off" value="${escapeHtml(pet.breed || "")}" required />
+          <datalist id="${datalistId}"></datalist>
+          <small>${t("breedSearchHelp")}</small>
+        </label>
+        <label class="breed-other-field" hidden>
+          <span>${t("fieldBreedOther")}</span>
+          <input data-pet-field="breedOther" type="text" autocomplete="off" value="${escapeHtml(pet.breedOther || "")}" />
+        </label>
+        <label>
+          <span>${t("fieldSpayedNeutered")}</span>
+          <select data-pet-field="spayedNeutered" required>
+            <option value="">${t("optionSelect")}</option>
+            <option value="Yes"${pet.spayedNeutered === "Yes" ? " selected" : ""}>${t("optionYes")}</option>
+            <option value="No"${pet.spayedNeutered === "No" ? " selected" : ""}>${t("optionNo")}</option>
+          </select>
+        </label>
+        <label>
+          <span>${t("fieldRabiesVaccination")}</span>
+          <select data-pet-field="rabiesVaccinationUpToDate" required>
+            <option value="">${t("optionSelect")}</option>
+            <option value="Yes"${pet.rabiesVaccinationUpToDate === "Yes" ? " selected" : ""}>${t("optionYes")}</option>
+            <option value="No"${pet.rabiesVaccinationUpToDate === "No" ? " selected" : ""}>${t("optionNo")}</option>
+          </select>
+        </label>
+        <p class="rabies-verification-note wide-field" hidden>
+          <strong>${t("rabiesVerificationTitle") || "Vaccination verification required"}</strong>
+          <span>${t("rabiesVerificationText") || "Proof of current rabies vaccination will be required before your pet's stay. You may upload the vaccination record through your pet profile or provide a copy at check-in."}</span>
+        </p>
+      </div>
+    </article>
+  `;
+}
+
+function syncBookingPetsFromCards() {
+  bookingPets = getBookingPetsFromCards();
+  return bookingPets;
+}
+
+function updatePrimaryPetFields() {
+  const pets = syncBookingPetsFromCards();
+  const primary = pets[0] || blankBookingPet();
+  if (primaryPetTypeField) primaryPetTypeField.value = primary.petType || "dog";
+  if (primaryPetNameField) primaryPetNameField.value = primary.name || "";
+  if (primaryBreedField) primaryBreedField.value = primary.breed || "";
+  if (primarySpayedNeuteredField) primarySpayedNeuteredField.value = primary.spayedNeutered || "";
+  if (primaryRabiesField) primaryRabiesField.value = primary.rabiesVaccinationUpToDate || "";
+  if (accountDogIdField) accountDogIdField.value = primary.dogId || "";
+  if (profilePetType) profilePetType.value = primary.petType || "dog";
+  if (bookingPetsJson) bookingPetsJson.value = JSON.stringify(pets);
+  if (bookingPetCountField) bookingPetCountField.value = String(pets.length || 1);
+}
+
+function renderBookingPets(nextPets = bookingPets) {
+  if (!bookingPetsContainer) return;
+  const safePets = nextPets.length ? nextPets : [blankBookingPet()];
+  bookingPets = safePets.map((pet, index) => ({ ...blankBookingPet(index), ...pet, petType: normalizePetTypeValue(pet.petType) }));
+  bookingPetsContainer.innerHTML = bookingPets.map(bookingPetCardMarkup).join("");
+  petTypeInputs = document.querySelectorAll('select[data-pet-field="petType"]');
+  updateBreedDatalists();
+  bookingPetCards().forEach((card) => {
+    updatePetCardBreedOther(card);
+    validatePetCardBreed(card);
+  });
+  updateRabiesNotices();
+  updatePrimaryPetFields();
+}
+
+function setBookingPetCount(count) {
+  const safeCount = Math.max(1, Math.min(6, Number(count) || 1));
+  const existing = getBookingPetsFromCards();
+  const nextPets = Array.from({ length: safeCount }, (_, index) => existing[index] || blankBookingPet(index));
+  if (bookingPetCount) bookingPetCount.value = String(safeCount);
+  bookingSelection.numberOfDogs = safeCount;
+  renderBookingPets(nextPets);
+  updateServiceSpecificFields();
+}
+
 function updatePetSpecificFields() {
-  const petType = getSelectedPetType();
-  const isDog = petType === "dog";
+  const pets = syncBookingPetsFromCards();
+  const primaryPetType = pets[0]?.petType || "dog";
+  const isDog = primaryPetType === "dog";
 
   dogSpecificFields.forEach((field) => {
     field.hidden = !isDog;
@@ -1884,10 +2170,11 @@ function updatePetSpecificFields() {
     });
   });
 
-  if (profilePetType) profilePetType.value = petType;
+  updatePrimaryPetFields();
   updateLockedBookingSummary();
   updateBreedDatalists();
-  clearInvalidBreed(bookingForm);
+  bookingPetCards().forEach((card) => validatePetCardBreed(card));
+  updateRabiesNotices();
 }
 
 function formatTime12Hour(timeValue) {
@@ -1931,7 +2218,7 @@ function updatePaymentMethodDisplay() {
 
 function updateServiceSpecificFields() {
   const walking = isWalkingService();
-  const petType = getSelectedPetType();
+  const pets = getBookingPetsFromCards();
 
   boardingDaycareTimeFields.forEach((field) => {
     field.hidden = walking;
@@ -1947,8 +2234,8 @@ function updateServiceSpecificFields() {
     pickupPolicyNote.style.display = walking ? "none" : "";
   }
   if (additionalCatsField) {
-    additionalCatsField.hidden = walking || petType === "cat";
-    additionalCatsField.style.display = walking || petType === "cat" ? "none" : "";
+    additionalCatsField.hidden = true;
+    additionalCatsField.style.display = "none";
   }
   if (longStayField) {
     longStayField.hidden = walking;
@@ -1973,14 +2260,24 @@ function updateServiceSpecificFields() {
   }
 
   if (additionalCatsInput) {
-    additionalCatsInput.disabled = walking || petType === "cat";
-    if (walking || petType === "cat") additionalCatsInput.value = 0;
+    additionalCatsInput.disabled = true;
+    additionalCatsInput.value = 0;
   }
 
   if (longStayInput) {
     longStayInput.disabled = walking;
     if (walking) longStayInput.checked = false;
   }
+
+  bookingPetCards().forEach((card) => {
+    const fields = petCardElements(card);
+    const catOption = fields.petType?.querySelector('option[value="cat"]');
+    if (catOption) catOption.disabled = walking;
+    if (walking && fields.petType?.value === "cat") {
+      fields.petType.value = "dog";
+      if (fields.breed?.value && !breedIsValidForPetType(fields.breed.value, "dog")) fields.breed.value = "";
+    }
+  });
 
   updateLockedBookingSummary();
   updatePetSpecificFields();
@@ -2007,6 +2304,61 @@ function getPickupFee(nightlyRate) {
   }
 
   return { amount: nightlyRate, extraUnit: 1 };
+}
+
+function calculatePetPricing(pets, units, serviceKey) {
+  const safeUnits = Math.max(1, Number(units) || 1);
+  const counts = countPetsByType(pets);
+  const lines = [];
+  let base = 0;
+  let additional = 0;
+  let oneUnitTotal = 0;
+
+  if (serviceKey === "boarding") {
+    if (counts.dog > 0) {
+      const firstDogTotal = serviceRates.boarding * safeUnits;
+      base += firstDogTotal;
+      oneUnitTotal += serviceRates.boarding;
+      lines.push(`${t("pricingFirstDog")}: ${unitsLabel(safeUnits, serviceKey)} × ${currency(serviceRates.boarding)}/${rateUnitLabel(serviceKey)} = ${currency(firstDogTotal)}`);
+    }
+
+    if (counts.dog > 1) {
+      const dogExtras = counts.dog - 1;
+      const dogExtraTotal = dogExtras * additionalDogRate * safeUnits;
+      additional += dogExtraTotal;
+      oneUnitTotal += dogExtras * additionalDogRate;
+      lines.push(`${t("pricingAdditionalDogs")}: ${dogExtras} × ${unitsLabel(safeUnits, serviceKey)} × ${currency(additionalDogRate)}/${rateUnitLabel(serviceKey)} = ${currency(dogExtraTotal)}`);
+    }
+
+    if (counts.cat > 0) {
+      const firstCatTotal = catBoardingRate * safeUnits;
+      base += firstCatTotal;
+      oneUnitTotal += catBoardingRate;
+      lines.push(`${t("pricingFirstCat")}: ${unitsLabel(safeUnits, serviceKey)} × ${currency(catBoardingRate)}/${rateUnitLabel(serviceKey)} = ${currency(firstCatTotal)}`);
+    }
+
+    if (counts.cat > 1) {
+      const catExtras = counts.cat - 1;
+      const catExtraTotal = catExtras * additionalCatRate * safeUnits;
+      additional += catExtraTotal;
+      oneUnitTotal += catExtras * additionalCatRate;
+      lines.push(`${t("pricingAdditionalCats")}: ${catExtras} × ${unitsLabel(safeUnits, serviceKey)} × ${currency(additionalCatRate)}/${rateUnitLabel(serviceKey)} = ${currency(catExtraTotal)}`);
+    }
+
+    return { base, additional, oneUnitTotal, lines };
+  }
+
+  const rate = serviceRates[serviceKey] || 0;
+  const petCount = pets.length || 1;
+  base = rate * safeUnits;
+  additional = Math.max(0, petCount - 1) * rate * safeUnits;
+  oneUnitTotal = petCount * rate;
+  lines.push(stayPricingBreakdown(safeUnits, rate, base, serviceKey));
+  if (petCount > 1) {
+    lines.push(`${t("pricingAdditionalPets")}: ${petCount - 1} × ${unitsLabel(safeUnits, serviceKey)} × ${currency(rate)}/${rateUnitLabel(serviceKey)} = ${currency(additional)}`);
+  }
+
+  return { base, additional, oneUnitTotal, lines };
 }
 
 function getVisibleBookingDates() {
@@ -2051,9 +2403,13 @@ function validateBookingStep(step) {
   if (!section) return true;
 
   const stepForm = section.closest("form");
-  if (section.querySelector('input[name="breed"]') && !validateBreedSelection(stepForm)) {
-    stepForm?.elements?.breed?.reportValidity();
-    return false;
+  if (step === 2) {
+    const invalidBreedCard = bookingPetCards().find((card) => !validatePetCardBreed(card));
+    if (invalidBreedCard) {
+      petCardElements(invalidBreedCard).breed?.reportValidity();
+      return false;
+    }
+    updatePrimaryPetFields();
   }
 
   const fields = [...section.querySelectorAll("input, select, textarea")];
@@ -2235,9 +2591,11 @@ function bookingCardMarkup(booking, dogName, options = {}) {
         ? `<small class="account-review-status">${reviewStatusLabel(booking.review)}</small>`
         : "";
 
+  const petTitle = booking.bookingPetSummary || dogName;
+
   return `
     <article class="account-reservation-card">
-      <strong>${serviceLabel(booking.service)} · ${dogName}</strong>
+      <strong>${serviceLabel(booking.service)} · ${petTitle}</strong>
       <span>${booking.dropoffDate || t("summaryDatesEmpty")} → ${booking.pickupDate || ""}</span>
       <small>${paymentStatusLabel}${booking.depositPaidAmount ? ` · ${booking.depositPaidAmount}` : ""}</small>
       <span>${balanceLine}</span>
@@ -2290,8 +2648,11 @@ function renderCustomerAccount() {
 
   const upcoming = [];
   const past = [];
+  const seenBookingIds = new Set();
   (customerAccount.dogs || []).forEach((dog) => {
     (dog.bookings || []).forEach((booking) => {
+      if (seenBookingIds.has(booking.id)) return;
+      seenBookingIds.add(booking.id);
       (bookingIsUpcoming(booking) ? upcoming : past).push({ booking, dogName: dog.name, dogId: dog.id });
     });
   });
@@ -2312,15 +2673,10 @@ function renderCustomerAccount() {
 }
 
 function populateAccountDogPicker() {
-  if (!accountDogPicker || !accountDogSelect) return;
+  if (!accountDogPicker) return;
   const dogs = customerAccount.dogs || [];
   accountDogPicker.hidden = !customerSession || !dogs.length;
-  const currentValue = accountDogSelect.value;
-  accountDogSelect.innerHTML = [
-    `<option value="">${t("accountNewDogOption")}</option>`,
-    ...dogs.map((dog) => `<option value="${dog.id}">${dog.name}${dog.breed ? ` · ${dog.breed}` : ""}</option>`),
-  ].join("");
-  accountDogSelect.value = dogs.some((dog) => dog.id === currentValue) ? currentValue : "";
+  renderBookingPets(getBookingPetsFromCards());
 }
 
 function findAccountBooking(bookingId) {
@@ -2341,8 +2697,19 @@ function openReviewModal(bookingId, dogId = "") {
   if (reviewStatus) reviewStatus.textContent = "";
 
   if (reviewPetId) {
-    const selectedDogId = dogId || match.dog.id;
-    reviewPetId.innerHTML = `<option value="${escapeHtml(selectedDogId)}">${escapeHtml(match.dog.name || t("fieldPet"))}</option>`;
+    const pets = Array.isArray(match.booking.bookingPets) && match.booking.bookingPets.length
+      ? match.booking.bookingPets
+      : [{ id: match.dog.id, name: match.dog.name || t("fieldPet") }];
+    const seenPetIds = new Set();
+    const options = pets.filter((pet) => {
+      if (!pet.id || seenPetIds.has(pet.id)) return false;
+      seenPetIds.add(pet.id);
+      return true;
+    });
+    const selectedDogId = dogId || options[0]?.id || match.dog.id;
+    reviewPetId.innerHTML = options
+      .map((pet) => `<option value="${escapeHtml(pet.id)}">${escapeHtml(pet.name || t("fieldPet"))}</option>`)
+      .join("");
     reviewPetId.value = selectedDogId;
   }
 
@@ -2369,12 +2736,10 @@ function preloadAccountDog(dogId) {
 
   if (accountOwnerIdField) accountOwnerIdField.value = customerAccount.owner.id || "";
   if (accountDogIdField) accountDogIdField.value = dog.id || "";
-  setSelectedPetType(dog.petType || "dog");
   preloadAccountOwner();
-  setFormField(bookingForm, "dogName", dog.name);
-  setFormField(bookingForm, "breed", dog.breed);
-  setFormField(bookingForm, "spayedNeutered", dog.spayedNeutered);
-  setFormField(bookingForm, "rabiesVaccinationUpToDate", dog.rabiesVaccinationUpToDate);
+  if (bookingPetCount) bookingPetCount.value = "1";
+  bookingSelection.numberOfDogs = 1;
+  renderBookingPets([dogToBookingPet(dog)]);
   updatePetSpecificFields();
   updateSummary();
 }
@@ -2384,11 +2749,7 @@ function clearAccountDogSelection(clearDogFields = false) {
   if (accountDogIdField) accountDogIdField.value = "";
   preloadAccountOwner();
   if (!clearDogFields || !bookingForm) return;
-  setFormField(bookingForm, "dogName", "");
-  setFormField(bookingForm, "breed", "");
-  setFormField(bookingForm, "spayedNeutered", "");
-  setFormField(bookingForm, "rabiesVaccinationUpToDate", "");
-  setSelectedPetType("dog");
+  renderBookingPets([blankBookingPet()]);
   updatePetSpecificFields();
   updateSummary();
 }
@@ -2563,9 +2924,7 @@ function setBookingSelection(selection = {}) {
   if (serviceSelect) serviceSelect.value = bookingSelection.service || "";
   if (dropoffDateInput) dropoffDateInput.value = bookingSelection.dropoffDate || "";
   if (pickupDateInput) pickupDateInput.value = bookingSelection.pickupDate || "";
-  const selectedPetType = getSelectedPetType();
-  if (additionalDogsInput) additionalDogsInput.value = selectedPetType === "dog" ? Math.max(0, bookingSelection.numberOfDogs - 1) : 0;
-  if (additionalCatsInput && selectedPetType === "cat") additionalCatsInput.value = Math.max(0, bookingSelection.numberOfDogs - 1);
+  setBookingPetCount(bookingSelection.numberOfDogs);
 
   updateLockedBookingSummary();
   updateServiceSpecificFields();
@@ -2609,7 +2968,17 @@ function submitFormWithProgress(form, endpoint, statusElement, submitButton, suc
     request.addEventListener("error", () => reject(new Error(t("bookingError"))));
     request.addEventListener("abort", () => reject(new Error(t("bookingError"))));
     const formData = new FormData(form);
-    const breedValue = finalBreedValue(form);
+    if (form === bookingForm) {
+      updatePrimaryPetFields();
+      formData.set("petsJson", bookingPetsJson?.value || "[]");
+      formData.set("petCount", bookingPetCountField?.value || "1");
+      formData.set("petType", primaryPetTypeField?.value || "dog");
+      formData.set("dogName", primaryPetNameField?.value || "");
+      formData.set("breed", primaryBreedField?.value || "");
+      formData.set("spayedNeutered", primarySpayedNeuteredField?.value || "");
+      formData.set("rabiesVaccinationUpToDate", primaryRabiesField?.value || "");
+    }
+    const breedValue = form === bookingForm ? "" : finalBreedValue(form);
     if (breedValue && formData.has("breed")) {
       formData.set("breed", breedValue);
     }
@@ -2691,31 +3060,25 @@ function updateSummary() {
 
   const serviceKey = serviceSelect.value;
   const walking = serviceKey === "walking";
-  const petType = getSelectedPetType();
-  const selectedPets = Math.max(1, Number(bookingSelection.numberOfDogs) || 1);
-  const extraPrimaryPets = Math.max(0, selectedPets - 1);
-  const service = petType === "cat" && serviceKey === "boarding" ? catBoardingRate : serviceRates[serviceKey] || 0;
+  const pets = getBookingPetsFromCards().map((pet) => (walking ? { ...pet, petType: "dog" } : pet));
+  const counts = countPetsByType(pets);
   const isCustomQuote = false;
   const units = calculateBookingUnits();
-  const extraDogs = petType === "dog" ? extraPrimaryPets : 0;
-  const extraCats = walking ? 0 : petType === "cat" ? extraPrimaryPets : Math.max(0, Number(additionalCatsInput?.value) || 0);
-  const base = isCustomQuote ? 0 : service * units;
-  const dogs = isCustomQuote ? 0 : extraDogs * additionalDogRate * units;
-  const cats = isCustomQuote ? 0 : extraCats * additionalCatRate * units;
-  const pickupFee = isCustomQuote ? { amount: 0, extraUnit: 0 } : getPickupFee(service);
+  const pricing = isCustomQuote ? { base: 0, additional: 0, oneUnitTotal: 0, lines: [] } : calculatePetPricing(pets, units, serviceKey);
+  const pickupFee = isCustomQuote ? { amount: 0, extraUnit: 0 } : getPickupFee(pricing.oneUnitTotal || serviceRates[serviceKey] || 0);
   const after = pickupFee.amount;
-  const total = base + dogs + cats + after;
+  const total = pricing.base + pricing.additional + after;
   const deposit = isCustomQuote ? 0 : Math.ceil(total * depositRate);
   const remaining = Math.max(0, total - deposit);
   const totalLabel = isCustomQuote ? t("customQuote") : currency(total);
   const depositLabel = isCustomQuote ? t("customQuote") : currency(deposit);
   const remainingLabel = isCustomQuote ? t("customQuote") : currency(remaining);
-  const totalPets = selectedPets;
-  const additionalPetsTotal = dogs + cats;
-  const stayBreakdown = stayPricingBreakdown(units, service, base, serviceKey);
+  const totalPets = pets.length;
+  const additionalPetsTotal = pricing.additional;
+  const stayBreakdown = pricing.lines.join("<br>") || unitsLabel(units, serviceKey);
 
-  if (additionalDogsInput) additionalDogsInput.value = extraDogs;
-  if (petType === "cat" && additionalCatsInput) additionalCatsInput.value = extraCats;
+  if (additionalDogsInput) additionalDogsInput.value = Math.max(0, counts.dog - 1);
+  if (additionalCatsInput) additionalCatsInput.value = Math.max(0, counts.cat - 1);
 
   unitsInput.value = units;
   const summaryService = document.querySelector("#summaryService");
@@ -2730,9 +3093,9 @@ function updateSummary() {
   const summaryLongStay = document.querySelector("#summaryLongStay");
 
   if (summaryService) summaryService.textContent = serviceKey ? serviceLabel(serviceKey) : t("optionSelect");
-  if (summaryDogCount) summaryDogCount.textContent = petsLabel(totalPets, petType);
+  if (summaryDogCount) summaryDogCount.textContent = petsLabel(pets);
   if (summaryDates) summaryDates.textContent = datesLabel();
-  if (summaryNights) summaryNights.textContent = stayBreakdown;
+  if (summaryNights) summaryNights.innerHTML = stayBreakdown;
   if (summaryAfterFee) summaryAfterFee.textContent = currency(after);
   if (summaryAdditionalPets) summaryAdditionalPets.textContent = currency(additionalPetsTotal);
   summaryAfterFee?.closest(".summary-line")?.toggleAttribute("hidden", walking);
@@ -2745,12 +3108,12 @@ function updateSummary() {
 
   if (mobileSummaryService) mobileSummaryService.textContent = serviceKey ? serviceLabel(serviceKey) : t("optionSelect");
   if (mobileSummaryNights) mobileSummaryNights.textContent = unitsLabel(units, serviceKey);
-  if (mobileSummaryStayBreakdown) mobileSummaryStayBreakdown.textContent = stayBreakdown;
+  if (mobileSummaryStayBreakdown) mobileSummaryStayBreakdown.innerHTML = stayBreakdown;
   if (mobileSummaryTotal) mobileSummaryTotal.textContent = totalLabel;
   if (mobileSummaryDeposit) mobileSummaryDeposit.textContent = depositLabel;
   if (mobileSummaryRemainingLabel) mobileSummaryRemainingLabel.textContent = remainingBalanceLabelForService(serviceKey);
   if (mobileSummaryRemaining) mobileSummaryRemaining.textContent = remainingLabel;
-  if (mobileSummaryDogCount) mobileSummaryDogCount.textContent = petsLabel(totalPets, petType);
+  if (mobileSummaryDogCount) mobileSummaryDogCount.textContent = petsLabel(pets);
   if (mobileSummaryDates) mobileSummaryDates.textContent = datesLabel();
   if (mobileSummaryAfterFee) mobileSummaryAfterFee.textContent = currency(after);
   if (mobileSummaryAdditionalPets) mobileSummaryAdditionalPets.textContent = currency(additionalPetsTotal);
@@ -2768,6 +3131,9 @@ function updateSummary() {
   if (remainingBalanceField) {
     remainingBalanceField.value = remainingLabel;
   }
+
+  updatePrimaryPetFields();
+  updateLockedBookingSummary();
 
   return total;
 }
@@ -2906,6 +3272,52 @@ accountDogs?.addEventListener("click", (event) => {
   if (accountDogSelect) accountDogSelect.value = dog.id;
   window.closeSiteModal(button);
   window.openSiteModal("availabilityModal");
+});
+
+bookingPetCount?.addEventListener("change", () => {
+  setBookingPetCount(bookingPetCount.value);
+});
+
+bookingPetsContainer?.addEventListener("change", (event) => {
+  const card = event.target.closest(".booking-pet-card");
+  if (!card) return;
+  const fields = petCardElements(card);
+
+  if (event.target.matches('[data-pet-field="savedPet"]')) {
+    const savedDog = accountDogById(event.target.value);
+    if (savedDog) {
+      const pets = getBookingPetsFromCards();
+      pets[Number(card.dataset.petIndex) || 0] = dogToBookingPet(savedDog, Number(card.dataset.petIndex) || 0);
+      renderBookingPets(pets);
+    } else {
+      card.dataset.dogId = "";
+    }
+  }
+
+  if (event.target.matches('[data-pet-field="petType"]')) {
+    if (fields.breed?.value && !breedIsValidForPetType(fields.breed.value, fields.petType.value)) {
+      fields.breed.value = "";
+    }
+    updateBreedDatalists();
+    updatePetCardBreedOther(card);
+  }
+
+  if (event.target.matches('[data-pet-field="rabiesVaccinationUpToDate"]')) {
+    updateRabiesNotices();
+  }
+
+  updatePetSpecificFields();
+  updateSummary();
+});
+
+bookingPetsContainer?.addEventListener("input", (event) => {
+  const card = event.target.closest(".booking-pet-card");
+  if (!card) return;
+  if (event.target.matches('[data-pet-field="breed"], [data-pet-field="breedOther"]')) {
+    validatePetCardBreed(card);
+  }
+  updatePetSpecificFields();
+  updateSummary();
 });
 
 accountPastReservations?.addEventListener("click", (event) => {
@@ -3058,7 +3470,14 @@ bookingForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
   bookingStatus.textContent = "";
 
-  validateBreedSelection(bookingForm);
+  const invalidBreedCard = bookingPetCards().find((card) => !validatePetCardBreed(card));
+  if (invalidBreedCard) {
+    petCardElements(invalidBreedCard).breed?.reportValidity();
+    bookingStatus.textContent = t("bookingRequired");
+    return;
+  }
+
+  updatePrimaryPetFields();
   if (!bookingForm.checkValidity()) {
     bookingForm.reportValidity();
     bookingStatus.textContent = t("bookingRequired");
@@ -3143,6 +3562,7 @@ dogProfileSkip?.addEventListener("click", () => {
 populateTimeSelect(arrivalTimeInput);
 populateTimeSelect(departureTimeInput);
 populateTimeSelect(preferredWalkingTimeInput);
+renderBookingPets([blankBookingPet()]);
 updateBreedDatalists();
 updateBreedOtherField(bookingForm);
 updateBreedOtherField(accountAddDogForm);

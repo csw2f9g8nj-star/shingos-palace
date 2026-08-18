@@ -191,6 +191,23 @@ async function handler(req, res) {
 
     const notes = normalizeField(fields.notes);
     if (bookingId && notes) {
+      const { data: linkedBooking, error: linkedBookingError } = await supabase
+        .from("bookings")
+        .select("id,dog_id,booking_pets(dog_id)")
+        .eq("id", bookingId)
+        .eq("owner_id", ownerId)
+        .maybeSingle();
+
+      if (linkedBookingError || !linkedBooking) {
+        throw publicApiError("We could not find the booking to update.", 404, "booking_not_found");
+      }
+
+      const linkedPetIds = (linkedBooking.booking_pets || []).map((pet) => pet.dog_id).filter(Boolean);
+      const allowedPetIds = linkedPetIds.length ? linkedPetIds : [linkedBooking.dog_id].filter(Boolean);
+      if (allowedPetIds.length && !allowedPetIds.includes(dogId)) {
+        throw publicApiError("This pet is not linked to the booking.", 403, "booking_pet_forbidden");
+      }
+
       await updateSingle(
         supabase,
         "bookings",
@@ -198,7 +215,6 @@ async function handler(req, res) {
         [
           ["id", bookingId],
           ["owner_id", ownerId],
-          ["dog_id", dogId],
         ],
         "We could not update the booking notes. Please check the bookings table in Supabase.",
       );

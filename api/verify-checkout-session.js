@@ -33,6 +33,7 @@ module.exports = async function handler(req, res) {
         dog_id,
         service,
         pet_type,
+        booking_pet_summary,
         dropoff_date,
         pickup_date,
         stripe_balance_checkout_session_id,
@@ -41,7 +42,12 @@ module.exports = async function handler(req, res) {
         remaining_balance,
         balance_payment_status,
         owner:owners(first_name,last_name,email),
-        dog:dogs(name)
+        dog:dogs(id,name,pet_type),
+        booking_pets(
+          dog_id,
+          pet_type,
+          dog:dogs(id,name,pet_type)
+        )
       `
       : `
         id,
@@ -49,13 +55,19 @@ module.exports = async function handler(req, res) {
         dog_id,
         service,
         pet_type,
+        booking_pet_summary,
         dropoff_date,
         pickup_date,
         stripe_checkout_session_id,
         deposit_due_today,
         remaining_balance,
         owner:owners(first_name,last_name,email),
-        dog:dogs(name)
+        dog:dogs(id,name,pet_type),
+        booking_pets(
+          dog_id,
+          pet_type,
+          dog:dogs(id,name,pet_type)
+        )
       `;
 
     const { data: booking, error } = await supabase.from("bookings").select(bookingSelect).eq("id", resolvedBookingId).single();
@@ -116,6 +128,23 @@ module.exports = async function handler(req, res) {
       );
     }
 
+    const pets = (booking.booking_pets || [])
+      .map((item) => ({
+        id: item.dog?.id || item.dog_id || "",
+        name: item.dog?.name || "",
+        petType: item.pet_type || item.dog?.pet_type || "dog",
+      }))
+      .filter((pet) => pet.id || pet.name);
+    if (!pets.length && booking.dog_id) {
+      pets.push({
+        id: booking.dog_id,
+        name: booking.dog?.name || "Guest pet",
+        petType: booking.pet_type || "dog",
+      });
+    }
+    const petNames = pets.map((pet) => pet.name).filter(Boolean);
+    const petName = booking.booking_pet_summary || petNames.join(", ") || booking.dog?.name || "Guest pet";
+
     sendJson(res, 200, {
       ok: true,
       message: isBalancePayment ? "Remaining balance received. Thank you." : "Deposit received. Thank you.",
@@ -128,8 +157,9 @@ module.exports = async function handler(req, res) {
       paymentIntentId,
       service: booking.service,
       petType: booking.pet_type || "dog",
-      petName: booking.dog?.name || "Guest pet",
-      dogName: booking.dog?.name || "Guest pet",
+      pets,
+      petName,
+      dogName: petName,
       dates: `${booking.dropoff_date || ""} → ${booking.pickup_date || ""}`,
       depositPaid: isBalancePayment ? booking.deposit_paid_amount || booking.deposit_due_today || "-" : amountPaid,
       balancePaid: isBalancePayment ? amountPaid : "",

@@ -161,7 +161,16 @@ async function createCustomerReview(req, supabase, res) {
 
   const { data: booking, error: bookingError } = await supabase
     .from("bookings")
-    .select("id, owner_id, dog_id, pickup_date, status")
+    .select(
+      `
+      id,
+      owner_id,
+      dog_id,
+      pickup_date,
+      status,
+      booking_pets(dog_id)
+    `,
+    )
     .eq("id", bookingId)
     .eq("owner_id", owner.id)
     .maybeSingle();
@@ -184,8 +193,10 @@ async function createCustomerReview(req, supabase, res) {
   }
 
   const requestedPetId = String(body.petId || "").trim();
-  const petId = requestedPetId || booking.dog_id || null;
-  if (petId && booking.dog_id && petId !== booking.dog_id) {
+  const linkedPetIds = (booking.booking_pets || []).map((pet) => pet.dog_id).filter(Boolean);
+  const allowedPetIds = linkedPetIds.length ? linkedPetIds : [booking.dog_id].filter(Boolean);
+  const petId = requestedPetId || allowedPetIds[0] || null;
+  if (petId && allowedPetIds.length && !allowedPetIds.includes(petId)) {
     throw publicApiError("This review must be linked to the pet from this reservation.", 403, "review_pet_forbidden");
   }
 

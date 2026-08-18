@@ -37,6 +37,8 @@ const successOwnerId = document.querySelector("#successOwnerId");
 const successDogId = document.querySelector("#successDogId");
 const successBookingId = document.querySelector("#successBookingId");
 const successPetType = document.querySelector("#successPetType");
+const successProfilePetSelectorField = document.querySelector("#successProfilePetSelectorField");
+const successProfilePetSelect = document.querySelector("#successProfilePetSelect");
 const successDogProfileCta = document.querySelector("#successDogProfileCta");
 const successProfileCtaTitle = document.querySelector("#successProfileCtaTitle");
 const successProfileCtaText = document.querySelector("#successProfileCtaText");
@@ -56,6 +58,7 @@ const successAccountEmail = document.querySelector("#successAccountEmail");
 
 let verifiedOwnerEmail = "";
 let customerSupabase = null;
+let verifiedPets = [];
 
 function showState(state) {
   if (loadingState) loadingState.hidden = state !== "loading";
@@ -90,6 +93,50 @@ function updatePetWording(petType) {
   if (successProfileButton) successProfileButton.textContent = `Complete ${profileLabel}`;
   if (successProfileFormTitle) successProfileFormTitle.textContent = `Tell us more about your ${petLabel}`;
   if (successProfileSubmit) successProfileSubmit.textContent = `Save ${profileLabel.toLowerCase()}`;
+}
+
+function setActiveSuccessPet(petId) {
+  const selectedPet = verifiedPets.find((pet) => pet.id === petId) || verifiedPets[0] || null;
+  if (!selectedPet) return;
+
+  if (successDogId) successDogId.value = selectedPet.id || "";
+  if (successPetType) successPetType.value = normalizePetType(selectedPet.petType);
+  updatePetWording(selectedPet.petType);
+}
+
+function populateSuccessPets(payload) {
+  verifiedPets = Array.isArray(payload.pets)
+    ? payload.pets
+        .map((pet) => ({
+          id: String(pet.id || "").trim(),
+          name: String(pet.name || "Guest pet").trim(),
+          petType: normalizePetType(pet.petType),
+        }))
+        .filter((pet) => pet.id)
+    : [];
+
+  if (!verifiedPets.length && payload.dogId) {
+    verifiedPets = [
+      {
+        id: payload.dogId,
+        name: payload.dogName || payload.petName || "Guest pet",
+        petType: normalizePetType(payload.petType),
+      },
+    ];
+  }
+
+  if (successProfilePetSelectorField) successProfilePetSelectorField.hidden = verifiedPets.length <= 1;
+  if (successProfilePetSelect) {
+    successProfilePetSelect.innerHTML = "";
+    verifiedPets.forEach((pet) => {
+      const option = document.createElement("option");
+      option.value = pet.id;
+      option.textContent = pet.name;
+      successProfilePetSelect.append(option);
+    });
+  }
+
+  setActiveSuccessPet(verifiedPets[0]?.id || payload.dogId || "");
 }
 
 function validateVaccinationFiles() {
@@ -204,8 +251,7 @@ async function verifyPayment() {
     }
 
     const isBalancePayment = payload.paymentType === "balance";
-    const petType = normalizePetType(payload.petType);
-    updatePetWording(petType);
+    populateSuccessPets(payload);
 
     if (paymentSuccessKicker) paymentSuccessKicker.textContent = isBalancePayment ? "Balance paid" : "Deposit received";
     if (paymentSuccessHeading) {
@@ -226,9 +272,7 @@ async function verifyPayment() {
     if (successDeposit) successDeposit.textContent = isBalancePayment ? payload.balancePaid || "-" : payload.depositPaid || "-";
     if (successRemaining) successRemaining.textContent = payload.remainingBalance || "-";
     if (successOwnerId) successOwnerId.value = payload.ownerId || "";
-    if (successDogId) successDogId.value = payload.dogId || "";
     if (successBookingId) successBookingId.value = payload.bookingId || "";
-    if (successPetType) successPetType.value = petType;
     verifiedOwnerEmail = payload.ownerEmail || "";
     if (successAccountEmail) {
       successAccountEmail.textContent = verifiedOwnerEmail ? `We'll send the secure link to ${verifiedOwnerEmail}.` : "";
@@ -248,6 +292,10 @@ successProfileButton?.addEventListener("click", () => {
   if (successDogProfileCta) successDogProfileCta.hidden = true;
   if (successDogProfileForm) successDogProfileForm.hidden = false;
   successDogProfileForm?.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+successProfilePetSelect?.addEventListener("change", () => {
+  setActiveSuccessPet(successProfilePetSelect.value);
 });
 
 successAccountButton?.addEventListener("click", async () => {

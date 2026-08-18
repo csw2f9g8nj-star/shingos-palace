@@ -31,9 +31,14 @@ module.exports = async function handler(req, res) {
         deposit_due_today,
         remaining_balance,
         pet_type,
+        booking_pet_summary,
         balance_payment_status,
         owner:owners(first_name,last_name,email),
-        dog:dogs(name)
+        dog:dogs(name),
+        booking_pets(
+          pet_type,
+          dog:dogs(name)
+        )
       `
       : `
         id,
@@ -44,8 +49,13 @@ module.exports = async function handler(req, res) {
         deposit_due_today,
         remaining_balance,
         pet_type,
+        booking_pet_summary,
         owner:owners(first_name,last_name,email),
-        dog:dogs(name)
+        dog:dogs(name),
+        booking_pets(
+          pet_type,
+          dog:dogs(name)
+        )
       `;
 
     const { data: booking, error } = await supabase.from("bookings").select(bookingSelect).eq("id", bookingId).single();
@@ -72,7 +82,8 @@ module.exports = async function handler(req, res) {
     const stripe = getStripeClient();
     const origin = getOrigin(req);
     const customerEmail = booking.owner?.email || undefined;
-    const petName = booking.dog?.name || "Guest pet";
+    const petNames = (booking.booking_pets || []).map((item) => item.dog?.name).filter(Boolean);
+    const petName = booking.booking_pet_summary || petNames.join(", ") || booking.dog?.name || "Guest pet";
     const serviceLabel = booking.service ? booking.service.charAt(0).toUpperCase() + booking.service.slice(1) : "Booking";
     const paymentLabel = isBalancePayment ? "Remaining Balance" : "Deposit";
 

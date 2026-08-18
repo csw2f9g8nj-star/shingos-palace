@@ -53,7 +53,8 @@ function escapeHtml(value) {
 
 function buildEmail({ booking, origin }) {
   const ownerName = [booking.owner?.first_name, booking.owner?.last_name].filter(Boolean).join(" ").trim() || "there";
-  const dogName = booking.dog?.name || "your pet";
+  const petNames = (booking.booking_pets || []).map((item) => item.dog?.name).filter(Boolean);
+  const dogName = booking.booking_pet_summary || petNames.join(", ") || booking.dog?.name || "your pet";
   const payUrl = `${origin}/balance-payment.html?booking_id=${encodeURIComponent(booking.id)}`;
   const service = serviceLabel(booking.service);
   const dates = `${booking.dropoff_date || ""} to ${booking.pickup_date || ""}`;
@@ -153,11 +154,16 @@ module.exports = async function handler(req, res) {
         deposit_due_today,
         deposit_paid_amount,
         remaining_balance,
+        booking_pet_summary,
         balance_payment_status,
         balance_reminder_sent_at,
         payment_status,
         owner:owners(first_name,last_name,email),
-        dog:dogs(name)
+        dog:dogs(name),
+        booking_pets(
+          pet_type,
+          dog:dogs(name)
+        )
       `,
       )
       .eq("dropoff_date", targetDate)

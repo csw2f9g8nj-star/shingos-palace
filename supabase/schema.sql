@@ -61,6 +61,9 @@ create table if not exists public.bookings (
   units integer not null default 1,
   additional_dogs integer not null default 0,
   additional_cats integer not null default 0,
+  pet_count integer not null default 1,
+  booking_pet_summary text,
+  pricing_breakdown jsonb not null default '[]'::jsonb,
   after_hours boolean not null default false,
   long_stay boolean not null default false,
   notes text,
@@ -71,6 +74,19 @@ create table if not exists public.bookings (
   status text not null default 'new_request',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
+);
+
+create table if not exists public.booking_pets (
+  id uuid primary key default gen_random_uuid(),
+  booking_id uuid not null references public.bookings(id) on delete cascade,
+  dog_id uuid not null references public.dogs(id) on delete cascade,
+  owner_id uuid not null references public.owners(id) on delete cascade,
+  pet_type text not null default 'dog' check (pet_type in ('dog', 'cat')),
+  role text not null default 'guest',
+  nightly_rate numeric(10,2),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  constraint booking_pets_unique unique (booking_id, dog_id)
 );
 
 create table if not exists public.vaccination_records (
@@ -130,6 +146,7 @@ create table if not exists public.dog_compatibility (
 alter table public.owners enable row level security;
 alter table public.dogs enable row level security;
 alter table public.bookings enable row level security;
+alter table public.booking_pets enable row level security;
 alter table public.vaccination_records enable row level security;
 alter table public.meet_greet_requests enable row level security;
 alter table public.dog_notes enable row level security;
@@ -138,6 +155,7 @@ alter table public.dog_compatibility enable row level security;
 drop policy if exists "No direct client access to owners" on public.owners;
 drop policy if exists "No direct client access to dogs" on public.dogs;
 drop policy if exists "No direct client access to bookings" on public.bookings;
+drop policy if exists "No direct client access to booking pets" on public.booking_pets;
 drop policy if exists "No direct client access to vaccination records" on public.vaccination_records;
 drop policy if exists "No direct client access to meet greet requests" on public.meet_greet_requests;
 drop policy if exists "No direct client access to dog notes" on public.dog_notes;
@@ -149,6 +167,7 @@ drop policy if exists "No direct client access to dog compatibility" on public.d
 create policy "No direct client access to owners" on public.owners for all using (false) with check (false);
 create policy "No direct client access to dogs" on public.dogs for all using (false) with check (false);
 create policy "No direct client access to bookings" on public.bookings for all using (false) with check (false);
+create policy "No direct client access to booking pets" on public.booking_pets for all using (false) with check (false);
 create policy "No direct client access to vaccination records" on public.vaccination_records for all using (false) with check (false);
 create policy "No direct client access to meet greet requests" on public.meet_greet_requests for all using (false) with check (false);
 create policy "No direct client access to dog notes" on public.dog_notes for all using (false) with check (false);

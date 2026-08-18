@@ -828,6 +828,13 @@
             <input type="hidden" name="remainingBalance" id="remainingBalanceField" value="" />
             <input type="hidden" name="ownerId" id="accountOwnerId" value="" />
             <input type="hidden" name="dogId" id="accountDogId" value="" />
+            <input type="hidden" name="petsJson" id="bookingPetsJson" value="" />
+            <input type="hidden" name="petCount" id="bookingPetCountField" value="1" />
+            <input type="hidden" name="petType" value="dog" />
+            <input type="hidden" name="dogName" value="" />
+            <input type="hidden" name="breed" value="" />
+            <input type="hidden" name="spayedNeutered" value="" />
+            <input type="hidden" name="rabiesVaccinationUpToDate" value="" />
             <section class="booking-step full active" data-booking-step="1">
               <div class="booking-step-head">
                 <span>01</span>
@@ -867,54 +874,22 @@
               <div class="booking-fields">
                 <div class="account-dog-picker wide-field" id="accountDogPicker" hidden>
                   <label>
-                    <span data-i18n="accountExistingDogLabel">Booking for a saved pet?</span>
-                    <select id="accountDogSelect">
-                      <option value="" data-i18n="accountNewDogOption">New pet</option>
-                    </select>
-                  </label>
-                  <p data-i18n="accountExistingDogHelp">Choose a pet from My Account to preload their saved information.</p>
-                </div>
-                <div class="wide-field pet-type-options" role="radiogroup" aria-label="Pet type">
-                  <label class="pet-type-card">
-                    <input type="radio" name="petType" value="dog" checked />
-                    <span aria-hidden="true">🐶</span>
-                    <strong data-i18n="optionDog">Dog</strong>
-                  </label>
-                  <label class="pet-type-card">
-                    <input type="radio" name="petType" value="cat" />
-                    <span aria-hidden="true">🐱</span>
-                    <strong data-i18n="optionCat">Cat</strong>
+                    <span data-i18n="accountExistingDogLabel">Booking for saved pets?</span>
+                    <small data-i18n="accountExistingDogHelp">Choose saved pets inside each pet card to preload their information.</small>
                   </label>
                 </div>
-                <label>
-                  <span data-i18n="fieldPet">Pet's Name</span>
-                  <input name="dogName" type="text" required />
-                </label>
-                <label class="breed-field">
-                  <span data-i18n="fieldBreed">Breed</span>
-                  <input name="breed" type="text" list="bookingBreedOptions" autocomplete="off" required />
-                  <small data-i18n="breedSearchHelp">Start typing to search by breed.</small>
-                </label>
-                <label class="breed-other-field" hidden>
-                  <span data-i18n="fieldBreedOther">Please specify breed</span>
-                  <input name="breedOther" type="text" autocomplete="off" />
-                </label>
-                <label>
-                  <span data-i18n="fieldSpayedNeutered">Spayed / Neutered</span>
-                  <select name="spayedNeutered" required>
-                    <option value="" data-i18n="optionSelect">Select</option>
-                    <option value="Yes" data-i18n="optionYes">Yes</option>
-                    <option value="No" data-i18n="optionNo">No</option>
+                <label class="wide-field pet-count-field">
+                  <span data-i18n="fieldNumberPets">Number of Pets</span>
+                  <select id="bookingPetCount">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
                   </select>
                 </label>
-                <label>
-                  <span data-i18n="fieldRabiesVaccination">Rabies vaccination up to date?</span>
-                  <select name="rabiesVaccinationUpToDate">
-                    <option value="" data-i18n="optionSelect">Select</option>
-                    <option value="Yes" data-i18n="optionYes">Yes</option>
-                    <option value="No" data-i18n="optionNo">No</option>
-                  </select>
-                </label>
+                <div class="booking-pets-list wide-field" id="bookingPetsContainer"></div>
               </div>
             </section>
 
