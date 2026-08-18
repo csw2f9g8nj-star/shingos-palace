@@ -1763,6 +1763,26 @@ function petsLabel(count, petType = getSelectedPetType()) {
   return safeCount === 1 ? t("onePet") : `${safeCount} ${t("multiplePets")}`;
 }
 
+function updateLockedBookingSummary() {
+  const petType = getSelectedPetType();
+
+  if (bookingLockedService) {
+    bookingLockedService.textContent = bookingSelection.service ? serviceLabel(bookingSelection.service) : t("optionSelect");
+  }
+
+  if (bookingLockedDates) {
+    bookingLockedDates.textContent = getVisibleBookingDates();
+  }
+
+  if (bookingLockedDogs) {
+    bookingLockedDogs.textContent = petsLabel(bookingSelection.numberOfDogs, petType);
+  }
+
+  if (bookingLockedPetType) {
+    bookingLockedPetType.textContent = petTypeLabel(petType);
+  }
+}
+
 function dogsLabel(count) {
   return petsLabel(count, "dog");
 }
@@ -1865,7 +1885,7 @@ function updatePetSpecificFields() {
   });
 
   if (profilePetType) profilePetType.value = petType;
-  if (bookingLockedPetType) bookingLockedPetType.textContent = petTypeLabel(petType);
+  updateLockedBookingSummary();
   updateBreedDatalists();
   clearInvalidBreed(bookingForm);
 }
@@ -1915,14 +1935,25 @@ function updateServiceSpecificFields() {
 
   boardingDaycareTimeFields.forEach((field) => {
     field.hidden = walking;
+    field.style.display = walking ? "none" : "";
   });
   walkingOnlyFields.forEach((field) => {
     field.hidden = !walking;
+    field.style.display = walking ? "" : "none";
   });
 
-  if (pickupPolicyNote) pickupPolicyNote.hidden = walking;
-  if (additionalCatsField) additionalCatsField.hidden = walking || petType === "cat";
-  if (longStayField) longStayField.hidden = walking;
+  if (pickupPolicyNote) {
+    pickupPolicyNote.hidden = walking;
+    pickupPolicyNote.style.display = walking ? "none" : "";
+  }
+  if (additionalCatsField) {
+    additionalCatsField.hidden = walking || petType === "cat";
+    additionalCatsField.style.display = walking || petType === "cat" ? "none" : "";
+  }
+  if (longStayField) {
+    longStayField.hidden = walking;
+    longStayField.style.display = walking ? "none" : "";
+  }
 
   if (arrivalTimeInput) {
     arrivalTimeInput.disabled = walking;
@@ -1951,6 +1982,7 @@ function updateServiceSpecificFields() {
     if (walking) longStayInput.checked = false;
   }
 
+  updateLockedBookingSummary();
   updatePetSpecificFields();
   updateSummary();
 }
@@ -2535,18 +2567,7 @@ function setBookingSelection(selection = {}) {
   if (additionalDogsInput) additionalDogsInput.value = selectedPetType === "dog" ? Math.max(0, bookingSelection.numberOfDogs - 1) : 0;
   if (additionalCatsInput && selectedPetType === "cat") additionalCatsInput.value = Math.max(0, bookingSelection.numberOfDogs - 1);
 
-  if (bookingLockedService) {
-    bookingLockedService.textContent = bookingSelection.service ? serviceLabel(bookingSelection.service) : t("optionSelect");
-  }
-
-  if (bookingLockedDates) {
-    bookingLockedDates.textContent = getVisibleBookingDates();
-  }
-
-  if (bookingLockedDogs) {
-    bookingLockedDogs.textContent = petsLabel(bookingSelection.numberOfDogs, selectedPetType);
-  }
-
+  updateLockedBookingSummary();
   updateServiceSpecificFields();
 }
 
