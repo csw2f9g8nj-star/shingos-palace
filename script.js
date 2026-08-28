@@ -127,6 +127,16 @@ const translations = {
     campanitaActivityOne: "Watching the house",
     campanitaActivityTwo: "Finding cozy spots",
     campanitaActivityThree: "Supervising from a distance",
+    chesterResidentRole: "Resident Companion",
+    chesterResidentBody:
+      "Chester arrived at Shingo's Palace unexpectedly, but quickly won everyone's heart. Friendly with dogs, cats, and people, he is now part of the Shingo's Palace family.",
+    chesterResidentTraitOne: "Friendly",
+    chesterResidentTraitTwo: "Gentle",
+    chesterResidentTraitThree: "Playful",
+    chesterResidentTraitFour: "Social",
+    chesterResidentActivityOne: "Meeting new friends",
+    chesterResidentActivityTwo: "Playing with other dogs",
+    chesterResidentActivityThree: "Being part of the family",
     residentsQuote: '"At Shingo\'s Palace, every guest becomes part of the family."',
     dailyCrewKicker: "Daycare family",
     dailyCrewHeading: "Our Daycare Crew",
@@ -242,6 +252,7 @@ const translations = {
     publicReviewsHeading: "What Pet Parents Say",
     publicReviewsIntro:
       "Warm words from families whose pets have stayed, played, and felt at home at Shingo's Palace.",
+    publicReviewsLeaveButton: "Leave a Review",
     publicReviewsEmpty: "Reviews from our guests will appear here soon.",
     faqKicker: "Good to know",
     faqHeading: "Frequently Asked Questions",
@@ -642,6 +653,16 @@ const translations = {
     campanitaActivityOne: "Observar la casa",
     campanitaActivityTwo: "Encontrar rincones cómodos",
     campanitaActivityThree: "Supervisar desde la distancia",
+    chesterResidentRole: "Compañero residente",
+    chesterResidentBody:
+      "Chester llegó inesperadamente a Shingo's Palace, pero rápidamente se ganó el corazón de todos. Es amigable con perros, gatos y personas, y ahora forma parte de la familia de Shingo's Palace.",
+    chesterResidentTraitOne: "Amigable",
+    chesterResidentTraitTwo: "Gentil",
+    chesterResidentTraitThree: "Juguetón",
+    chesterResidentTraitFour: "Sociable",
+    chesterResidentActivityOne: "Conocer nuevos amigos",
+    chesterResidentActivityTwo: "Jugar con otros perros",
+    chesterResidentActivityThree: "Ser parte de la familia",
     residentsQuote: '"En Shingo\'s Palace, cada huésped se vuelve parte de la familia."',
     dailyCrewKicker: "Familia de daycare",
     dailyCrewHeading: "Nuestro grupo de daycare",
@@ -757,6 +778,7 @@ const translations = {
     publicReviewsHeading: "Lo que dicen las familias",
     publicReviewsIntro:
       "Comentarios de familias cuyas mascotas se hospedaron, jugaron y se sintieron en casa en Shingo's Palace.",
+    publicReviewsLeaveButton: "Dejar una review",
     publicReviewsEmpty: "Las reviews de nuestros huéspedes van a aparecer aquí pronto.",
     faqKicker: "Bueno saberlo",
     faqHeading: "Preguntas frecuentes",
@@ -1323,8 +1345,8 @@ const galleryItems = [
   },
   {
     icon: "🌴",
-    image: "assets/hero-pool.jpeg",
-    alt: "The fenced backyard and outdoor play space at Shingo's Palace",
+    image: "assets/large-fenced-yard-dogs.jpg",
+    alt: "Two dogs relaxing in the large fenced yard at Shingo's Palace",
     enTitle: "Large Fenced Yard",
     esTitle: "Patio grande cercado",
     en: "Safe outdoor area with plenty of room to run and explore.",
@@ -1484,6 +1506,7 @@ const mobileSummaryAfterFee = document.querySelector("#mobileSummaryAfterFee");
 const mobileSummaryAdditionalPets = document.querySelector("#mobileSummaryAdditionalPets");
 const mobileSummaryStayBreakdown = document.querySelector("#mobileSummaryStayBreakdown");
 const accountNavButton = document.querySelector("#accountNavButton");
+const publicLeaveReviewButton = document.querySelector("#publicLeaveReviewButton");
 const accountSignedOut = document.querySelector("#accountSignedOut");
 const accountDashboard = document.querySelector("#accountDashboard");
 const accountLoginForm = document.querySelector("#accountLoginForm");
@@ -2716,6 +2739,22 @@ function openReviewModal(bookingId, dogId = "") {
   window.openSiteModal("leaveReviewModal");
 }
 
+function openAccountForReviews() {
+  window.openSiteModal("accountModal");
+
+  window.setTimeout(() => {
+    if (customerSession) {
+      accountPastReservations?.closest(".account-section")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+      return;
+    }
+
+    accountEmail?.focus();
+  }, 240);
+}
+
 function setFormField(form, name, value) {
   const field = form?.elements?.[name];
   if (field) field.value = value || "";
@@ -3325,6 +3364,8 @@ accountPastReservations?.addEventListener("click", (event) => {
   if (!button) return;
   openReviewModal(button.dataset.bookingId, button.dataset.dogId);
 });
+
+publicLeaveReviewButton?.addEventListener("click", openAccountForReviews);
 
 reviewForm?.addEventListener("submit", async (event) => {
   event.preventDefault();

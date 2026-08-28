@@ -820,7 +820,7 @@ a.action-tile {
 
 .residents-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 22px;
 }
 
@@ -856,6 +856,10 @@ a.action-tile {
 
 .resident-card:hover .resident-image img {
   transform: scale(1.025);
+}
+
+.resident-image-chester img {
+  object-position: center 38%;
 }
 
 .resident-image-soft {
@@ -1468,6 +1472,10 @@ a.action-tile {
 .gallery-card img[src$="pool-time-featured.png"] {
   object-position: center;
   filter: brightness(1.035) saturate(1.045) contrast(1.035);
+}
+
+.home-gallery-card img[src$="large-fenced-yard-dogs.jpg"] {
+  object-position: center 46%;
 }
 
 .home-gallery-card:hover img {
@@ -3229,11 +3237,16 @@ h2 {
   line-height: 0.96;
 }
 
-.public-reviews-head p:last-child {
+.public-reviews-head p:last-of-type {
   margin: 18px 0 0;
   color: var(--muted);
   font-size: clamp(1rem, 1.5vw, 1.2rem);
   line-height: 1.72;
+}
+
+.public-review-cta {
+  width: fit-content;
+  margin-top: 24px;
 }
 
 .public-reviews-grid {
