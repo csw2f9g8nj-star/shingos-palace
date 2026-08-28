@@ -26,18 +26,25 @@ const translations = {
     accountCreateButton: "Create Account",
     accountForgotPassword: "Forgot Password",
     accountMagicLinkButton: "Email me a sign-in link",
+    accountFallbackSummary: "Need another sign-in option?",
+    accountFallbackHelp: "Use this only if password sign-in is not available. It sends an email link.",
     accountResetIntro: "Enter a new password for your Shingo's Palace account.",
     accountSavePassword: "Save Password",
     accountSendLink: "Send sign-in link",
     accountLinkSent: "Check your email for the secure sign-in link.",
     accountSignInSuccess: "You're signed in.",
-    accountCreated: "Account created successfully. If Supabase asks you to confirm your email, please check your inbox.",
+    accountCreated: "Account created successfully. You can sign in with your email and password.",
+    accountCreatedCheckEmail: "Account created. Please confirm your email once, then sign in with your password.",
     accountResetSent: "Password reset sent. Please check your email.",
     accountPasswordUpdated: "Your password has been updated.",
-    accountPasswordRequired: "Please enter your email and password.",
+    accountEmailRequired: "Please enter your email.",
+    accountEmailInvalid: "Please enter a valid email address.",
+    accountPasswordRequired: "Please enter your password.",
+    accountCreatePasswordRequired: "Please create a password.",
     accountPasswordTooShort: "Password must be at least 6 characters.",
-    accountInvalidLogin: "Incorrect password or account not found. Please try again, create an account, or reset your password.",
+    accountInvalidLogin: "The email or password did not match. Please try again, create an account, or reset your password.",
     accountAlreadyExists: "An account already exists for this email. Please sign in or use Forgot Password.",
+    accountRateLimited: "Too many email requests were sent. Please sign in with your password, or wait a little before requesting another email.",
     accountLoading: "Loading your account...",
     accountWelcome: "Welcome back",
     accountPrivateNote: "Only your own pets, reservations, and vaccination records are shown here.",
@@ -568,18 +575,25 @@ const translations = {
     accountCreateButton: "Crear cuenta",
     accountForgotPassword: "Olvidé mi contraseña",
     accountMagicLinkButton: "Enviarme un link de acceso",
+    accountFallbackSummary: "¿Necesitás otra opción para ingresar?",
+    accountFallbackHelp: "Usá esto solo si no podés ingresar con contraseña. Envía un link por email.",
     accountResetIntro: "Ingresá una nueva contraseña para tu cuenta de Shingo's Palace.",
     accountSavePassword: "Guardar contraseña",
     accountSendLink: "Enviar link de acceso",
     accountLinkSent: "Revisá tu email para abrir el link seguro de acceso.",
     accountSignInSuccess: "Ya ingresaste a tu cuenta.",
-    accountCreated: "Cuenta creada correctamente. Si Supabase te pide confirmar el email, revisá tu inbox.",
+    accountCreated: "Cuenta creada correctamente. Ya podés ingresar con tu email y contraseña.",
+    accountCreatedCheckEmail: "Cuenta creada. Confirmá tu email una sola vez y después ingresá con tu contraseña.",
     accountResetSent: "Te enviamos el email para resetear la contraseña.",
     accountPasswordUpdated: "Tu contraseña fue actualizada.",
-    accountPasswordRequired: "Ingresá tu email y contraseña.",
+    accountEmailRequired: "Ingresá tu email.",
+    accountEmailInvalid: "Ingresá un email válido.",
+    accountPasswordRequired: "Ingresá tu contraseña.",
+    accountCreatePasswordRequired: "Creá una contraseña.",
     accountPasswordTooShort: "La contraseña debe tener al menos 6 caracteres.",
-    accountInvalidLogin: "Contraseña incorrecta o cuenta no encontrada. Intentá de nuevo, creá tu cuenta o reseteá la contraseña.",
+    accountInvalidLogin: "El email o la contraseña no coinciden. Intentá de nuevo, creá tu cuenta o reseteá la contraseña.",
     accountAlreadyExists: "Ya existe una cuenta con este email. Ingresá o usá Olvidé mi contraseña.",
+    accountRateLimited: "Se enviaron demasiados emails. Ingresá con tu contraseña o esperá un poco antes de pedir otro email.",
     accountLoading: "Cargando tu cuenta...",
     accountWelcome: "Bienvenida de nuevo",
     accountPrivateNote: "Acá solo se muestran tus propias mascotas, reservas y registros de vacunación.",
@@ -2814,6 +2828,10 @@ function setAccountStatus(message, tone = "") {
 
 function friendlyAuthError(error) {
   const message = String(error?.message || "").toLowerCase();
+  const status = Number(error?.status || error?.code || 0);
+  if (status === 429 || message.includes("rate limit") || message.includes("email rate limit")) {
+    return t("accountRateLimited");
+  }
   if (message.includes("invalid login") || message.includes("invalid credentials")) {
     return t("accountInvalidLogin");
   }
@@ -2826,17 +2844,36 @@ function friendlyAuthError(error) {
   return error?.message || t("accountLoginUnavailable");
 }
 
-function validateAccountCredentials({ requireEmail = true, requirePassword = true, passwordField = accountPassword } = {}) {
+function validateAccountCredentials({
+  requireEmail = true,
+  requirePassword = true,
+  passwordField = accountPassword,
+  passwordRequiredMessage = t("accountPasswordRequired"),
+} = {}) {
   const email = normalizedAccountEmail();
   const password = accountPasswordValue(passwordField);
 
-  if ((requireEmail && !email) || (requirePassword && !password)) {
-    setAccountStatus(t("accountPasswordRequired"), "error");
+  if (requireEmail && !email) {
+    setAccountStatus(t("accountEmailRequired"), "error");
+    accountEmail?.focus();
+    return null;
+  }
+
+  if (requireEmail && accountEmail && !accountEmail.checkValidity()) {
+    setAccountStatus(t("accountEmailInvalid"), "error");
+    accountEmail.focus();
+    return null;
+  }
+
+  if (requirePassword && !password) {
+    setAccountStatus(passwordRequiredMessage, "error");
+    passwordField?.focus();
     return null;
   }
 
   if (requirePassword && password.length < 6) {
     setAccountStatus(t("accountPasswordTooShort"), "error");
+    passwordField?.focus();
     return null;
   }
 
@@ -3341,7 +3378,7 @@ accountLoginForm?.addEventListener("submit", async (event) => {
 });
 
 accountCreateButton?.addEventListener("click", async () => {
-  const credentials = validateAccountCredentials();
+  const credentials = validateAccountCredentials({ passwordRequiredMessage: t("accountCreatePasswordRequired") });
   if (!credentials) return;
   setAccountStatus(t("accountLoading"));
 
@@ -3356,9 +3393,13 @@ accountCreateButton?.addEventListener("click", async () => {
     });
 
     if (error) throw error;
+    if (!data?.session && Array.isArray(data?.user?.identities) && data.user.identities.length === 0) {
+      setAccountStatus(t("accountAlreadyExists"), "error");
+      return;
+    }
     customerSession = data?.session || customerSession;
     if (customerSession) await loadCustomerAccount();
-    setAccountStatus(t("accountCreated"), "success");
+    setAccountStatus(data?.session ? t("accountCreated") : t("accountCreatedCheckEmail"), "success");
   } catch (error) {
     setAccountStatus(friendlyAuthError(error), "error");
   }

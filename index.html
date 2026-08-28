@@ -1305,9 +1305,13 @@
               <button class="text-button" id="accountCreateButton" type="button" data-i18n="accountCreateButton">Create Account</button>
               <button class="text-button" id="accountForgotPassword" type="button" data-i18n="accountForgotPassword">Forgot Password</button>
             </div>
-            <button class="ghost-button account-magic-link-button" id="accountMagicLinkButton" type="button" data-i18n="accountMagicLinkButton">
-              Email me a sign-in link
-            </button>
+            <details class="account-fallback">
+              <summary data-i18n="accountFallbackSummary">Need another sign-in option?</summary>
+              <p data-i18n="accountFallbackHelp">Use this only if password sign-in is not available. It sends an email link.</p>
+              <button class="ghost-button account-magic-link-button" id="accountMagicLinkButton" type="button" data-i18n="accountMagicLinkButton">
+                Email me a sign-in link
+              </button>
+            </details>
             <p class="status-line" id="accountLoginStatus"></p>
           </form>
           <form class="account-reset-form" id="accountResetForm" hidden>

@@ -2574,7 +2574,31 @@ body.modal-open {
 }
 
 .account-magic-link-button {
+  margin-top: 10px;
   width: 100%;
+}
+
+.account-fallback {
+  border-top: 1px solid rgba(39, 50, 47, 0.1);
+  margin-top: 2px;
+  padding-top: 12px;
+}
+
+.account-fallback summary {
+  color: rgba(39, 50, 47, 0.68);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  list-style-position: outside;
+  text-transform: uppercase;
+}
+
+.account-fallback p {
+  color: rgba(39, 50, 47, 0.66);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  margin: 8px 0 0;
 }
 
 .account-reset-form {
