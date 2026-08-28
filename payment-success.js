@@ -307,30 +307,10 @@ successAccountButton?.addEventListener("click", async () => {
     return;
   }
 
-  if (successAccountButton) {
-    successAccountButton.disabled = true;
-    successAccountButton.textContent = "Sending secure link...";
-  }
-
-  try {
-    const client = await getCustomerSupabaseClient();
-    const { error } = await client.auth.signInWithOtp({
-      email: verifiedOwnerEmail,
-      options: {
-        emailRedirectTo: `${window.location.origin}/index.html`,
-      },
-    });
-
-    if (error) throw error;
-    successAccountStatus.textContent = "Check your email for the secure sign-in link.";
-  } catch (error) {
-    successAccountStatus.textContent = error.message || "Customer login is unavailable right now. Please try again shortly.";
-  } finally {
-    if (successAccountButton) {
-      successAccountButton.disabled = false;
-      successAccountButton.textContent = "Create / access My Account";
-    }
-  }
+  const accountUrl = new URL("index.html", window.location.origin);
+  accountUrl.searchParams.set("account", "1");
+  accountUrl.searchParams.set("email", verifiedOwnerEmail);
+  window.location.href = accountUrl.toString();
 });
 
 successVaccinationRecords?.addEventListener("change", validateVaccinationFiles);

@@ -1289,15 +1289,34 @@
 
         <section class="account-auth-panel" id="accountSignedOut">
           <p class="flow-intro" data-i18n="accountIntro">
-            Sign in with your email to see your pets, reservations, vaccination status, and book again faster.
+            Sign in with your email and password to see your pets, reservations, vaccination status, and book again faster.
           </p>
           <form class="account-login-form" id="accountLoginForm">
             <label>
               <span data-i18n="fieldEmail">Email</span>
               <input id="accountEmail" type="email" autocomplete="email" required />
             </label>
-            <button class="submit-button" type="submit" data-i18n="accountSendLink">Send sign-in link</button>
+            <label>
+              <span data-i18n="accountPasswordLabel">Password</span>
+              <input id="accountPassword" type="password" autocomplete="current-password" minlength="6" required />
+            </label>
+            <button class="submit-button" id="accountSignInButton" type="submit" data-i18n="accountSignInButton">Sign In</button>
+            <div class="account-auth-actions" aria-label="Account options">
+              <button class="text-button" id="accountCreateButton" type="button" data-i18n="accountCreateButton">Create Account</button>
+              <button class="text-button" id="accountForgotPassword" type="button" data-i18n="accountForgotPassword">Forgot Password</button>
+            </div>
+            <button class="ghost-button account-magic-link-button" id="accountMagicLinkButton" type="button" data-i18n="accountMagicLinkButton">
+              Email me a sign-in link
+            </button>
             <p class="status-line" id="accountLoginStatus"></p>
+          </form>
+          <form class="account-reset-form" id="accountResetForm" hidden>
+            <p class="flow-intro" data-i18n="accountResetIntro">Enter a new password for your Shingo's Palace account.</p>
+            <label>
+              <span data-i18n="accountNewPasswordLabel">New password</span>
+              <input id="accountNewPassword" type="password" autocomplete="new-password" minlength="6" />
+            </label>
+            <button class="submit-button" type="submit" data-i18n="accountSavePassword">Save Password</button>
           </form>
         </section>
 

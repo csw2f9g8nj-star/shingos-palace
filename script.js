@@ -19,9 +19,25 @@ const translations = {
     accountMyAccountNav: "My Account",
     accountKicker: "My Account",
     accountHeading: "A simpler way to book again.",
-    accountIntro: "Sign in with your email to see your pets, reservations, vaccination status, and book again faster.",
+    accountIntro: "Sign in with your email and password to see your pets, reservations, vaccination status, and book again faster.",
+    accountPasswordLabel: "Password",
+    accountNewPasswordLabel: "New password",
+    accountSignInButton: "Sign In",
+    accountCreateButton: "Create Account",
+    accountForgotPassword: "Forgot Password",
+    accountMagicLinkButton: "Email me a sign-in link",
+    accountResetIntro: "Enter a new password for your Shingo's Palace account.",
+    accountSavePassword: "Save Password",
     accountSendLink: "Send sign-in link",
     accountLinkSent: "Check your email for the secure sign-in link.",
+    accountSignInSuccess: "You're signed in.",
+    accountCreated: "Account created successfully. If Supabase asks you to confirm your email, please check your inbox.",
+    accountResetSent: "Password reset sent. Please check your email.",
+    accountPasswordUpdated: "Your password has been updated.",
+    accountPasswordRequired: "Please enter your email and password.",
+    accountPasswordTooShort: "Password must be at least 6 characters.",
+    accountInvalidLogin: "Incorrect password or account not found. Please try again, create an account, or reset your password.",
+    accountAlreadyExists: "An account already exists for this email. Please sign in or use Forgot Password.",
     accountLoading: "Loading your account...",
     accountWelcome: "Welcome back",
     accountPrivateNote: "Only your own pets, reservations, and vaccination records are shown here.",
@@ -545,9 +561,25 @@ const translations = {
     accountMyAccountNav: "Mi cuenta",
     accountKicker: "Mi cuenta",
     accountHeading: "Una forma más simple de volver a reservar.",
-    accountIntro: "Ingresá con tu email para ver tus mascotas, reservas, estado de vacunas y reservar de nuevo más rápido.",
+    accountIntro: "Ingresá con tu email y contraseña para ver tus mascotas, reservas, estado de vacunas y reservar de nuevo más rápido.",
+    accountPasswordLabel: "Contraseña",
+    accountNewPasswordLabel: "Nueva contraseña",
+    accountSignInButton: "Ingresar",
+    accountCreateButton: "Crear cuenta",
+    accountForgotPassword: "Olvidé mi contraseña",
+    accountMagicLinkButton: "Enviarme un link de acceso",
+    accountResetIntro: "Ingresá una nueva contraseña para tu cuenta de Shingo's Palace.",
+    accountSavePassword: "Guardar contraseña",
     accountSendLink: "Enviar link de acceso",
     accountLinkSent: "Revisá tu email para abrir el link seguro de acceso.",
+    accountSignInSuccess: "Ya ingresaste a tu cuenta.",
+    accountCreated: "Cuenta creada correctamente. Si Supabase te pide confirmar el email, revisá tu inbox.",
+    accountResetSent: "Te enviamos el email para resetear la contraseña.",
+    accountPasswordUpdated: "Tu contraseña fue actualizada.",
+    accountPasswordRequired: "Ingresá tu email y contraseña.",
+    accountPasswordTooShort: "La contraseña debe tener al menos 6 caracteres.",
+    accountInvalidLogin: "Contraseña incorrecta o cuenta no encontrada. Intentá de nuevo, creá tu cuenta o reseteá la contraseña.",
+    accountAlreadyExists: "Ya existe una cuenta con este email. Ingresá o usá Olvidé mi contraseña.",
     accountLoading: "Cargando tu cuenta...",
     accountWelcome: "Bienvenida de nuevo",
     accountPrivateNote: "Acá solo se muestran tus propias mascotas, reservas y registros de vacunación.",
@@ -1511,6 +1543,13 @@ const accountSignedOut = document.querySelector("#accountSignedOut");
 const accountDashboard = document.querySelector("#accountDashboard");
 const accountLoginForm = document.querySelector("#accountLoginForm");
 const accountEmail = document.querySelector("#accountEmail");
+const accountPassword = document.querySelector("#accountPassword");
+const accountSignInButton = document.querySelector("#accountSignInButton");
+const accountCreateButton = document.querySelector("#accountCreateButton");
+const accountForgotPassword = document.querySelector("#accountForgotPassword");
+const accountMagicLinkButton = document.querySelector("#accountMagicLinkButton");
+const accountResetForm = document.querySelector("#accountResetForm");
+const accountNewPassword = document.querySelector("#accountNewPassword");
 const accountLoginStatus = document.querySelector("#accountLoginStatus");
 const accountSignOut = document.querySelector("#accountSignOut");
 const accountWelcome = document.querySelector("#accountWelcome");
@@ -2755,6 +2794,55 @@ function openAccountForReviews() {
   }, 240);
 }
 
+function accountRedirectUrl() {
+  return `${window.location.origin}${window.location.pathname}`;
+}
+
+function normalizedAccountEmail() {
+  return accountEmail?.value.trim().toLowerCase() || "";
+}
+
+function accountPasswordValue(field = accountPassword) {
+  return field?.value || "";
+}
+
+function setAccountStatus(message, tone = "") {
+  if (!accountLoginStatus) return;
+  accountLoginStatus.textContent = message || "";
+  accountLoginStatus.dataset.tone = tone;
+}
+
+function friendlyAuthError(error) {
+  const message = String(error?.message || "").toLowerCase();
+  if (message.includes("invalid login") || message.includes("invalid credentials")) {
+    return t("accountInvalidLogin");
+  }
+  if (message.includes("already") || message.includes("registered") || message.includes("exists")) {
+    return t("accountAlreadyExists");
+  }
+  if (message.includes("password")) {
+    return error.message;
+  }
+  return error?.message || t("accountLoginUnavailable");
+}
+
+function validateAccountCredentials({ requireEmail = true, requirePassword = true, passwordField = accountPassword } = {}) {
+  const email = normalizedAccountEmail();
+  const password = accountPasswordValue(passwordField);
+
+  if ((requireEmail && !email) || (requirePassword && !password)) {
+    setAccountStatus(t("accountPasswordRequired"), "error");
+    return null;
+  }
+
+  if (requirePassword && password.length < 6) {
+    setAccountStatus(t("accountPasswordTooShort"), "error");
+    return null;
+  }
+
+  return { email, password };
+}
+
 function setFormField(form, name, value) {
   const field = form?.elements?.[name];
   if (field) field.value = value || "";
@@ -2819,9 +2907,19 @@ async function initializeCustomerAuth() {
     updateAccountNav();
     await loadCustomerAccount();
 
-    client.auth.onAuthStateChange(async (_event, session) => {
+    client.auth.onAuthStateChange(async (event, session) => {
       customerSession = session || null;
       updateAccountNav();
+      if (event === "PASSWORD_RECOVERY") {
+        window.openSiteModal("accountModal");
+        if (accountSignedOut) accountSignedOut.hidden = false;
+        if (accountDashboard) accountDashboard.hidden = true;
+        if (accountResetForm) accountResetForm.hidden = false;
+        if (accountEmail && session?.user?.email) accountEmail.value = session.user.email;
+        setAccountStatus("", "");
+        accountNewPassword?.focus();
+        return;
+      }
       try {
         await loadCustomerAccount();
       } catch (error) {
@@ -2832,6 +2930,16 @@ async function initializeCustomerAuth() {
     updateAccountNav();
     if (accountLoginStatus) accountLoginStatus.textContent = "";
   }
+}
+
+function openAccountFromUrlRequest() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("account") !== "1") return;
+
+  const email = params.get("email") || "";
+  if (accountEmail && email) accountEmail.value = email.trim().toLowerCase();
+  window.openSiteModal("accountModal");
+  accountPassword?.focus();
 }
 
 async function verifyStripePayment(sessionId) {
@@ -3212,23 +3320,105 @@ closeButtons.forEach((button) => {
 
 accountLoginForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
-  if (!accountEmail?.value) return;
-  if (accountLoginStatus) accountLoginStatus.textContent = t("accountLoading");
+  const credentials = validateAccountCredentials();
+  if (!credentials) return;
+  setAccountStatus(t("accountLoading"));
 
   try {
     const client = await getCustomerSupabaseClient();
-    const redirectTo = `${window.location.origin}${window.location.pathname}`;
-    const { error } = await client.auth.signInWithOtp({
-      email: accountEmail.value.trim().toLowerCase(),
+    const { data, error } = await client.auth.signInWithPassword({
+      email: credentials.email,
+      password: credentials.password,
+    });
+
+    if (error) throw error;
+    customerSession = data?.session || customerSession;
+    await loadCustomerAccount();
+    setAccountStatus(t("accountSignInSuccess"), "success");
+  } catch (error) {
+    setAccountStatus(friendlyAuthError(error), "error");
+  }
+});
+
+accountCreateButton?.addEventListener("click", async () => {
+  const credentials = validateAccountCredentials();
+  if (!credentials) return;
+  setAccountStatus(t("accountLoading"));
+
+  try {
+    const client = await getCustomerSupabaseClient();
+    const { data, error } = await client.auth.signUp({
+      email: credentials.email,
+      password: credentials.password,
       options: {
-        emailRedirectTo: redirectTo,
+        emailRedirectTo: accountRedirectUrl(),
       },
     });
 
     if (error) throw error;
-    if (accountLoginStatus) accountLoginStatus.textContent = t("accountLinkSent");
+    customerSession = data?.session || customerSession;
+    if (customerSession) await loadCustomerAccount();
+    setAccountStatus(t("accountCreated"), "success");
   } catch (error) {
-    if (accountLoginStatus) accountLoginStatus.textContent = error.message || t("accountLoginUnavailable");
+    setAccountStatus(friendlyAuthError(error), "error");
+  }
+});
+
+accountForgotPassword?.addEventListener("click", async () => {
+  const credentials = validateAccountCredentials({ requirePassword: false });
+  if (!credentials) return;
+  setAccountStatus(t("accountLoading"));
+
+  try {
+    const client = await getCustomerSupabaseClient();
+    const { error } = await client.auth.resetPasswordForEmail(credentials.email, {
+      redirectTo: accountRedirectUrl(),
+    });
+
+    if (error) throw error;
+    setAccountStatus(t("accountResetSent"), "success");
+  } catch (error) {
+    setAccountStatus(friendlyAuthError(error), "error");
+  }
+});
+
+accountMagicLinkButton?.addEventListener("click", async () => {
+  const credentials = validateAccountCredentials({ requirePassword: false });
+  if (!credentials) return;
+  setAccountStatus(t("accountLoading"));
+
+  try {
+    const client = await getCustomerSupabaseClient();
+    const { error } = await client.auth.signInWithOtp({
+      email: credentials.email,
+      options: {
+        emailRedirectTo: accountRedirectUrl(),
+      },
+    });
+
+    if (error) throw error;
+    setAccountStatus(t("accountLinkSent"), "success");
+  } catch (error) {
+    setAccountStatus(friendlyAuthError(error), "error");
+  }
+});
+
+accountResetForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const credentials = validateAccountCredentials({ requireEmail: false, passwordField: accountNewPassword });
+  if (!credentials) return;
+  setAccountStatus(t("accountLoading"));
+
+  try {
+    const client = await getCustomerSupabaseClient();
+    const { error } = await client.auth.updateUser({ password: credentials.password });
+    if (error) throw error;
+    if (accountResetForm) accountResetForm.hidden = true;
+    if (accountNewPassword) accountNewPassword.value = "";
+    await loadCustomerAccount();
+    setAccountStatus(t("accountPasswordUpdated"), "success");
+  } catch (error) {
+    setAccountStatus(friendlyAuthError(error), "error");
   }
 });
 
@@ -3612,3 +3802,4 @@ updateServiceSpecificFields();
 applyLanguage();
 loadApprovedReviews();
 initializeCustomerAuth();
+openAccountFromUrlRequest();
