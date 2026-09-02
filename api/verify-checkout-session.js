@@ -1,5 +1,67 @@
+const {
+  buildBalancePaidEmail,
+  buildDepositConfirmationEmail,
+  getBookingPetDisplay,
+  sendResendEmail,
+  serviceLabel,
+} = require("../lib/api-utils/booking-emails");
 const { centsToCurrency, getStripeClient } = require("../lib/api-utils/payments");
 const { getAdminClient, handleApiError, publicApiError, sendJson } = require("../lib/api-utils/supabase");
+
+function getOrigin(req) {
+  const host = req.headers["x-forwarded-host"] || req.headers.host;
+  const protocol = req.headers["x-forwarded-proto"] || "https";
+  return `${protocol}://${host}`;
+}
+
+async function claimEmailSend(supabase, bookingId, column) {
+  const timestamp = new Date().toISOString();
+  const { data, error } = await supabase
+    .from("bookings")
+    .update({ [column]: timestamp })
+    .eq("id", bookingId)
+    .is(column, null)
+    .select(`id, ${column}`)
+    .maybeSingle();
+
+  if (error) {
+    throw Object.assign(publicApiError("Payment saved, but email status could not be updated.", 500, "email_claim_failed"), {
+      supabaseCode: error.code,
+      supabaseMessage: error.message,
+      details: error.details,
+      hint: error.hint,
+    });
+  }
+
+  return data ? timestamp : "";
+}
+
+async function releaseEmailClaim(supabase, bookingId, column, timestamp) {
+  if (!timestamp) return;
+  await supabase.from("bookings").update({ [column]: null }).eq("id", bookingId).eq(column, timestamp);
+}
+
+async function sendPaymentEmailIfNeeded({ supabase, booking, paymentType, amountPaid, origin }) {
+  const column = paymentType === "balance" ? "balance_receipt_sent_at" : "deposit_confirmation_sent_at";
+  const claimTimestamp = await claimEmailSend(supabase, booking.id, column);
+  if (!claimTimestamp) return;
+
+  try {
+    const email = paymentType === "balance"
+      ? buildBalancePaidEmail({ booking, amountPaid, origin })
+      : buildDepositConfirmationEmail({ booking, amountPaid, origin });
+
+    await sendResendEmail({
+      to: booking.owner?.email,
+      subject: email.subject,
+      html: email.html,
+      text: email.text,
+    });
+  } catch (error) {
+    await releaseEmailClaim(supabase, booking.id, column, claimTimestamp);
+    throw error;
+  }
+}
 
 module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
@@ -36,10 +98,13 @@ module.exports = async function handler(req, res) {
         booking_pet_summary,
         dropoff_date,
         pickup_date,
+        estimated_total,
         stripe_balance_checkout_session_id,
         deposit_due_today,
         deposit_paid_amount,
         remaining_balance,
+        deposit_confirmation_sent_at,
+        balance_receipt_sent_at,
         balance_payment_status,
         owner:owners(first_name,last_name,email),
         dog:dogs(id,name,pet_type),
@@ -58,9 +123,12 @@ module.exports = async function handler(req, res) {
         booking_pet_summary,
         dropoff_date,
         pickup_date,
+        estimated_total,
         stripe_checkout_session_id,
         deposit_due_today,
         remaining_balance,
+        deposit_confirmation_sent_at,
+        balance_receipt_sent_at,
         owner:owners(first_name,last_name,email),
         dog:dogs(id,name,pet_type),
         booking_pets(
@@ -128,22 +196,20 @@ module.exports = async function handler(req, res) {
       );
     }
 
-    const pets = (booking.booking_pets || [])
-      .map((item) => ({
-        id: item.dog?.id || item.dog_id || "",
-        name: item.dog?.name || "",
-        petType: item.pet_type || item.dog?.pet_type || "dog",
-      }))
-      .filter((pet) => pet.id || pet.name);
-    if (!pets.length && booking.dog_id) {
-      pets.push({
-        id: booking.dog_id,
-        name: booking.dog?.name || "Guest pet",
-        petType: booking.pet_type || "dog",
+    const origin = getOrigin(req);
+    const petData = getBookingPetDisplay(booking);
+    const pets = petData.pets;
+    const petName = petData.namesDisplay;
+
+    if (booking.owner?.email) {
+      await sendPaymentEmailIfNeeded({
+        supabase,
+        booking,
+        paymentType,
+        amountPaid,
+        origin,
       });
     }
-    const petNames = pets.map((pet) => pet.name).filter(Boolean);
-    const petName = booking.booking_pet_summary || petNames.join(", ") || booking.dog?.name || "Guest pet";
 
     sendJson(res, 200, {
       ok: true,
@@ -156,9 +222,13 @@ module.exports = async function handler(req, res) {
       sessionId: session.id,
       paymentIntentId,
       service: booking.service,
+      serviceLabel: serviceLabel(booking.service),
       petType: booking.pet_type || "dog",
       pets,
       petName,
+      petNames: petData.names,
+      petLabel: pets.length > 1 ? "Pets" : "Pet",
+      bookingPetSummary: booking.booking_pet_summary || "",
       dogName: petName,
       dates: `${booking.dropoff_date || ""} → ${booking.pickup_date || ""}`,
       depositPaid: isBalancePayment ? booking.deposit_paid_amount || booking.deposit_due_today || "-" : amountPaid,

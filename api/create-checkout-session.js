@@ -1,3 +1,4 @@
+const { getBookingPetDisplay, serviceLabel } = require("../lib/api-utils/booking-emails");
 const { amountToCents, getStripeClient } = require("../lib/api-utils/payments");
 const { getAdminClient, handleApiError, publicApiError, sendJson } = require("../lib/api-utils/supabase");
 
@@ -82,9 +83,9 @@ module.exports = async function handler(req, res) {
     const stripe = getStripeClient();
     const origin = getOrigin(req);
     const customerEmail = booking.owner?.email || undefined;
-    const petNames = (booking.booking_pets || []).map((item) => item.dog?.name).filter(Boolean);
-    const petName = booking.booking_pet_summary || petNames.join(", ") || booking.dog?.name || "Guest pet";
-    const serviceLabel = booking.service ? booking.service.charAt(0).toUpperCase() + booking.service.slice(1) : "Booking";
+    const petData = getBookingPetDisplay(booking);
+    const petName = petData.namesDisplay;
+    const serviceName = serviceLabel(booking.service);
     const paymentLabel = isBalancePayment ? "Remaining Balance" : "Deposit";
 
     const session = await stripe.checkout.sessions.create({
@@ -100,7 +101,7 @@ module.exports = async function handler(req, res) {
             currency: "usd",
             unit_amount: amountCents,
             product_data: {
-              name: `Shingo's Palace ${serviceLabel} ${paymentLabel}`,
+              name: `Shingo's Palace ${serviceName} ${paymentLabel}`,
               description: `${petName} · ${booking.dropoff_date || ""} to ${booking.pickup_date || ""}`,
             },
           },

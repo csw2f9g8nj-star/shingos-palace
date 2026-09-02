@@ -85,7 +85,6 @@ function updatePetWording(petType) {
   const petLabel = normalizedPetType === "cat" ? "cat" : "pet";
   const profileLabel = normalizedPetType === "cat" ? "Cat Profile" : "Pet Profile";
 
-  if (successPetNameLabel) successPetNameLabel.textContent = "Pet name";
   if (successProfileCtaTitle) successProfileCtaTitle.textContent = `Tell us more about your ${petLabel} 🐾`;
   if (successProfileCtaText) {
     successProfileCtaText.textContent = `Help us get to know your ${petLabel} so we can make their stay safe, comfortable and personalized.`;
@@ -266,7 +265,8 @@ async function verifyPayment() {
     }
     if (successDepositLabel) successDepositLabel.textContent = isBalancePayment ? "Balance paid" : "Deposit paid";
     if (successRemainingLabel) successRemainingLabel.textContent = isBalancePayment ? "Remaining balance" : "Remaining balance";
-    if (successService) successService.textContent = serviceLabel(payload.service);
+    if (successService) successService.textContent = payload.serviceLabel || serviceLabel(payload.service);
+    if (successPetNameLabel) successPetNameLabel.textContent = payload.petLabel || "Pet name";
     if (successDogName) successDogName.textContent = payload.petName || payload.dogName || "-";
     if (successDates) successDates.textContent = payload.dates || "-";
     if (successDeposit) successDeposit.textContent = isBalancePayment ? payload.balancePaid || "-" : payload.depositPaid || "-";
@@ -275,7 +275,7 @@ async function verifyPayment() {
     if (successBookingId) successBookingId.value = payload.bookingId || "";
     verifiedOwnerEmail = payload.ownerEmail || "";
     if (successAccountEmail) {
-      successAccountEmail.textContent = verifiedOwnerEmail ? `We'll send the secure link to ${verifiedOwnerEmail}.` : "";
+      successAccountEmail.textContent = verifiedOwnerEmail ? `Use ${verifiedOwnerEmail} to sign in and manage this reservation.` : "";
     }
     if (successDogProfileCta) successDogProfileCta.hidden = isBalancePayment;
     if (successDogProfileForm) successDogProfileForm.hidden = true;

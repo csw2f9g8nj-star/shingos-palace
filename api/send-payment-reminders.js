@@ -1,3 +1,4 @@
+const { buildBalanceReminderEmail, getBalanceDueDate, sendResendEmail } = require("../lib/api-utils/booking-emails");
 const { amountToCents } = require("../lib/api-utils/payments");
 const { getAdminClient, handleApiError, publicApiError, sendJson } = require("../lib/api-utils/supabase");
 
@@ -20,16 +21,6 @@ function tomorrowInNewYork() {
   return dateInNewYork(new Date(Date.now() + 24 * 60 * 60 * 1000));
 }
 
-function serviceLabel(service) {
-  const labels = {
-    boarding: "Boarding",
-    daycare: "Daycare",
-    walking: "Dog Walking",
-    grooming: "Grooming",
-  };
-  return labels[service] || service || "Reservation";
-}
-
 function assertCronAccess(req) {
   const cronSecret = process.env.CRON_SECRET || "";
   if (!cronSecret) {
@@ -43,92 +34,31 @@ function assertCronAccess(req) {
   }
 }
 
-function escapeHtml(value) {
-  return String(value || "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
+async function claimReminderSend(supabase, bookingId) {
+  const timestamp = new Date().toISOString();
+  const { data, error } = await supabase
+    .from("bookings")
+    .update({ balance_reminder_sent_at: timestamp })
+    .eq("id", bookingId)
+    .is("balance_reminder_sent_at", null)
+    .select("id,balance_reminder_sent_at")
+    .maybeSingle();
 
-function buildEmail({ booking, origin }) {
-  const ownerName = [booking.owner?.first_name, booking.owner?.last_name].filter(Boolean).join(" ").trim() || "there";
-  const petNames = (booking.booking_pets || []).map((item) => item.dog?.name).filter(Boolean);
-  const dogName = booking.booking_pet_summary || petNames.join(", ") || booking.dog?.name || "your pet";
-  const payUrl = `${origin}/balance-payment.html?booking_id=${encodeURIComponent(booking.id)}`;
-  const service = serviceLabel(booking.service);
-  const dates = `${booking.dropoff_date || ""} to ${booking.pickup_date || ""}`;
-  const total = booking.estimated_total || "-";
-  const deposit = booking.deposit_paid_amount || booking.deposit_due_today || "-";
-  const remaining = booking.remaining_balance || "-";
-
-  const text = [
-    `Hi ${ownerName},`,
-    "",
-    "Your Shingo's Palace stay is almost here.",
-    "",
-    `Pet: ${dogName}`,
-    `Service: ${service}`,
-    `Dates: ${dates}`,
-    `Total reservation amount: ${total}`,
-    `Deposit already paid: ${deposit}`,
-    `Remaining balance: ${remaining}`,
-    "",
-    `Pay Remaining Balance: ${payUrl}`,
-  ].join("\n");
-
-  const html = `
-    <div style="font-family:Inter,Arial,sans-serif;line-height:1.6;color:#24302f;max-width:620px;margin:0 auto;padding:28px;background:#fffaf4;">
-      <h1 style="font-size:26px;line-height:1.2;margin:0 0 12px;color:#24302f;">Your Shingo's Palace stay is almost here 🐾</h1>
-      <p>Hi ${escapeHtml(ownerName)},</p>
-      <p>We're looking forward to welcoming ${escapeHtml(dogName)} soon.</p>
-      <div style="background:#ffffff;border:1px solid #eadfce;border-radius:18px;padding:20px;margin:24px 0;">
-        <p><strong>Pet:</strong> ${escapeHtml(dogName)}</p>
-        <p><strong>Service:</strong> ${escapeHtml(service)}</p>
-        <p><strong>Booking dates:</strong> ${escapeHtml(dates)}</p>
-        <p><strong>Total reservation amount:</strong> ${escapeHtml(total)}</p>
-        <p><strong>Deposit already paid:</strong> ${escapeHtml(deposit)}</p>
-        <p><strong>Remaining balance:</strong> ${escapeHtml(remaining)}</p>
-      </div>
-      <p>
-        <a href="${payUrl}" style="display:inline-block;background:#4c8f85;color:#fff;text-decoration:none;border-radius:999px;padding:14px 22px;font-weight:700;">
-          Pay Remaining Balance
-        </a>
-      </p>
-      <p style="font-size:13px;color:#687674;">If you've already arranged to pay at check-in, you can ignore this message.</p>
-    </div>
-  `;
-
-  return { html, text };
-}
-
-async function sendEmail({ to, subject, html, text }) {
-  const apiKey = process.env.RESEND_API_KEY || "";
-  const from = process.env.REMINDER_FROM_EMAIL || "Shingo's Palace <info@shingospalace.com>";
-
-  if (!apiKey) {
-    throw publicApiError("Payment reminders need RESEND_API_KEY configured in Vercel.", 500, "missing_resend_api_key");
+  if (error) {
+    throw Object.assign(publicApiError("Could not reserve this reminder send.", 500, "reminder_claim_failed"), {
+      supabaseCode: error.code,
+      supabaseMessage: error.message,
+      details: error.details,
+      hint: error.hint,
+    });
   }
 
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from,
-      to,
-      subject,
-      html,
-      text,
-    }),
-  });
+  return data ? timestamp : "";
+}
 
-  const payload = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    throw publicApiError(payload.message || "Resend could not send the payment reminder.", 500, "resend_failed");
-  }
+async function releaseReminderClaim(supabase, bookingId, timestamp) {
+  if (!timestamp) return;
+  await supabase.from("bookings").update({ balance_reminder_sent_at: null }).eq("id", bookingId).eq("balance_reminder_sent_at", timestamp);
 }
 
 module.exports = async function handler(req, res) {
@@ -148,6 +78,7 @@ module.exports = async function handler(req, res) {
         `
         id,
         service,
+        status,
         dropoff_date,
         pickup_date,
         estimated_total,
@@ -178,29 +109,28 @@ module.exports = async function handler(req, res) {
     const dueBookings = (bookings || []).filter((booking) => {
       const hasDeposit = booking.payment_status === "deposit_paid" || booking.deposit_paid_amount;
       const hasBalance = amountToCents(booking.remaining_balance) > 0;
-      return hasDeposit && hasBalance && booking.owner?.email;
+      const isCancelled = ["cancelled", "canceled"].includes(String(booking.status || "").toLowerCase());
+      return hasDeposit && hasBalance && booking.owner?.email && !isCancelled && getBalanceDueDate(booking) === targetDate;
     });
 
     const sent = [];
     for (const booking of dueBookings) {
-      const email = buildEmail({ booking, origin });
-      await sendEmail({
-        to: booking.owner.email,
-        subject: "Your Shingo's Palace stay is almost here 🐾",
-        html: email.html,
-        text: email.text,
-      });
+      const claimTimestamp = await claimReminderSend(supabase, booking.id);
+      if (!claimTimestamp) continue;
 
-      const { error: updateError } = await supabase
-        .from("bookings")
-        .update({ balance_reminder_sent_at: new Date().toISOString() })
-        .eq("id", booking.id);
-
-      if (updateError) {
-        throw publicApiError("The reminder was sent, but could not be marked as sent.", 500, "reminder_mark_failed");
+      try {
+        const email = buildBalanceReminderEmail({ booking, origin });
+        await sendResendEmail({
+          to: booking.owner.email,
+          subject: email.subject,
+          html: email.html,
+          text: email.text,
+        });
+        sent.push(booking.id);
+      } catch (error) {
+        await releaseReminderClaim(supabase, booking.id, claimTimestamp);
+        throw error;
       }
-
-      sent.push(booking.id);
     }
 
     sendJson(res, 200, {
