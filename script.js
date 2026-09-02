@@ -22,8 +22,11 @@ const translations = {
     accountIntro: "Sign in with your email and password to see your pets, reservations, vaccination status, and book again faster.",
     accountPasswordLabel: "Password",
     accountNewPasswordLabel: "New password",
+    accountConfirmPasswordLabel: "Confirm password",
     accountSignInButton: "Sign In",
     accountCreateButton: "Create Account",
+    accountCreateIntro: "Create your account once and Shingo's Palace will connect it to reservations and pets saved with this email.",
+    accountBackToSignIn: "Back to Sign In",
     accountForgotPassword: "Forgot Password",
     accountMagicLinkButton: "Email me a sign-in link",
     accountFallbackSummary: "Need another sign-in option?",
@@ -33,16 +36,21 @@ const translations = {
     accountSendLink: "Send sign-in link",
     accountLinkSent: "Check your email for the secure sign-in link.",
     accountSignInSuccess: "You're signed in.",
-    accountCreated: "Account created successfully. You can sign in with your email and password.",
+    accountCreated: "Account created successfully. You're signed in.",
     accountCreatedCheckEmail: "Account created. Please confirm your email once, then sign in with your password.",
     accountResetSent: "Password reset sent. Please check your email.",
     accountPasswordUpdated: "Your password has been updated.",
     accountEmailRequired: "Please enter your email.",
     accountEmailInvalid: "Please enter a valid email address.",
+    accountFirstNameRequired: "Please enter your first name.",
+    accountLastNameRequired: "Please enter your last name.",
     accountPasswordRequired: "Please enter your password.",
     accountCreatePasswordRequired: "Please create a password.",
+    accountConfirmPasswordRequired: "Please confirm your password.",
+    accountPasswordsMismatch: "Passwords do not match.",
     accountPasswordTooShort: "Password must be at least 6 characters.",
-    accountInvalidLogin: "The email or password did not match. Please try again, create an account, or reset your password.",
+    accountInvalidLogin: "Incorrect email or password.",
+    accountNotFound: "We couldn't find an account with this email. You can create an account below.",
     accountAlreadyExists: "An account already exists for this email. Please sign in or use Forgot Password.",
     accountRateLimited: "Too many email requests were sent. Please sign in with your password, or wait a little before requesting another email.",
     accountLoading: "Loading your account...",
@@ -67,13 +75,18 @@ const translations = {
     accountAddDog: "Add Another Pet",
     accountSaveDog: "Save Pet",
     accountDogSaved: "Pet added to your account.",
+    accountDogUpdated: "Pet updated in your account.",
+    accountEditDog: "Edit Pet",
+    accountEditPetTitle: "Edit pet",
+    accountCancelPetEdit: "Cancel",
     accountEmptyTitle: "No pet profiles yet.",
-    accountEmptyText: "Add your pet below or complete your first booking request.",
+    accountEmptyText: "Add your first pet below or complete your first booking request.",
     accountNoReservations: "No reservations yet.",
     accountExistingDogLabel: "Booking for a saved pet?",
     accountNewDogOption: "New pet",
     accountExistingDogHelp: "Choose a pet from My Account to preload their saved information.",
     accountLoginUnavailable: "Customer login is unavailable right now. Please try again shortly.",
+    accountLoadFailed: "We couldn't load your account. Please try again.",
     explorePricing: "View Pricing",
     servicesTitle: "Services",
     servicesHint: "Pricing and availability",
@@ -310,23 +323,12 @@ const translations = {
     availabilityTitle: "Check Availability",
     availabilityHeading: "Check your dates first.",
     availabilityIntro: "See if we have space before completing a full reservation request.",
-    fieldNumberDogs: "Number of pets",
-    fieldDogSize: "Pet size",
-    optionSmall: "Small",
-    optionMedium: "Medium",
-    optionLarge: "Large",
+    fieldServiceDate: "Preferred date",
     availabilityEmpty: "Select your dates to check availability.",
     availabilityEmptyHelp: "Availability appears instantly once your dates are selected.",
-    availabilityAvailable: "Available",
-    availabilityLimited: "Only 1 spot left",
-    availabilityFull: "Fully booked",
-    availabilitySpots: "spots remaining",
-    availabilitySpot: "spot remaining",
     availabilityAvailableMessage: "Great news!",
-    availabilityHostMessage: "We'd love to host your pet.",
-    availabilitySuitesMessage: "We currently have {count} suites available for your selected dates.",
+    availabilityHostMessage: "We have availability for your selected dates.",
     availabilityContinueMessage: "Continue to complete your reservation.",
-    availabilityLimitedMessage: "This date is almost full. We recommend booking soon.",
     availabilityFullMessage: "Unfortunately we're fully booked for those dates.",
     joinWaitlist: "Join Waitlist",
     continueBookNow: "Book Now",
@@ -571,8 +573,11 @@ const translations = {
     accountIntro: "Ingresá con tu email y contraseña para ver tus mascotas, reservas, estado de vacunas y reservar de nuevo más rápido.",
     accountPasswordLabel: "Contraseña",
     accountNewPasswordLabel: "Nueva contraseña",
+    accountConfirmPasswordLabel: "Confirmar contraseña",
     accountSignInButton: "Ingresar",
     accountCreateButton: "Crear cuenta",
+    accountCreateIntro: "Creá tu cuenta una sola vez y Shingo's Palace la va a conectar con las reservas y mascotas guardadas con este email.",
+    accountBackToSignIn: "Volver a ingresar",
     accountForgotPassword: "Olvidé mi contraseña",
     accountMagicLinkButton: "Enviarme un link de acceso",
     accountFallbackSummary: "¿Necesitás otra opción para ingresar?",
@@ -582,16 +587,21 @@ const translations = {
     accountSendLink: "Enviar link de acceso",
     accountLinkSent: "Revisá tu email para abrir el link seguro de acceso.",
     accountSignInSuccess: "Ya ingresaste a tu cuenta.",
-    accountCreated: "Cuenta creada correctamente. Ya podés ingresar con tu email y contraseña.",
+    accountCreated: "Cuenta creada correctamente. Ya ingresaste.",
     accountCreatedCheckEmail: "Cuenta creada. Confirmá tu email una sola vez y después ingresá con tu contraseña.",
     accountResetSent: "Te enviamos el email para resetear la contraseña.",
     accountPasswordUpdated: "Tu contraseña fue actualizada.",
     accountEmailRequired: "Ingresá tu email.",
     accountEmailInvalid: "Ingresá un email válido.",
+    accountFirstNameRequired: "Ingresá tu nombre.",
+    accountLastNameRequired: "Ingresá tu apellido.",
     accountPasswordRequired: "Ingresá tu contraseña.",
     accountCreatePasswordRequired: "Creá una contraseña.",
+    accountConfirmPasswordRequired: "Confirmá tu contraseña.",
+    accountPasswordsMismatch: "Las contraseñas no coinciden.",
     accountPasswordTooShort: "La contraseña debe tener al menos 6 caracteres.",
-    accountInvalidLogin: "El email o la contraseña no coinciden. Intentá de nuevo, creá tu cuenta o reseteá la contraseña.",
+    accountInvalidLogin: "Email o contraseña incorrectos.",
+    accountNotFound: "No encontramos una cuenta con este email. Podés crear una cuenta abajo.",
     accountAlreadyExists: "Ya existe una cuenta con este email. Ingresá o usá Olvidé mi contraseña.",
     accountRateLimited: "Se enviaron demasiados emails. Ingresá con tu contraseña o esperá un poco antes de pedir otro email.",
     accountLoading: "Cargando tu cuenta...",
@@ -616,13 +626,18 @@ const translations = {
     accountAddDog: "Agregar otra mascota",
     accountSaveDog: "Guardar mascota",
     accountDogSaved: "Mascota agregada a tu cuenta.",
+    accountDogUpdated: "Mascota actualizada en tu cuenta.",
+    accountEditDog: "Editar mascota",
+    accountEditPetTitle: "Editar mascota",
+    accountCancelPetEdit: "Cancelar",
     accountEmptyTitle: "Todavía no hay perfiles de mascotas.",
-    accountEmptyText: "Agregá tu mascota abajo o completá tu primera solicitud de reserva.",
+    accountEmptyText: "Agregá tu primera mascota abajo o completá tu primera solicitud de reserva.",
     accountNoReservations: "Todavía no hay reservas.",
     accountExistingDogLabel: "¿Reservás para una mascota guardada?",
     accountNewDogOption: "Mascota nueva",
     accountExistingDogHelp: "Elegí una mascota de Mi cuenta para precargar su información guardada.",
     accountLoginUnavailable: "El acceso de clientes no está disponible ahora. Intentá de nuevo pronto.",
+    accountLoadFailed: "No pudimos cargar tu cuenta. Intentá de nuevo.",
     explorePricing: "Ver precios",
     servicesTitle: "Servicios",
     servicesHint: "Precios y disponibilidad",
@@ -859,6 +874,7 @@ const translations = {
     availabilityTitle: "Ver disponibilidad",
     availabilityHeading: "Primero revisá tus fechas.",
     availabilityIntro: "Confirmá si tenemos espacio antes de completar una solicitud de reserva.",
+    fieldServiceDate: "Fecha preferida",
     fieldNumberDogs: "Cantidad de mascotas",
     fieldDogSize: "Tamaño de la mascota",
     optionSmall: "Pequeño",
@@ -866,16 +882,9 @@ const translations = {
     optionLarge: "Grande",
     availabilityEmpty: "Seleccioná tus fechas para ver disponibilidad.",
     availabilityEmptyHelp: "La disponibilidad aparece al instante cuando elegís las fechas.",
-    availabilityAvailable: "Disponible",
-    availabilityLimited: "Queda solo 1 lugar",
-    availabilityFull: "Completo",
-    availabilitySpots: "lugares disponibles",
-    availabilitySpot: "lugar disponible",
     availabilityAvailableMessage: "¡Buenas noticias!",
-    availabilityHostMessage: "Nos encantaría recibir a tu mascota.",
-    availabilitySuitesMessage: "Actualmente tenemos {count} suites disponibles para las fechas seleccionadas.",
+    availabilityHostMessage: "Tenemos disponibilidad para las fechas seleccionadas.",
     availabilityContinueMessage: "Continuá para completar tu reserva.",
-    availabilityLimitedMessage: "Esta fecha está casi completa. Recomendamos reservar pronto.",
     availabilityFullMessage: "Lamentablemente estamos completos para esas fechas.",
     joinWaitlist: "Unirme a lista de espera",
     continueBookNow: "Reservar ahora",
@@ -1516,9 +1525,11 @@ const bookingPrev = document.querySelector("#bookingPrev");
 const bookingNext = document.querySelector("#bookingNext");
 const availabilityForm = document.querySelector("#availabilityForm");
 const availabilityService = document.querySelector("#availabilityService");
+const availabilityDropoffField = document.querySelector("#availabilityDropoffField");
+const availabilityDropoffLabel = document.querySelector("#availabilityDropoffLabel");
 const availabilityDropoffDate = document.querySelector("#availabilityDropoffDate");
+const availabilityPickupField = document.querySelector("#availabilityPickupField");
 const availabilityPickupDate = document.querySelector("#availabilityPickupDate");
-const availabilityDogs = document.querySelector("#availabilityDogs");
 const availabilityResult = document.querySelector("#availabilityResult");
 const availabilityStatus = document.querySelector("#availabilityStatus");
 const availabilityMessage = document.querySelector("#availabilityMessage");
@@ -1560,10 +1571,19 @@ const accountEmail = document.querySelector("#accountEmail");
 const accountPassword = document.querySelector("#accountPassword");
 const accountSignInButton = document.querySelector("#accountSignInButton");
 const accountCreateButton = document.querySelector("#accountCreateButton");
+const accountRegistrationForm = document.querySelector("#accountRegistrationForm");
+const accountFirstName = document.querySelector("#accountFirstName");
+const accountLastName = document.querySelector("#accountLastName");
+const accountRegisterEmail = document.querySelector("#accountRegisterEmail");
+const accountRegisterPassword = document.querySelector("#accountRegisterPassword");
+const accountConfirmPassword = document.querySelector("#accountConfirmPassword");
+const accountBackToSignIn = document.querySelector("#accountBackToSignIn");
 const accountForgotPassword = document.querySelector("#accountForgotPassword");
 const accountMagicLinkButton = document.querySelector("#accountMagicLinkButton");
 const accountResetForm = document.querySelector("#accountResetForm");
 const accountNewPassword = document.querySelector("#accountNewPassword");
+const accountResetConfirmPassword = document.querySelector("#accountResetConfirmPassword");
+const accountResetBackToSignIn = document.querySelector("#accountResetBackToSignIn");
 const accountLoginStatus = document.querySelector("#accountLoginStatus");
 const accountSignOut = document.querySelector("#accountSignOut");
 const accountWelcome = document.querySelector("#accountWelcome");
@@ -1574,6 +1594,8 @@ const accountPastReservations = document.querySelector("#accountPastReservations
 const accountAddDogToggle = document.querySelector("#accountAddDogToggle");
 const accountAddDogForm = document.querySelector("#accountAddDogForm");
 const accountAddDogStatus = document.querySelector("#accountAddDogStatus");
+const accountEditDogId = document.querySelector("#accountEditDogId");
+const accountCancelDogEdit = document.querySelector("#accountCancelDogEdit");
 const accountDogPicker = document.querySelector("#accountDogPicker");
 const accountDogSelect = document.querySelector("#accountDogSelect");
 const accountOwnerIdField = document.querySelector("#accountOwnerId");
@@ -1653,8 +1675,11 @@ window.openSiteModal = (modalId) => {
   });
 
   if (modalId === "accountModal") {
+    if (!customerSession && !isRecoveryLinkActive()) {
+      showAccountAuthMode("login");
+    }
     loadCustomerAccount().catch((error) => {
-      if (accountLoginStatus) accountLoginStatus.textContent = error.message || t("accountLoginUnavailable");
+      if (accountLoginStatus) accountLoginStatus.textContent = error.message || t("accountLoadFailed");
     });
   }
 
@@ -1718,6 +1743,10 @@ window.closeSiteModal = (button) => {
 
   if (modal.id === "bookingModal") {
     resetBookingExperience();
+  }
+
+  if (modal.id === "accountModal" && !customerSession) {
+    showAccountAuthMode("login");
   }
 };
 
@@ -2580,7 +2609,14 @@ async function getCustomerSupabaseClient() {
     throw new Error(t("accountLoginUnavailable"));
   }
 
-  customerSupabase = window.supabase.createClient(payload.supabaseUrl, payload.supabasePublishableKey);
+  customerSupabase = window.supabase.createClient(payload.supabaseUrl, payload.supabasePublishableKey, {
+    auth: {
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: true,
+      storageKey: "shingos-palace-customer-auth",
+    },
+  });
   return customerSupabase;
 }
 
@@ -2609,6 +2645,22 @@ async function customerApiFetch(endpoint, options = {}) {
 function updateAccountNav() {
   if (!accountNavButton) return;
   accountNavButton.textContent = customerSession ? t("accountMyAccountNav") : t("accountSignInNav");
+}
+
+function isRecoveryLinkActive() {
+  const hash = window.location.hash.startsWith("#") ? window.location.hash.slice(1) : window.location.hash;
+  const hashParams = new URLSearchParams(hash);
+  return hashParams.get("type") === "recovery";
+}
+
+function applyRecoveryMode(email = "") {
+  window.openSiteModal("accountModal");
+  if (accountSignedOut) accountSignedOut.hidden = false;
+  if (accountDashboard) accountDashboard.hidden = true;
+  showAccountAuthMode("reset");
+  if (accountEmail && email) accountEmail.value = email.trim().toLowerCase();
+  setAccountStatus("", "");
+  accountNewPassword?.focus();
 }
 
 function accountDogById(dogId) {
@@ -2667,7 +2719,7 @@ function bookingCardMarkup(booking, dogName, options = {}) {
         ? `<small class="account-review-status">${reviewStatusLabel(booking.review)}</small>`
         : "";
 
-  const petTitle = booking.bookingPetSummary || dogName;
+  const petTitle = booking.petNamesDisplay || booking.bookingPetSummary || dogName;
 
   return `
     <article class="account-reservation-card">
@@ -2681,6 +2733,39 @@ function bookingCardMarkup(booking, dogName, options = {}) {
       </div>
     </article>
   `;
+}
+
+function resetAccountPetForm() {
+  if (!accountAddDogForm) return;
+  accountAddDogForm.reset();
+  if (accountEditDogId) accountEditDogId.value = "";
+  if (accountCancelDogEdit) accountCancelDogEdit.hidden = true;
+  if (accountAddDogToggle) accountAddDogToggle.textContent = t("accountAddDog");
+  if (accountAddDogStatus) accountAddDogStatus.textContent = "";
+  updateBreedDatalists();
+  updateBreedOtherField(accountAddDogForm);
+}
+
+function startAccountPetEdit(dogId) {
+  const dog = accountDogById(dogId);
+  if (!dog || !accountAddDogForm) return;
+
+  accountAddDogForm.hidden = false;
+  if (accountEditDogId) accountEditDogId.value = dog.id || "";
+  if (accountCancelDogEdit) accountCancelDogEdit.hidden = false;
+  if (accountAddDogToggle) accountAddDogToggle.textContent = t("accountEditPetTitle");
+
+  accountAddDogForm.elements.name.value = dog.name || "";
+  accountAddDogForm.elements.petType.value = dog.petType || "dog";
+  accountAddDogForm.elements.breed.value = dog.breed || "";
+  if (accountAddDogForm.elements.breedOther) accountAddDogForm.elements.breedOther.value = "";
+  accountAddDogForm.elements.spayedNeutered.value = dog.spayedNeutered || "";
+  accountAddDogForm.elements.rabiesVaccinationUpToDate.value = dog.rabiesVaccinationUpToDate || "";
+  accountAddDogForm.elements.size.value = dog.size || "";
+
+  updateBreedDatalists();
+  updateBreedOtherField(accountAddDogForm);
+  accountAddDogForm.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function renderCustomerAccount() {
@@ -2715,7 +2800,10 @@ function renderCustomerAccount() {
               <strong class="${dog.records?.length ? "is-submitted" : "is-pending"}">${recordsLabel}</strong>
             </div>
             ${recordLinks ? `<div class="account-record-links">${recordLinks}</div>` : ""}
-            <button class="ghost-button account-book-again" type="button" data-dog-id="${dog.id}">${t("accountBookAgain")}</button>
+            <div class="account-reservation-actions">
+              <button class="ghost-button account-edit-dog" type="button" data-dog-id="${dog.id}">${t("accountEditDog")}</button>
+              <button class="ghost-button account-book-again" type="button" data-dog-id="${dog.id}">${t("accountBookAgain")}</button>
+            </div>
           </article>
         `;
       })
@@ -2816,6 +2904,10 @@ function normalizedAccountEmail() {
   return accountEmail?.value.trim().toLowerCase() || "";
 }
 
+function normalizedInputEmail(input) {
+  return input?.value.trim().toLowerCase() || "";
+}
+
 function accountPasswordValue(field = accountPassword) {
   return field?.value || "";
 }
@@ -2835,33 +2927,50 @@ function friendlyAuthError(error) {
   if (message.includes("invalid login") || message.includes("invalid credentials")) {
     return t("accountInvalidLogin");
   }
+  if (message.includes("not found") || message.includes("user not found")) {
+    return t("accountNotFound");
+  }
   if (message.includes("already") || message.includes("registered") || message.includes("exists")) {
     return t("accountAlreadyExists");
   }
   if (message.includes("password")) {
-    return error.message;
+    return t("accountInvalidLogin");
   }
-  return error?.message || t("accountLoginUnavailable");
+  return t("accountLoginUnavailable");
+}
+
+function showAccountAuthMode(mode = "login") {
+  if (accountLoginForm) accountLoginForm.hidden = mode !== "login";
+  if (accountRegistrationForm) accountRegistrationForm.hidden = mode !== "register";
+  if (accountResetForm) accountResetForm.hidden = mode !== "reset";
+  setAccountStatus("", "");
+}
+
+function setAccountButtonLoading(button, isLoading, labelKey) {
+  if (!button) return;
+  button.disabled = Boolean(isLoading);
+  button.textContent = isLoading ? t("accountLoading") : t(labelKey);
 }
 
 function validateAccountCredentials({
   requireEmail = true,
   requirePassword = true,
   passwordField = accountPassword,
+  emailField = accountEmail,
   passwordRequiredMessage = t("accountPasswordRequired"),
 } = {}) {
-  const email = normalizedAccountEmail();
+  const email = normalizedInputEmail(emailField);
   const password = accountPasswordValue(passwordField);
 
   if (requireEmail && !email) {
     setAccountStatus(t("accountEmailRequired"), "error");
-    accountEmail?.focus();
+    emailField?.focus();
     return null;
   }
 
-  if (requireEmail && accountEmail && !accountEmail.checkValidity()) {
+  if (requireEmail && emailField && !emailField.checkValidity()) {
     setAccountStatus(t("accountEmailInvalid"), "error");
-    accountEmail.focus();
+    emailField.focus();
     return null;
   }
 
@@ -2878,6 +2987,41 @@ function validateAccountCredentials({
   }
 
   return { email, password };
+}
+
+function validateAccountRegistration() {
+  const firstName = accountFirstName?.value.trim() || "";
+  const lastName = accountLastName?.value.trim() || "";
+  const credentials = validateAccountCredentials({
+    emailField: accountRegisterEmail,
+    passwordField: accountRegisterPassword,
+    passwordRequiredMessage: t("accountCreatePasswordRequired"),
+  });
+  if (!credentials) return null;
+
+  const confirmPassword = accountPasswordValue(accountConfirmPassword);
+  if (!confirmPassword) {
+    setAccountStatus(t("accountConfirmPasswordRequired"), "error");
+    accountConfirmPassword?.focus();
+    return null;
+  }
+  if (credentials.password !== confirmPassword) {
+    setAccountStatus(t("accountPasswordsMismatch"), "error");
+    accountConfirmPassword?.focus();
+    return null;
+  }
+  if (!firstName) {
+    setAccountStatus(t("accountFirstNameRequired"), "error");
+    accountFirstName?.focus();
+    return null;
+  }
+  if (!lastName) {
+    setAccountStatus(t("accountLastNameRequired"), "error");
+    accountLastName?.focus();
+    return null;
+  }
+
+  return { ...credentials, firstName, lastName };
 }
 
 function setFormField(form, name, value) {
@@ -2926,14 +3070,21 @@ async function loadCustomerAccount() {
   }
 
   if (accountLoginStatus) accountLoginStatus.textContent = t("accountLoading");
-  const payload = await customerApiFetch(ACCOUNT_ENDPOINT);
-  customerAccount = {
-    owner: payload.owner || null,
-    dogs: payload.dogs || [],
-  };
-  if (accountLoginStatus) accountLoginStatus.textContent = "";
-  renderCustomerAccount();
-  preloadAccountOwner();
+  try {
+    const payload = await customerApiFetch(ACCOUNT_ENDPOINT);
+    customerAccount = {
+      owner: payload.owner || null,
+      dogs: payload.dogs || [],
+    };
+    renderCustomerAccount();
+    preloadAccountOwner();
+  } catch (error) {
+    customerAccount = { owner: null, dogs: [] };
+    renderCustomerAccount();
+    throw error;
+  } finally {
+    if (accountLoginStatus) accountLoginStatus.textContent = "";
+  }
 }
 
 async function initializeCustomerAuth() {
@@ -2942,25 +3093,24 @@ async function initializeCustomerAuth() {
     const { data } = await client.auth.getSession();
     customerSession = data?.session || null;
     updateAccountNav();
+    if (isRecoveryLinkActive()) {
+      applyRecoveryMode(customerSession?.user?.email || "");
+    } else {
+      showAccountAuthMode("login");
+    }
     await loadCustomerAccount();
 
     client.auth.onAuthStateChange(async (event, session) => {
       customerSession = session || null;
       updateAccountNav();
       if (event === "PASSWORD_RECOVERY") {
-        window.openSiteModal("accountModal");
-        if (accountSignedOut) accountSignedOut.hidden = false;
-        if (accountDashboard) accountDashboard.hidden = true;
-        if (accountResetForm) accountResetForm.hidden = false;
-        if (accountEmail && session?.user?.email) accountEmail.value = session.user.email;
-        setAccountStatus("", "");
-        accountNewPassword?.focus();
+        applyRecoveryMode(session?.user?.email || "");
         return;
       }
       try {
         await loadCustomerAccount();
       } catch (error) {
-        if (accountLoginStatus) accountLoginStatus.textContent = error.message || t("accountLoginUnavailable");
+        if (accountLoginStatus) accountLoginStatus.textContent = error.message || t("accountLoadFailed");
       }
     });
   } catch (error) {
@@ -2971,6 +3121,10 @@ async function initializeCustomerAuth() {
 
 function openAccountFromUrlRequest() {
   const params = new URLSearchParams(window.location.search);
+  if (isRecoveryLinkActive()) {
+    applyRecoveryMode();
+    return;
+  }
   if (params.get("account") !== "1") return;
 
   const email = params.get("email") || "";
@@ -3190,18 +3344,13 @@ function getAccountBookingHeaders() {
   return { Authorization: `Bearer ${customerSession.access_token}` };
 }
 
-function availabilityLabel(remaining) {
-  if (remaining === 1) {
-    return `${t("availabilityLimited")} · 1 ${t("availabilitySpot")}`;
-  }
-
-  return `${t("availabilityAvailable")} · ${remaining} ${t("availabilitySpots")}`;
-}
-
 function updateAvailability() {
   if (!availabilityResult || !availabilityStatus || !availabilityMessage) return;
 
-  const hasDates = Boolean(availabilityDropoffDate?.value && availabilityPickupDate?.value);
+  const serviceKey = availabilityService?.value || "boarding";
+  const singleDateService = ["walking", "grooming"].includes(serviceKey);
+  const effectivePickupDate = singleDateService ? availabilityDropoffDate?.value : availabilityPickupDate?.value;
+  const hasDates = Boolean(availabilityDropoffDate?.value && effectivePickupDate);
   availabilityResult.classList.remove("is-available", "is-limited", "is-full");
 
   if (!hasDates) {
@@ -3211,11 +3360,9 @@ function updateAvailability() {
     return;
   }
 
-  const serviceKey = availabilityService?.value || "boarding";
-  const requestedDogs = Math.max(1, Number(availabilityDogs?.value) || 1);
   const capacity = availabilityCapacity[serviceKey] ?? availabilityCapacity.boarding;
   const occupied = occupiedSpots[serviceKey] ?? 0;
-  const remaining = Math.max(0, capacity - occupied - requestedDogs);
+  const remaining = Math.max(0, capacity - occupied - 1);
 
   if (remaining <= 0) {
     availabilityResult.classList.add("is-full");
@@ -3231,12 +3378,24 @@ function updateAvailability() {
   availabilityStatus.textContent = `✅ ${t("availabilityAvailableMessage")}`;
   availabilityMessage.textContent = [
     t("availabilityHostMessage"),
-    t("availabilitySuitesMessage").replace("{count}", remaining),
-    remaining === 1 ? t("availabilityLimitedMessage") : t("availabilityContinueMessage"),
+    t("availabilityContinueMessage"),
   ].join(" ");
   if (availabilityActions) availabilityActions.hidden = false;
   if (availabilityBookButton) availabilityBookButton.hidden = false;
   if (waitlistButton) waitlistButton.hidden = true;
+}
+
+function updateAvailabilityFields() {
+  if (!availabilityDropoffField || !availabilityPickupField || !availabilityDropoffLabel || !availabilityPickupDate) return;
+  const serviceKey = availabilityService?.value || "boarding";
+  const singleDateService = ["walking", "grooming"].includes(serviceKey);
+
+  availabilityDropoffLabel.textContent = singleDateService ? t("fieldServiceDate") : t("fieldDropoffDate");
+  availabilityPickupField.hidden = singleDateService;
+  availabilityPickupDate.required = !singleDateService;
+  if (singleDateService) {
+    availabilityPickupDate.value = availabilityDropoffDate?.value || "";
+  }
 }
 
 function updateSummary() {
@@ -3342,7 +3501,6 @@ modalButtons.forEach((button) => {
         service: availabilityService?.value || bookingSelection.service,
         dropoffDate: availabilityDropoffDate?.value || bookingSelection.dropoffDate,
         pickupDate: availabilityPickupDate?.value || bookingSelection.pickupDate,
-        numberOfDogs: availabilityDogs?.value || bookingSelection.numberOfDogs,
       });
     }
     window.openSiteModal(button.dataset.modal);
@@ -3360,6 +3518,7 @@ accountLoginForm?.addEventListener("submit", async (event) => {
   const credentials = validateAccountCredentials();
   if (!credentials) return;
   setAccountStatus(t("accountLoading"));
+  setAccountButtonLoading(accountSignInButton, true, "accountSignInButton");
 
   try {
     const client = await getCustomerSupabaseClient();
@@ -3374,20 +3533,41 @@ accountLoginForm?.addEventListener("submit", async (event) => {
     setAccountStatus(t("accountSignInSuccess"), "success");
   } catch (error) {
     setAccountStatus(friendlyAuthError(error), "error");
+  } finally {
+    setAccountButtonLoading(accountSignInButton, false, "accountSignInButton");
   }
 });
 
-accountCreateButton?.addEventListener("click", async () => {
-  const credentials = validateAccountCredentials({ passwordRequiredMessage: t("accountCreatePasswordRequired") });
-  if (!credentials) return;
+accountCreateButton?.addEventListener("click", () => {
+  showAccountAuthMode("register");
+  if (accountRegisterEmail && accountEmail?.value) accountRegisterEmail.value = accountEmail.value.trim().toLowerCase();
+  if (accountFirstName) accountFirstName.focus();
+});
+
+accountBackToSignIn?.addEventListener("click", () => {
+  showAccountAuthMode("login");
+  if (accountRegisterEmail?.value && accountEmail) accountEmail.value = accountRegisterEmail.value.trim().toLowerCase();
+  accountEmail?.focus();
+});
+
+accountRegistrationForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const registration = validateAccountRegistration();
+  if (!registration) return;
   setAccountStatus(t("accountLoading"));
+  setAccountButtonLoading(document.querySelector("#accountRegisterSubmit"), true, "accountCreateButton");
 
   try {
     const client = await getCustomerSupabaseClient();
     const { data, error } = await client.auth.signUp({
-      email: credentials.email,
-      password: credentials.password,
+      email: registration.email,
+      password: registration.password,
       options: {
+        data: {
+          first_name: registration.firstName,
+          last_name: registration.lastName,
+          full_name: `${registration.firstName} ${registration.lastName}`.trim(),
+        },
         emailRedirectTo: accountRedirectUrl(),
       },
     });
@@ -3398,10 +3578,18 @@ accountCreateButton?.addEventListener("click", async () => {
       return;
     }
     customerSession = data?.session || customerSession;
-    if (customerSession) await loadCustomerAccount();
-    setAccountStatus(data?.session ? t("accountCreated") : t("accountCreatedCheckEmail"), "success");
+    if (accountEmail) accountEmail.value = registration.email;
+    if (customerSession) {
+      await loadCustomerAccount();
+      setAccountStatus(t("accountCreated"), "success");
+      return;
+    }
+    showAccountAuthMode("login");
+    setAccountStatus(t("accountCreatedCheckEmail"), "success");
   } catch (error) {
     setAccountStatus(friendlyAuthError(error), "error");
+  } finally {
+    setAccountButtonLoading(document.querySelector("#accountRegisterSubmit"), false, "accountCreateButton");
   }
 });
 
@@ -3446,21 +3634,50 @@ accountMagicLinkButton?.addEventListener("click", async () => {
 
 accountResetForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
-  const credentials = validateAccountCredentials({ requireEmail: false, passwordField: accountNewPassword });
-  if (!credentials) return;
+  const password = accountPasswordValue(accountNewPassword);
+  const confirmPassword = accountPasswordValue(accountResetConfirmPassword);
+  if (!password) {
+    setAccountStatus(t("accountCreatePasswordRequired"), "error");
+    accountNewPassword?.focus();
+    return;
+  }
+  if (password.length < 6) {
+    setAccountStatus(t("accountPasswordTooShort"), "error");
+    accountNewPassword?.focus();
+    return;
+  }
+  if (!confirmPassword) {
+    setAccountStatus(t("accountConfirmPasswordRequired"), "error");
+    accountResetConfirmPassword?.focus();
+    return;
+  }
+  if (password !== confirmPassword) {
+    setAccountStatus(t("accountPasswordsMismatch"), "error");
+    accountResetConfirmPassword?.focus();
+    return;
+  }
   setAccountStatus(t("accountLoading"));
 
   try {
     const client = await getCustomerSupabaseClient();
-    const { error } = await client.auth.updateUser({ password: credentials.password });
+    const { error } = await client.auth.updateUser({ password });
     if (error) throw error;
-    if (accountResetForm) accountResetForm.hidden = true;
+    showAccountAuthMode("login");
     if (accountNewPassword) accountNewPassword.value = "";
+    if (accountResetConfirmPassword) accountResetConfirmPassword.value = "";
+    if (window.location.hash) {
+      window.history.replaceState({}, document.title, `${window.location.pathname}${window.location.search}`);
+    }
     await loadCustomerAccount();
     setAccountStatus(t("accountPasswordUpdated"), "success");
   } catch (error) {
     setAccountStatus(friendlyAuthError(error), "error");
   }
+});
+
+accountResetBackToSignIn?.addEventListener("click", () => {
+  showAccountAuthMode("login");
+  accountEmail?.focus();
 });
 
 accountSignOut?.addEventListener("click", async () => {
@@ -3473,12 +3690,19 @@ accountSignOut?.addEventListener("click", async () => {
     clearAccountDogSelection();
     updateAccountNav();
     renderCustomerAccount();
+    showAccountAuthMode("login");
   }
 });
 
 accountAddDogToggle?.addEventListener("click", () => {
   if (!accountAddDogForm) return;
+  if (accountAddDogForm.hidden) resetAccountPetForm();
   accountAddDogForm.hidden = !accountAddDogForm.hidden;
+});
+
+accountCancelDogEdit?.addEventListener("click", () => {
+  resetAccountPetForm();
+  if (accountAddDogForm) accountAddDogForm.hidden = true;
 });
 
 accountAddDogForm?.elements?.petType?.addEventListener("change", () => {
@@ -3514,17 +3738,16 @@ accountAddDogForm?.addEventListener("submit", async (event) => {
   const breedValue = finalBreedValue(accountAddDogForm);
   if (breedValue) formData.set("breed", breedValue);
   const body = Object.fromEntries(formData.entries());
+  const isEditing = Boolean(body.dogId);
 
   try {
     await customerApiFetch(ACCOUNT_DOGS_ENDPOINT, {
-      method: "POST",
+      method: isEditing ? "PUT" : "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
-    if (accountAddDogStatus) accountAddDogStatus.textContent = t("accountDogSaved");
-    accountAddDogForm.reset();
-    updateBreedDatalists();
-    updateBreedOtherField(accountAddDogForm);
+    if (accountAddDogStatus) accountAddDogStatus.textContent = t(isEditing ? "accountDogUpdated" : "accountDogSaved");
+    resetAccountPetForm();
     accountAddDogForm.hidden = true;
     await loadCustomerAccount();
   } catch (error) {
@@ -3533,6 +3756,11 @@ accountAddDogForm?.addEventListener("submit", async (event) => {
 });
 
 accountDogs?.addEventListener("click", (event) => {
+  const editButton = event.target.closest(".account-edit-dog");
+  if (editButton) {
+    startAccountPetEdit(editButton.dataset.dogId);
+    return;
+  }
   const button = event.target.closest(".account-book-again");
   if (!button) return;
   const dog = accountDogById(button.dataset.dogId);
@@ -3699,10 +3927,15 @@ mobileSummaryToggle?.addEventListener("click", () => {
 availabilityService?.addEventListener("change", updateAvailability);
 availabilityDropoffDate?.addEventListener("change", updateAvailability);
 availabilityPickupDate?.addEventListener("change", updateAvailability);
-availabilityDogs?.addEventListener("input", updateAvailability);
 availabilityForm?.addEventListener("submit", (event) => {
   event.preventDefault();
   updateAvailability();
+});
+availabilityService?.addEventListener("change", updateAvailabilityFields);
+availabilityDropoffDate?.addEventListener("change", () => {
+  if ((availabilityService?.value === "walking" || availabilityService?.value === "grooming") && availabilityPickupDate) {
+    availabilityPickupDate.value = availabilityDropoffDate?.value || "";
+  }
 });
 waitlistButton?.addEventListener("click", () => {
   if (availabilityStatusLine) availabilityStatusLine.textContent = t("waitlistSuccess");
@@ -3840,6 +4073,7 @@ updateBreedOtherField(bookingForm);
 updateBreedOtherField(accountAddDogForm);
 updatePaymentMethodDisplay();
 updateServiceSpecificFields();
+updateAvailabilityFields();
 applyLanguage();
 loadApprovedReviews();
 initializeCustomerAuth();

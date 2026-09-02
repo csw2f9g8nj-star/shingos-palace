@@ -476,11 +476,12 @@ async function handler(req, res) {
 
       const { error: bookingPetsError } = await supabase.from("booking_pets").insert(bookingPetRows);
       if (bookingPetsError) {
-        throw publicApiError(
-          "We saved the reservation, but could not link every pet to it. Please run the multi-pet booking migration in Supabase.",
-          500,
-          "booking_pets_insert_failed",
-        );
+        const error = publicApiError("We could not finish saving this reservation. Please try again in a moment.", 500, "booking_pets_insert_failed");
+        error.details = bookingPetsError.details;
+        error.hint = bookingPetsError.hint;
+        error.supabaseCode = bookingPetsError.code;
+        error.supabaseMessage = bookingPetsError.message;
+        throw error;
       }
 
       const uploadedRecords = [];

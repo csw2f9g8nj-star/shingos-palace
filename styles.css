@@ -2541,10 +2541,19 @@ body.modal-open {
 }
 
 .account-login-form,
+.account-registration-form,
 .account-reset-form,
 .account-add-dog-form {
   display: grid;
   gap: 14px;
+}
+
+#accountCancelDogEdit.full {
+  width: 100%;
+}
+
+.account-registration-form[hidden] {
+  display: none;
 }
 
 .account-auth-actions {
@@ -2617,6 +2626,24 @@ body.modal-open {
 
 .status-line[data-tone="error"] {
   color: #9f3f32;
+}
+
+#accountSignInButton,
+#accountRegisterSubmit,
+#accountResetForm .submit-button {
+  color: #fffaf1;
+  background: var(--charcoal);
+  border: 1px solid rgba(39, 50, 47, 0.2);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+#accountSignInButton:hover,
+#accountRegisterSubmit:hover,
+#accountResetForm .submit-button:hover {
+  background: #1f2a28;
 }
 
 .account-dashboard {

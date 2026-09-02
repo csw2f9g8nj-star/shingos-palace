@@ -716,27 +716,15 @@
                 </select>
               </label>
               <div class="booking-fields stay-grid wide-field">
-                <label>
-                  <span data-i18n="fieldDropoffDate">Drop-off date</span>
+                <label id="availabilityDropoffField">
+                  <span id="availabilityDropoffLabel" data-i18n="fieldDropoffDate">Drop-off date</span>
                   <input name="dropoffDate" id="availabilityDropoffDate" type="date" required />
                 </label>
-                <label>
+                <label id="availabilityPickupField">
                   <span data-i18n="fieldPickupDate">Pick-up date</span>
                   <input name="pickupDate" id="availabilityPickupDate" type="date" required />
                 </label>
               </div>
-              <label>
-                <span data-i18n="fieldNumberDogs">Number of pets</span>
-                <input name="numberOfDogs" id="availabilityDogs" type="number" min="1" max="10" value="1" required />
-              </label>
-              <label>
-                <span data-i18n="fieldDogSize">Pet size</span>
-                <select name="dogSize" id="availabilitySize" required>
-                  <option value="small" data-i18n="optionSmall">Small</option>
-                  <option value="medium" data-i18n="optionMedium">Medium</option>
-                  <option value="large" data-i18n="optionLarge">Large</option>
-                </select>
-              </label>
             </div>
           </section>
 
@@ -1314,13 +1302,47 @@
             </details>
             <p class="status-line" id="accountLoginStatus"></p>
           </form>
+          <form class="account-registration-form" id="accountRegistrationForm" hidden>
+            <p class="flow-intro" data-i18n="accountCreateIntro">
+              Create your account once and Shingo's Palace will connect it to reservations and pets saved with this email.
+            </p>
+            <div class="booking-fields two-column-fields">
+              <label>
+                <span data-i18n="fieldFirstName">First Name</span>
+                <input id="accountFirstName" type="text" autocomplete="given-name" required />
+              </label>
+              <label>
+                <span data-i18n="fieldLastName">Last Name</span>
+                <input id="accountLastName" type="text" autocomplete="family-name" required />
+              </label>
+            </div>
+            <label>
+              <span data-i18n="fieldEmail">Email</span>
+              <input id="accountRegisterEmail" type="email" autocomplete="email" required />
+            </label>
+            <label>
+              <span data-i18n="accountPasswordLabel">Password</span>
+              <input id="accountRegisterPassword" type="password" autocomplete="new-password" minlength="6" required />
+            </label>
+            <label>
+              <span data-i18n="accountConfirmPasswordLabel">Confirm password</span>
+              <input id="accountConfirmPassword" type="password" autocomplete="new-password" minlength="6" required />
+            </label>
+            <button class="submit-button" id="accountRegisterSubmit" type="submit" data-i18n="accountCreateButton">Create Account</button>
+            <button class="text-button" id="accountBackToSignIn" type="button" data-i18n="accountBackToSignIn">Back to Sign In</button>
+          </form>
           <form class="account-reset-form" id="accountResetForm" hidden>
             <p class="flow-intro" data-i18n="accountResetIntro">Enter a new password for your Shingo's Palace account.</p>
             <label>
               <span data-i18n="accountNewPasswordLabel">New password</span>
               <input id="accountNewPassword" type="password" autocomplete="new-password" minlength="6" />
             </label>
+            <label>
+              <span data-i18n="accountConfirmPasswordLabel">Confirm password</span>
+              <input id="accountResetConfirmPassword" type="password" autocomplete="new-password" minlength="6" />
+            </label>
             <button class="submit-button" type="submit" data-i18n="accountSavePassword">Save Password</button>
+            <button class="text-button" id="accountResetBackToSignIn" type="button" data-i18n="accountBackToSignIn">Back to Sign In</button>
           </form>
         </section>
 
@@ -1347,6 +1369,7 @@
           </div>
 
           <form class="account-add-dog-form" id="accountAddDogForm" hidden>
+            <input type="hidden" name="dogId" id="accountEditDogId" value="" />
             <div class="booking-fields">
               <label>
                 <span data-i18n="fieldPet">Pet's Name</span>
@@ -1395,6 +1418,7 @@
               </label>
             </div>
             <button class="submit-button full" type="submit" data-i18n="accountSaveDog">Save Pet</button>
+            <button class="text-button full" id="accountCancelDogEdit" type="button" data-i18n="accountCancelPetEdit" hidden>Cancel</button>
             <p class="status-line" id="accountAddDogStatus"></p>
           </form>
 
