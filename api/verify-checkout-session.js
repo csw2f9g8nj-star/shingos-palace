@@ -202,13 +202,22 @@ module.exports = async function handler(req, res) {
     const petName = petData.namesDisplay;
 
     if (booking.owner?.email) {
-      await sendPaymentEmailIfNeeded({
-        supabase,
-        booking,
-        paymentType,
-        amountPaid,
-        origin,
-      });
+      try {
+        await sendPaymentEmailIfNeeded({
+          supabase,
+          booking,
+          paymentType,
+          amountPaid,
+          origin,
+        });
+      } catch (emailError) {
+        console.error("Payment confirmation email failed after successful Stripe payment.", {
+          bookingId: booking.id,
+          paymentType,
+          ownerEmail: booking.owner?.email || "",
+          error: emailError?.message || emailError,
+        });
+      }
     }
 
     sendJson(res, 200, {

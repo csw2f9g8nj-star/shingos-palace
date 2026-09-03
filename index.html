@@ -836,20 +836,28 @@
                   <p data-i18n="bookingStepContactHelp">Tell us who is booking and how to reach you.</p>
                 </div>
               </div>
-              <div class="booking-fields">
-                <label>
+              <div class="booking-owner-summary wide-field" id="bookingOwnerSummary" hidden>
+                <div>
+                  <span class="booking-owner-summary-label" data-i18n="bookingAsLabel">Booking as</span>
+                  <strong id="bookingOwnerSummaryName">Guest</strong>
+                  <p id="bookingOwnerSummaryDetails"></p>
+                </div>
+                <button class="text-button" id="bookingOwnerEditButton" type="button" data-i18n="bookingOwnerEdit">Edit contact information</button>
+              </div>
+              <div class="booking-fields" id="bookingOwnerFields">
+                <label data-owner-field-wrap="firstName">
                   <span data-i18n="fieldFirstName">First Name</span>
                   <input name="firstName" type="text" autocomplete="given-name" required />
                 </label>
-                <label>
+                <label data-owner-field-wrap="lastName">
                   <span data-i18n="fieldLastName">Last Name</span>
                   <input name="lastName" type="text" autocomplete="family-name" required />
                 </label>
-                <label>
+                <label data-owner-field-wrap="email">
                   <span data-i18n="fieldEmail">Email</span>
                   <input name="email" type="email" autocomplete="email" required />
                 </label>
-                <label>
+                <label data-owner-field-wrap="phone">
                   <span data-i18n="fieldPhone">Phone Number</span>
                   <input name="phone" type="tel" autocomplete="tel" required />
                 </label>
@@ -866,10 +874,14 @@
               </div>
               <div class="booking-fields">
                 <div class="account-dog-picker wide-field" id="accountDogPicker" hidden>
-                  <label>
-                    <span data-i18n="accountExistingDogLabel">Booking for saved pets?</span>
-                    <small data-i18n="accountExistingDogHelp">Choose saved pets inside each pet card to preload their information.</small>
-                  </label>
+                  <div class="account-dog-picker-head">
+                    <div>
+                      <span data-i18n="accountExistingDogLabel">Who's coming?</span>
+                      <small data-i18n="accountExistingDogHelp">Select saved pets or add a new pet for this reservation.</small>
+                    </div>
+                    <button class="ghost-button" id="bookingAddPetButton" type="button" data-i18n="accountAddNewPetBooking">+ Add a New Pet</button>
+                  </div>
+                  <div class="booking-saved-pets-grid" id="bookingSavedPetsGrid"></div>
                 </div>
                 <label class="wide-field pet-count-field">
                   <span data-i18n="fieldNumberPets">Number of Pets</span>
@@ -1352,7 +1364,10 @@
               <strong id="accountWelcome">Welcome back.</strong>
               <p data-i18n="accountPrivateNote">Only your own pets, reservations, and vaccination records are shown here.</p>
             </div>
-            <button class="ghost-button" id="accountSignOut" type="button" data-i18n="accountSignOut">Sign Out</button>
+            <div class="account-dashboard-actions">
+              <button class="submit-button" id="accountStartBooking" type="button" data-i18n="accountStartBooking">Book a Stay / Service</button>
+              <button class="ghost-button" id="accountSignOut" type="button" data-i18n="accountSignOut">Sign Out</button>
+            </div>
           </div>
 
           <div class="account-empty-state" id="accountEmptyState" hidden>
