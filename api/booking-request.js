@@ -47,6 +47,68 @@ function requiresPickupTime(service) {
   return service !== "walking";
 }
 
+function requiredPetFieldsForService(service) {
+  if (service === "walking") {
+    return ["name"];
+  }
+
+  return ["name", "breed", "spayedNeutered", "rabiesVaccinationUpToDate"];
+}
+
+function firstMissingBookingField(ownerPayload, pets, bookingPayload) {
+  if (!ownerPayload.first_name) return "Please enter the owner's first name.";
+  if (!ownerPayload.last_name) return "Please enter the owner's last name.";
+  if (!ownerPayload.email) return "Please enter the owner's email.";
+  if (!ownerPayload.phone) return "Please enter the owner's phone number.";
+  if (!bookingPayload.service) return "Please select a service.";
+  if (!bookingPayload.dropoff_date) return bookingPayload.service === "walking"
+    ? "Please select your walking dates."
+    : "Please select your drop-off date.";
+  if (!bookingPayload.pickup_date) return bookingPayload.service === "walking"
+    ? "Please select your walking end date."
+    : "Please select your pick-up date.";
+  if (!pets.length) return bookingPayload.service === "walking"
+    ? "Please add the dog for this walking request."
+    : "Please add at least one pet.";
+
+  if (bookingPayload.service === "walking") {
+    const nonDogPet = pets.find((pet) => pet.petType !== "dog");
+    if (nonDogPet) return "Dog Walking is only available for dogs right now.";
+  }
+
+  const requiredFields = requiredPetFieldsForService(bookingPayload.service);
+  for (const pet of pets) {
+    if (requiredFields.includes("name") && !pet.name) {
+      return bookingPayload.service === "walking"
+        ? "Please enter your dog's name."
+        : "Please enter your pet's name.";
+    }
+    if (requiredFields.includes("breed") && !pet.breed) {
+      return "Please select your pet's breed.";
+    }
+    if (requiredFields.includes("spayedNeutered") && !pet.spayedNeutered) {
+      return "Please select your pet's spayed or neutered status.";
+    }
+    if (requiredFields.includes("rabiesVaccinationUpToDate") && !pet.rabiesVaccinationUpToDate) {
+      return "Please tell us whether your pet's rabies vaccination is up to date.";
+    }
+  }
+
+  if (requiresPickupTime(bookingPayload.service) && !bookingPayload.departure_time) {
+    return "Please select your pick-up time.";
+  }
+
+  if (bookingPayload.service === "walking" && !bookingPayload.arrival_time) {
+    return "Please select your preferred walking time.";
+  }
+
+  if (!bookingPayload.emergency_authorization) {
+    return "Please accept the emergency veterinary authorization.";
+  }
+
+  return "";
+}
+
 function normalizePetType(value) {
   return normalizeField(value).toLowerCase() === "cat" ? "cat" : "dog";
 }
@@ -320,28 +382,9 @@ async function handler(req, res) {
       status: "deposit_pending",
     };
 
-    if (
-      !ownerPayload.first_name ||
-      !ownerPayload.last_name ||
-      !ownerPayload.email ||
-      !ownerPayload.phone ||
-      !pets.length ||
-      pets.some(
-        (pet) =>
-          !pet.name ||
-          !pet.breed ||
-          !pet.spayedNeutered ||
-          !pet.rabiesVaccinationUpToDate ||
-          (bookingPayload.service === "walking" && pet.petType !== "dog"),
-      ) ||
-      !bookingPayload.service ||
-      !bookingPayload.dropoff_date ||
-      !bookingPayload.pickup_date ||
-      (requiresPickupTime(bookingPayload.service) && !bookingPayload.departure_time) ||
-      (bookingPayload.service === "walking" && !bookingPayload.arrival_time) ||
-      !bookingPayload.emergency_authorization
-    ) {
-      sendJson(res, 400, { ok: false, error: "Please complete all required booking fields." });
+    const missingFieldMessage = firstMissingBookingField(ownerPayload, pets, bookingPayload);
+    if (missingFieldMessage) {
+      sendJson(res, 400, { ok: false, error: missingFieldMessage });
       return;
     }
 

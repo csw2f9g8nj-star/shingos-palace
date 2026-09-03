@@ -2546,6 +2546,8 @@ function updatePaymentMethodDisplay() {
 function updateServiceSpecificFields() {
   const walking = isWalkingService();
   const pets = getBookingPetsFromCards();
+  const serviceKey = serviceSelect?.value || "";
+  const requiresExtendedPetProfile = serviceKey && serviceKey !== "walking";
 
   boardingDaycareTimeFields.forEach((field) => {
     field.hidden = walking;
@@ -2557,8 +2559,9 @@ function updateServiceSpecificFields() {
   });
 
   if (pickupPolicyNote) {
-    pickupPolicyNote.hidden = walking;
-    pickupPolicyNote.style.display = walking ? "none" : "";
+    const showPickupPolicy = serviceKey === "boarding";
+    pickupPolicyNote.hidden = !showPickupPolicy;
+    pickupPolicyNote.style.display = showPickupPolicy ? "" : "none";
   }
   if (additionalCatsField) {
     additionalCatsField.hidden = true;
@@ -2604,6 +2607,10 @@ function updateServiceSpecificFields() {
       fields.petType.value = "dog";
       if (fields.breed?.value && !breedIsValidForPetType(fields.breed.value, "dog")) fields.breed.value = "";
     }
+
+    if (fields.breed) fields.breed.required = requiresExtendedPetProfile;
+    if (fields.spayedNeutered) fields.spayedNeutered.required = requiresExtendedPetProfile;
+    if (fields.rabies) fields.rabies.required = requiresExtendedPetProfile;
   });
 
   updateLockedBookingSummary();
@@ -2612,7 +2619,7 @@ function updateServiceSpecificFields() {
 }
 
 function getPickupFee(nightlyRate) {
-  if (isWalkingService()) {
+  if (serviceSelect?.value !== "boarding") {
     return { amount: 0, extraUnit: 0 };
   }
 
@@ -3678,7 +3685,7 @@ function updateSummary() {
   if (summaryNights) summaryNights.innerHTML = stayBreakdown;
   if (summaryAfterFee) summaryAfterFee.textContent = currency(after);
   if (summaryAdditionalPets) summaryAdditionalPets.textContent = currency(additionalPetsTotal);
-  summaryAfterFee?.closest(".summary-line")?.toggleAttribute("hidden", walking);
+  summaryAfterFee?.closest(".summary-line")?.toggleAttribute("hidden", !after);
   summaryAdditionalPets?.closest(".summary-line")?.toggleAttribute("hidden", walking);
   if (summaryTotal) summaryTotal.textContent = totalLabel;
   if (summaryDepositDesktop) summaryDepositDesktop.textContent = depositLabel;
@@ -3697,7 +3704,7 @@ function updateSummary() {
   if (mobileSummaryDates) mobileSummaryDates.textContent = datesLabel();
   if (mobileSummaryAfterFee) mobileSummaryAfterFee.textContent = currency(after);
   if (mobileSummaryAdditionalPets) mobileSummaryAdditionalPets.textContent = currency(additionalPetsTotal);
-  mobileSummaryAfterFee?.closest("div")?.toggleAttribute("hidden", walking);
+  mobileSummaryAfterFee?.closest("div")?.toggleAttribute("hidden", !after);
   mobileSummaryAdditionalPets?.closest("div")?.toggleAttribute("hidden", walking);
 
   if (estimatedTotalField) {
