@@ -2035,7 +2035,7 @@ function getBookingPetsFromCards() {
         breed: card.dataset.breed || "",
         breedOther: "",
         spayedNeutered: card.dataset.spayedNeutered || "",
-        rabiesVaccinationUpToDate: card.dataset.rabies || "",
+        rabiesVaccinationUpToDate: fields.rabies?.value || card.dataset.rabies || "",
         recordCount: Number(card.dataset.recordCount || 0),
         source: "saved",
         label: `Pet ${index + 1}`,
@@ -2335,6 +2335,7 @@ function bookingPetCardMarkup(pet, index) {
   if (pet.source === "saved") {
     const petType = normalizePetTypeValue(pet.petType);
     const vaccinationStatus = pet.recordCount > 0 ? t("bookingVaccinationSubmitted") : t("bookingVaccinationPending");
+    const needsRabiesAnswer = !pet.rabiesVaccinationUpToDate;
     return `
       <article
         class="booking-pet-card booking-pet-card--saved"
@@ -2366,7 +2367,17 @@ function bookingPetCardMarkup(pet, index) {
           </div>
           <div>
             <span>${t("fieldRabiesVaccination")}</span>
-            <strong>${escapeHtml(pet.rabiesVaccinationUpToDate || t("optionSelect"))}</strong>
+            ${
+              needsRabiesAnswer
+                ? `
+                  <select data-pet-field="rabiesVaccinationUpToDate" required>
+                    <option value="">${t("optionSelect")}</option>
+                    <option value="Yes">${t("optionYes")}</option>
+                    <option value="No">${t("optionNo")}</option>
+                  </select>
+                `
+                : `<strong>${escapeHtml(pet.rabiesVaccinationUpToDate)}</strong>`
+            }
           </div>
         </div>
         <div class="booking-pet-card-meta">
