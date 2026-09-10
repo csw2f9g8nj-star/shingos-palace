@@ -4,6 +4,8 @@ let adminDogs = [];
 let adminReviews = [];
 let adminClubMemberships = [];
 let adminClubMatches = [];
+let selectedCanonicalOwner = null;
+let pendingPetCreation = null;
 
 const adminLogin = document.querySelector("#adminLogin");
 const adminDashboard = document.querySelector("#adminDashboard");
@@ -15,6 +17,17 @@ const adminMeetGreetsEl = document.querySelector("#adminMeetGreets");
 const adminReviewsEl = document.querySelector("#adminReviews");
 const adminClubMembersEl = document.querySelector("#adminClubMembers");
 const adminClubStatus = document.querySelector("#adminClubStatus");
+const adminOwnerSearchForm = document.querySelector("#adminOwnerSearchForm");
+const adminOwnerSearchStatus = document.querySelector("#adminOwnerSearchStatus");
+const adminOwnerResults = document.querySelector("#adminOwnerResults");
+const adminOwnerCreateForm = document.querySelector("#adminOwnerCreateForm");
+const adminSelectedOwner = document.querySelector("#adminSelectedOwner");
+const adminSelectedOwnerName = document.querySelector("#adminSelectedOwnerName");
+const adminSelectedOwnerContact = document.querySelector("#adminSelectedOwnerContact");
+const adminChangeOwner = document.querySelector("#adminChangeOwner");
+const adminOwnerPets = document.querySelector("#adminOwnerPets");
+const adminPetCreateForm = document.querySelector("#adminPetCreateForm");
+const adminDuplicateWarning = document.querySelector("#adminDuplicateWarning");
 const adminTemplate = document.querySelector("#adminDogTemplate");
 const adminSearch = document.querySelector("#adminSearch");
 const adminRefresh = document.querySelector("#adminRefresh");
@@ -48,7 +61,10 @@ async function apiFetch(path, options = {}) {
   });
   const payload = await response.json();
   if (!response.ok || payload.ok === false) {
-    throw new Error(payload.error || "Request failed.");
+    const error = new Error(payload.error || "Request failed.");
+    error.code = payload.code || "request_failed";
+    error.payload = payload;
+    throw error;
   }
 
   return payload;
@@ -119,6 +135,168 @@ function activeClubDogs(excludeDogId = "") {
 
 function relatedClubDogId(match, dogId) {
   return match.dog_one_id === dogId ? match.dog_two_id : match.dog_one_id;
+}
+
+function ownerDisplayName(owner) {
+  return [owner?.first_name, owner?.last_name].filter(Boolean).join(" ") || "Owner";
+}
+
+function focusDogProfile(dogId) {
+  if (adminSearch) adminSearch.value = "";
+  renderDogs();
+  requestAnimationFrame(() => {
+    document.querySelector(`[data-dog-id="${CSS.escape(dogId)}"]`)?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  });
+}
+
+function renderOwnerSearchResults(owners) {
+  if (!adminOwnerResults) return;
+  if (!owners.length) {
+    adminOwnerResults.innerHTML = "<p>No owner found with that exact email. Create a new owner below.</p>";
+    return;
+  }
+
+  adminOwnerResults.innerHTML = owners
+    .map((owner) => `
+      <article class="admin-owner-result-card">
+        <div>
+          <strong>${safeText(ownerDisplayName(owner))}</strong>
+          <span>${safeText(owner.email)}${owner.phone ? ` · ${safeText(owner.phone)}` : ""}</span>
+          <small>${owner.pets?.length || 0} ${(owner.pets?.length || 0) === 1 ? "pet" : "pets"}${owner.auth_user_id ? " · Customer account linked" : " · No customer login yet"}</small>
+        </div>
+        <button class="ghost-button" type="button" data-select-owner="${escapeHtml(owner.id)}">Select Owner</button>
+      </article>
+    `)
+    .join("");
+  adminOwnerResults._owners = owners;
+}
+
+function renderSelectedOwner() {
+  if (!adminSelectedOwner || !selectedCanonicalOwner) return;
+  adminSelectedOwner.hidden = false;
+  adminSelectedOwnerName.textContent = ownerDisplayName(selectedCanonicalOwner);
+  adminSelectedOwnerContact.textContent = [selectedCanonicalOwner.email, selectedCanonicalOwner.phone]
+    .filter(Boolean)
+    .join(" · ");
+  renderSelectedOwnerPets();
+}
+
+function renderSelectedOwnerPets() {
+  if (!adminOwnerPets || !selectedCanonicalOwner) return;
+  const pets = selectedCanonicalOwner.pets || [];
+
+  if (!pets.length) {
+    adminOwnerPets.innerHTML = "<p>No pets belong to this owner yet. Create the first canonical pet below.</p>";
+    return;
+  }
+
+  adminOwnerPets.innerHTML = `
+    <h3>Existing Pets</h3>
+    <div class="admin-owner-pet-list">
+      ${pets.map((pet) => {
+        const isDog = pet.pet_type === "dog";
+        const isMember = Boolean(activeClubMembership(pet.id));
+        return `
+          <article class="admin-owner-pet-card">
+            <div>
+              <strong>${safeText(pet.name, "Unnamed pet")}</strong>
+              <span>${safeText(isDog ? "Dog" : "Cat")}${pet.breed ? ` · ${safeText(pet.breed)}` : ""}</span>
+            </div>
+            <div class="admin-owner-pet-actions">
+              <button class="ghost-button" type="button" data-open-canonical-pet="${escapeHtml(pet.id)}">Open Profile</button>
+              ${isDog && !isMember ? `<button class="ghost-button" type="button" data-add-canonical-club="${escapeHtml(pet.id)}">Add to Club</button>` : ""}
+              ${isDog && isMember ? '<span class="admin-club-badge">Club Member</span>' : ""}
+              ${!isDog ? '<span class="admin-pet-type-note">Club is dog-only</span>' : ""}
+            </div>
+          </article>
+        `;
+      }).join("")}
+    </div>
+  `;
+}
+
+async function refreshSelectedOwner() {
+  if (!selectedCanonicalOwner?.email) return;
+  const payload = await apiFetch(`/api/admin/club-pets?email=${encodeURIComponent(selectedCanonicalOwner.email)}`);
+  const refreshed = (payload.owners || []).find((owner) => owner.id === selectedCanonicalOwner.id);
+  if (refreshed) {
+    selectedCanonicalOwner = refreshed;
+    renderSelectedOwner();
+  }
+}
+
+async function addCanonicalDogToClub(dogId, button) {
+  if (button) button.disabled = true;
+  setStatus(adminOwnerSearchStatus, "Adding the selected dog to the Club...");
+  const data = new FormData();
+  data.set("action", "membership");
+  data.set("dogId", dogId);
+  data.set("isActive", "true");
+  try {
+    await apiFetch("/api/admin/club", { method: "POST", body: data });
+    await loadDogs();
+    await refreshSelectedOwner();
+    setStatus(adminOwnerSearchStatus, "Dog added to Shingo's Palace Club.");
+  } catch (error) {
+    setStatus(adminOwnerSearchStatus, error.message);
+    if (button) button.disabled = false;
+  }
+}
+
+function selectCanonicalOwner(owner) {
+  selectedCanonicalOwner = owner;
+  pendingPetCreation = null;
+  adminDuplicateWarning.hidden = true;
+  adminPetCreateForm?.reset();
+  adminOwnerCreateForm.hidden = true;
+  renderSelectedOwner();
+  setStatus(adminOwnerSearchStatus, "");
+}
+
+async function submitCanonicalPet(forceCreate = false) {
+  if (!selectedCanonicalOwner || !adminPetCreateForm) return;
+  const status = adminPetCreateForm.querySelector(".status-line");
+  const data = pendingPetCreation ? new FormData() : new FormData(adminPetCreateForm);
+
+  if (pendingPetCreation) {
+    Object.entries(pendingPetCreation).forEach(([key, value]) => data.set(key, value));
+  }
+  data.set("action", "create-pet");
+  data.set("ownerId", selectedCanonicalOwner.id);
+  data.set("forceCreate", forceCreate ? "true" : "false");
+  setStatus(status, forceCreate ? "Creating the new pet after confirmation..." : "Checking this pet...");
+  adminDuplicateWarning.hidden = true;
+
+  try {
+    const payload = await apiFetch("/api/admin/club-pets", { method: "POST", body: data });
+    pendingPetCreation = null;
+    adminPetCreateForm.reset();
+    await loadDogs();
+    await refreshSelectedOwner();
+    setStatus(status, `${payload.pet.name} was added as a canonical pet profile.`);
+    focusDogProfile(payload.pet.id);
+  } catch (error) {
+    if (error.code !== "possible_duplicate_pet") {
+      setStatus(status, error.message);
+      return;
+    }
+
+    pendingPetCreation = Object.fromEntries(data.entries());
+    const candidates = error.payload?.pets || [];
+    adminDuplicateWarning.innerHTML = `
+      <strong>Possible duplicate pet</strong>
+      <p>A pet with the same owner, name, type, and compatible breed already exists. Choose the existing profile or explicitly create another pet.</p>
+      <div class="admin-duplicate-options">
+        ${candidates.map((pet) => `<button class="ghost-button" type="button" data-use-existing-pet="${escapeHtml(pet.id)}">Use ${safeText(pet.name)}${pet.breed ? ` · ${safeText(pet.breed)}` : ""}</button>`).join("")}
+        <button class="admin-inline-action" type="button" data-create-pet-anyway>Create New Pet Anyway</button>
+      </div>
+    `;
+    adminDuplicateWarning.hidden = false;
+    setStatus(status, "No pet was created. Please review the possible match.");
+  }
 }
 
 function renderClubMembers() {
@@ -284,6 +462,7 @@ function renderDogs() {
     const isClubMember = Boolean(activeClubMembership(dog.id));
     const clubBadge = node.querySelector(".admin-club-badge");
     clubBadge.hidden = !isClubMember;
+    node.querySelector(".admin-club-management").hidden = dog.pet_type !== "dog";
 
     const membershipState = node.querySelector(".admin-club-membership-state");
     membershipState.textContent = dog.pet_type !== "dog"
@@ -458,6 +637,7 @@ async function loadDogs() {
   renderAdminReviews(adminReviews);
   renderClubMembers();
   renderDogs();
+  if (selectedCanonicalOwner) renderSelectedOwnerPets();
   setStatus(adminStatus, "");
 }
 
@@ -470,6 +650,110 @@ adminClubMembersEl?.addEventListener("click", (event) => {
     behavior: "smooth",
     block: "start",
   });
+});
+
+adminOwnerSearchForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const data = new FormData(adminOwnerSearchForm);
+  const email = String(data.get("email") || "").trim().toLowerCase();
+  selectedCanonicalOwner = null;
+  adminSelectedOwner.hidden = true;
+  adminOwnerCreateForm.hidden = true;
+  adminOwnerResults.innerHTML = "";
+  setStatus(adminOwnerSearchStatus, "Searching for an exact email match...");
+
+  try {
+    const payload = await apiFetch(`/api/admin/club-pets?email=${encodeURIComponent(email)}`);
+    const owners = payload.owners || [];
+    renderOwnerSearchResults(owners);
+    adminOwnerCreateForm.hidden = owners.length > 0;
+    if (!owners.length) adminOwnerCreateForm.elements.email.value = email;
+    setStatus(
+      adminOwnerSearchStatus,
+      owners.length
+        ? `${owners.length} exact owner ${owners.length === 1 ? "record" : "records"} found. Select the correct one.`
+        : "No exact owner match was found.",
+    );
+  } catch (error) {
+    setStatus(adminOwnerSearchStatus, error.message);
+  }
+});
+
+adminOwnerResults?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-select-owner]");
+  if (!button) return;
+  const owner = (adminOwnerResults._owners || []).find((candidate) => candidate.id === button.dataset.selectOwner);
+  if (owner) selectCanonicalOwner(owner);
+});
+
+adminOwnerCreateForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const status = adminOwnerCreateForm.querySelector(".status-line");
+  const data = new FormData(adminOwnerCreateForm);
+  data.set("action", "create-owner");
+  setStatus(status, "Checking and creating the owner...");
+
+  try {
+    const payload = await apiFetch("/api/admin/club-pets", { method: "POST", body: data });
+    adminOwnerResults.innerHTML = "";
+    adminOwnerCreateForm.reset();
+    selectCanonicalOwner(payload.owner);
+    setStatus(adminOwnerSearchStatus, "Owner created and selected.");
+  } catch (error) {
+    if (error.code === "owner_already_exists") {
+      const owners = error.payload?.owners || [];
+      renderOwnerSearchResults(owners);
+      adminOwnerCreateForm.hidden = true;
+      setStatus(adminOwnerSearchStatus, "This email already belongs to an owner. Select the correct existing record.");
+      return;
+    }
+    setStatus(status, error.message);
+  }
+});
+
+adminChangeOwner?.addEventListener("click", () => {
+  selectedCanonicalOwner = null;
+  pendingPetCreation = null;
+  adminSelectedOwner.hidden = true;
+  adminOwnerResults.innerHTML = "";
+  adminOwnerCreateForm.hidden = true;
+  adminDuplicateWarning.hidden = true;
+  adminOwnerSearchForm?.querySelector("input[name='email']")?.focus();
+  setStatus(adminOwnerSearchStatus, "Search for another owner by their complete email address.");
+});
+
+adminOwnerPets?.addEventListener("click", async (event) => {
+  const openButton = event.target.closest("[data-open-canonical-pet]");
+  if (openButton) {
+    focusDogProfile(openButton.dataset.openCanonicalPet);
+    return;
+  }
+
+  const clubButton = event.target.closest("[data-add-canonical-club]");
+  if (clubButton) await addCanonicalDogToClub(clubButton.dataset.addCanonicalClub, clubButton);
+});
+
+adminPetCreateForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  pendingPetCreation = null;
+  await submitCanonicalPet(false);
+});
+
+adminDuplicateWarning?.addEventListener("click", async (event) => {
+  const existingButton = event.target.closest("[data-use-existing-pet]");
+  if (existingButton) {
+    pendingPetCreation = null;
+    adminDuplicateWarning.hidden = true;
+    setStatus(adminPetCreateForm.querySelector(".status-line"), "Using the existing canonical pet. No duplicate was created.");
+    focusDogProfile(existingButton.dataset.useExistingPet);
+    return;
+  }
+
+  const createButton = event.target.closest("[data-create-pet-anyway]");
+  if (createButton) {
+    createButton.disabled = true;
+    await submitCanonicalPet(true);
+  }
 });
 
 adminReviewsEl?.addEventListener("click", async (event) => {
