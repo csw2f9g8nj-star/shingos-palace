@@ -1,4 +1,5 @@
 const handlers = {
+  club: require("../../lib/api-routes/admin/club"),
   compatibility: require("../../lib/api-routes/admin/compatibility"),
   config: require("../../lib/api-routes/admin/config"),
   dogs: require("../../lib/api-routes/admin/dogs"),

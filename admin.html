@@ -50,6 +50,18 @@
           <button class="ghost-button" id="adminRefresh" type="button">Refresh</button>
         </div>
 
+        <section class="admin-panel admin-club-panel">
+          <div class="admin-panel-head">
+            <div>
+              <p class="modal-kicker">Private Club Management</p>
+              <h2>Shingo's Palace Club Members</h2>
+              <p>Memberships and positive Club friendships are separate from safety and compatibility notes.</p>
+            </div>
+          </div>
+          <div class="admin-club-member-list" id="adminClubMembers"></div>
+          <p class="status-line" id="adminClubStatus"></p>
+        </section>
+
         <section class="admin-panel">
           <div class="admin-panel-head">
             <div>
@@ -80,9 +92,37 @@
         <div class="admin-dog-head">
           <div class="admin-dog-avatar"></div>
           <div>
-            <h2></h2>
+            <div class="admin-dog-title-row">
+              <h2></h2>
+              <span class="admin-club-badge" hidden>Club Member</span>
+            </div>
             <p class="admin-owner"></p>
           </div>
+        </div>
+        <div class="admin-card-section admin-club-management">
+          <div class="admin-club-heading">
+            <div>
+              <h3>Shingo's Palace Club</h3>
+              <p class="admin-club-membership-state"></p>
+            </div>
+            <form class="admin-club-membership-form">
+              <button class="ghost-button" type="submit"></button>
+            </form>
+          </div>
+          <div class="admin-club-current"></div>
+          <form class="admin-club-match-form admin-form" hidden>
+            <h3>Add Club Match</h3>
+            <label>
+              <span>Club friend</span>
+              <select name="dogTwoId" required></select>
+            </label>
+            <label>
+              <span>Private friendship note (optional)</span>
+              <textarea name="notes" rows="2"></textarea>
+            </label>
+            <button class="ghost-button" type="submit">Add Club Match</button>
+            <p class="status-line"></p>
+          </form>
         </div>
         <div class="admin-card-section admin-contact"></div>
         <div class="admin-card-section admin-vet"></div>

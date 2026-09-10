@@ -109,6 +109,60 @@
   gap: 12px;
 }
 
+.admin-club-panel {
+  background: rgba(98, 157, 151, 0.09);
+}
+
+.admin-club-member-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.admin-club-member-card {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 11px;
+  padding: 12px;
+  border: 1px solid rgba(39, 50, 47, 0.09);
+  border-radius: 18px;
+  background: rgba(255, 252, 246, 0.86);
+  color: var(--charcoal);
+  text-align: left;
+  cursor: pointer;
+}
+
+.admin-club-member-card:hover {
+  border-color: rgba(74, 137, 132, 0.35);
+  transform: translateY(-1px);
+}
+
+.admin-club-member-card > span:last-child {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.admin-club-member-card small {
+  overflow: hidden;
+  color: var(--muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-club-member-initial {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 14px;
+  background: rgba(98, 157, 151, 0.16);
+  color: var(--sage-deep);
+  font-weight: 760;
+}
+
 .admin-request-card {
   display: grid;
   gap: 8px;
@@ -219,6 +273,72 @@
   font-size: 1.55rem;
 }
 
+.admin-dog-title-row,
+.admin-club-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.admin-club-badge {
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: rgba(98, 157, 151, 0.17);
+  color: #39736f;
+  font-size: 0.7rem;
+  font-weight: 760;
+  text-transform: uppercase;
+}
+
+.admin-club-management {
+  border: 1px solid rgba(98, 157, 151, 0.14);
+  background: rgba(98, 157, 151, 0.1);
+}
+
+.admin-club-membership-state {
+  margin-top: 4px !important;
+  font-size: 0.9rem;
+}
+
+.admin-club-membership-form {
+  flex: 0 0 auto;
+}
+
+.admin-club-current {
+  display: grid;
+  gap: 8px;
+}
+
+.admin-club-match-list {
+  display: grid;
+  gap: 8px;
+}
+
+.admin-club-match-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(39, 50, 47, 0.08);
+}
+
+.admin-inline-action {
+  min-height: 36px;
+  padding: 0 10px;
+  border: 1px solid rgba(143, 77, 70, 0.2);
+  border-radius: 10px;
+  background: transparent;
+  color: #8f4d46;
+  cursor: pointer;
+}
+
+.admin-inline-action:disabled {
+  cursor: wait;
+  opacity: 0.5;
+}
+
 .admin-owner {
   margin: 0;
   color: var(--muted);
@@ -291,5 +411,18 @@
 
   .admin-request-list {
     grid-template-columns: 1fr;
+  }
+
+  .admin-club-member-list {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-club-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-club-membership-form .ghost-button {
+    width: 100%;
   }
 }

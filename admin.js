@@ -2,6 +2,8 @@ let supabaseClient;
 let adminSession;
 let adminDogs = [];
 let adminReviews = [];
+let adminClubMemberships = [];
+let adminClubMatches = [];
 
 const adminLogin = document.querySelector("#adminLogin");
 const adminDashboard = document.querySelector("#adminDashboard");
@@ -11,6 +13,8 @@ const adminStatus = document.querySelector("#adminStatus");
 const adminDogsEl = document.querySelector("#adminDogs");
 const adminMeetGreetsEl = document.querySelector("#adminMeetGreets");
 const adminReviewsEl = document.querySelector("#adminReviews");
+const adminClubMembersEl = document.querySelector("#adminClubMembers");
+const adminClubStatus = document.querySelector("#adminClubStatus");
 const adminTemplate = document.querySelector("#adminDogTemplate");
 const adminSearch = document.querySelector("#adminSearch");
 const adminRefresh = document.querySelector("#adminRefresh");
@@ -95,6 +99,71 @@ function recordList(records) {
 
 function dogNameById(dogId) {
   return adminDogs.find((dog) => dog.id === dogId)?.name || "another dog";
+}
+
+function activeClubMembership(dogId) {
+  return adminClubMemberships.find((membership) => membership.dog_id === dogId && membership.is_active);
+}
+
+function activeClubMatches(dogId) {
+  return adminClubMatches.filter(
+    (match) => match.is_active && (match.dog_one_id === dogId || match.dog_two_id === dogId),
+  );
+}
+
+function activeClubDogs(excludeDogId = "") {
+  return adminDogs.filter(
+    (dog) => dog.id !== excludeDogId && dog.pet_type === "dog" && activeClubMembership(dog.id),
+  );
+}
+
+function relatedClubDogId(match, dogId) {
+  return match.dog_one_id === dogId ? match.dog_two_id : match.dog_one_id;
+}
+
+function renderClubMembers() {
+  if (!adminClubMembersEl) return;
+  const members = activeClubDogs();
+
+  if (!members.length) {
+    adminClubMembersEl.innerHTML = "<p>No active Club members yet. Open a dog profile below to add the first member.</p>";
+    return;
+  }
+
+  adminClubMembersEl.innerHTML = members
+    .map((dog) => {
+      const matchCount = activeClubMatches(dog.id).length;
+      const ownerName = [dog.owner?.first_name, dog.owner?.last_name].filter(Boolean).join(" ") || "Owner";
+      return `
+        <button class="admin-club-member-card" type="button" data-club-focus="${escapeHtml(dog.id)}">
+          <span class="admin-club-member-initial">${safeText((dog.name || "?").slice(0, 1).toUpperCase())}</span>
+          <span>
+            <strong>${safeText(dog.name, "Unnamed dog")}</strong>
+            <small>${safeText(ownerName)} · ${matchCount} ${matchCount === 1 ? "match" : "matches"}</small>
+          </span>
+        </button>
+      `;
+    })
+    .join("");
+}
+
+function clubMatchList(dog) {
+  const matches = activeClubMatches(dog.id);
+  if (!matches.length) return "<p>No active Club Matches yet.</p>";
+
+  return `
+    <ul class="admin-club-match-list">
+      ${matches.map((match) => {
+        const friendId = relatedClubDogId(match, dog.id);
+        return `
+          <li>
+            <span><strong>${safeText(dogNameById(friendId))}</strong>${match.notes ? `<br>${safeText(match.notes)}` : ""}</span>
+            <button class="admin-inline-action" type="button" data-deactivate-club-match="${escapeHtml(match.id)}">Deactivate</button>
+          </li>
+        `;
+      }).join("")}
+    </ul>
+  `;
 }
 
 function noteList(notes) {
@@ -212,6 +281,79 @@ function renderDogs() {
     node.querySelector(".admin-dog-avatar").textContent = (dog.name || "?").slice(0, 1).toUpperCase();
     node.querySelector("h2").textContent = dog.name || "Unnamed dog";
     node.querySelector(".admin-owner").textContent = formatOwner(dog.owner);
+    const isClubMember = Boolean(activeClubMembership(dog.id));
+    const clubBadge = node.querySelector(".admin-club-badge");
+    clubBadge.hidden = !isClubMember;
+
+    const membershipState = node.querySelector(".admin-club-membership-state");
+    membershipState.textContent = dog.pet_type !== "dog"
+      ? "Club membership is currently available for dogs only."
+      : isClubMember
+        ? "Active Club member"
+        : "Not currently a Club member";
+
+    const membershipForm = node.querySelector(".admin-club-membership-form");
+    const membershipButton = membershipForm.querySelector("button");
+    membershipButton.textContent = isClubMember ? "Deactivate Membership" : "Add to Club";
+    membershipButton.disabled = dog.pet_type !== "dog";
+    membershipForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      membershipButton.disabled = true;
+      setStatus(adminStatus, isClubMember ? "Deactivating Club membership..." : "Adding Club member...");
+      const data = new FormData();
+      data.set("action", "membership");
+      data.set("dogId", dog.id);
+      data.set("isActive", isClubMember ? "false" : "true");
+      try {
+        await apiFetch("/api/admin/club", { method: "POST", body: data });
+        await loadDogs();
+      } catch (error) {
+        setStatus(adminStatus, error.message);
+        membershipButton.disabled = false;
+      }
+    });
+
+    node.querySelector(".admin-club-current").innerHTML = `<h3>Current Club Matches</h3>${clubMatchList(dog)}`;
+    const clubMatchForm = node.querySelector(".admin-club-match-form");
+    const clubFriendSelect = clubMatchForm.querySelector("select[name='dogTwoId']");
+    const availableFriends = activeClubDogs(dog.id).filter(
+      (friend) => !activeClubMatches(dog.id).some((match) => relatedClubDogId(match, dog.id) === friend.id),
+    );
+    clubFriendSelect.innerHTML = availableFriends
+      .map((friend) => `<option value="${escapeHtml(friend.id)}">${safeText(friend.name, "Unnamed dog")}</option>`)
+      .join("");
+    clubMatchForm.hidden = !isClubMember || !availableFriends.length;
+    clubMatchForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const status = clubMatchForm.querySelector(".status-line");
+      const data = new FormData(clubMatchForm);
+      data.set("action", "match");
+      data.set("dogOneId", dog.id);
+      setStatus(status, "Saving Club Match...");
+      try {
+        await apiFetch("/api/admin/club", { method: "POST", body: data });
+        await loadDogs();
+      } catch (error) {
+        setStatus(status, error.message);
+      }
+    });
+
+    node.querySelector(".admin-club-current").addEventListener("click", async (event) => {
+      const button = event.target.closest("[data-deactivate-club-match]");
+      if (!button) return;
+      button.disabled = true;
+      setStatus(adminStatus, "Deactivating Club Match...");
+      const data = new FormData();
+      data.set("action", "match");
+      data.set("matchId", button.dataset.deactivateClubMatch);
+      try {
+        await apiFetch("/api/admin/club", { method: "PATCH", body: data });
+        await loadDogs();
+      } catch (error) {
+        setStatus(adminStatus, error.message);
+        button.disabled = false;
+      }
+    });
     node.querySelector(".admin-contact").innerHTML = renderSection("Owner", [
       dog.owner?.emergency_contact ? `Emergency contact: ${safeText(dog.owner.emergency_contact)}` : "",
     ]);
@@ -302,11 +444,33 @@ async function loadDogs() {
   ]);
   adminDogs = dogsPayload.dogs || [];
   adminReviews = reviewsPayload.reviews || [];
+  try {
+    const clubPayload = await apiFetch("/api/admin/club");
+    adminClubMemberships = clubPayload.memberships || [];
+    adminClubMatches = clubPayload.matches || [];
+    setStatus(adminClubStatus, "");
+  } catch (error) {
+    adminClubMemberships = [];
+    adminClubMatches = [];
+    setStatus(adminClubStatus, `Club management is not ready yet: ${error.message}`);
+  }
   renderMeetGreets(meetGreetsPayload.requests || []);
   renderAdminReviews(adminReviews);
+  renderClubMembers();
   renderDogs();
   setStatus(adminStatus, "");
 }
+
+adminClubMembersEl?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-club-focus]");
+  if (!button) return;
+  if (adminSearch) adminSearch.value = "";
+  renderDogs();
+  document.querySelector(`[data-dog-id="${CSS.escape(button.dataset.clubFocus)}"]`)?.scrollIntoView({
+    behavior: "smooth",
+    block: "start",
+  });
+});
 
 adminReviewsEl?.addEventListener("click", async (event) => {
   const button = event.target.closest("[data-review-action]");
