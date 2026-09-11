@@ -13,6 +13,7 @@ const {
   validateUploadFile,
 } = require("../lib/api-utils/supabase");
 const { parseMultipartForm, toFileArray } = require("../lib/api-utils/forms");
+const { calculateAuthoritativeBookingPricing } = require("../lib/api-utils/booking-pricing");
 
 function getInsertErrorMessage(table, error, fallbackMessage) {
   const source = `${error?.message || ""} ${error?.details || ""} ${error?.hint || ""}`.toLowerCase();
@@ -113,16 +114,6 @@ function normalizePetType(value) {
   return normalizeField(value).toLowerCase() === "cat" ? "cat" : "dog";
 }
 
-const serviceRates = {
-  boarding: 50,
-  daycare: 35,
-  walking: 18,
-  grooming: 30,
-};
-const additionalDogRate = 35;
-const catBoardingRate = 30;
-const additionalCatRate = 20;
-
 function parseBookingPets(fields) {
   let pets = [];
   try {
@@ -170,32 +161,6 @@ function petSummary(pets) {
   );
 
   return [petCountLabel(counts.dog, "dog"), petCountLabel(counts.cat, "cat")].filter(Boolean).join(" + ");
-}
-
-function bookingRateForPet(petType, role, service) {
-  if (service === "boarding") {
-    if (petType === "cat") return role === "additional" ? additionalCatRate : catBoardingRate;
-    return role === "additional" ? additionalDogRate : serviceRates.boarding;
-  }
-
-  return serviceRates[service] || serviceRates.boarding;
-}
-
-function pricingBreakdownForPets(pets, service, units) {
-  const seen = { dog: 0, cat: 0 };
-  return pets.map((pet) => {
-    seen[pet.petType] += 1;
-    const role = seen[pet.petType] === 1 ? "primary" : "additional";
-    const rate = bookingRateForPet(pet.petType, role, service);
-    return {
-      petName: pet.name,
-      petType: pet.petType,
-      role,
-      units,
-      rate,
-      subtotal: rate * units,
-    };
-  });
 }
 
 async function insertSingle(supabase, table, payload, message) {
@@ -348,8 +313,9 @@ async function handler(req, res) {
 
     const service = normalizeField(fields.service);
     const preferredWalkingTime = normalizeField(fields.preferredWalkingTime);
-    const units = Number(normalizeField(fields.units)) || 1;
-    const pricingBreakdown = pricingBreakdownForPets(pets, service, units);
+    const pricing = await calculateAuthoritativeBookingPricing({ supabase, pets, service, fields });
+    const units = pricing.units;
+    const pricingBreakdown = pricing.pricingBreakdown;
     const petCounts = pets.reduce(
       (counts, pet) => {
         counts[pet.petType] += 1;
@@ -375,9 +341,9 @@ async function handler(req, res) {
       long_stay: service === "walking" ? false : normalizeField(fields.longStay) === "on",
       notes: normalizeField(fields.notes),
       emergency_authorization: normalizeField(fields.emergencyAuthorization) === "on",
-      estimated_total: normalizeField(fields.estimatedTotal),
-      deposit_due_today: normalizeField(fields.depositDueToday),
-      remaining_balance: normalizeField(fields.remainingBalance),
+      estimated_total: pricing.formatted.total,
+      deposit_due_today: pricing.formatted.deposit,
+      remaining_balance: pricing.formatted.remaining,
       payment_status: "not_started",
       status: "deposit_pending",
     };
@@ -583,6 +549,11 @@ async function handler(req, res) {
         petIds: savedPets.map((pet) => pet.id),
         petSummary: bookingPayload.booking_pet_summary,
         recordsUploaded: uploadedRecords.length,
+        estimatedTotal: pricing.formatted.total,
+        depositDueToday: pricing.formatted.deposit,
+        remainingBalance: pricing.formatted.remaining,
+        holidaySurcharge: pricing.holidayPricing.totalSurcharge,
+        pricingBreakdown,
       });
     } catch (error) {
       await removeCreatedRecords(supabase, created);

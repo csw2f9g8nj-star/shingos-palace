@@ -725,6 +725,7 @@
                   <input name="pickupDate" id="availabilityPickupDate" type="date" required />
                 </label>
               </div>
+              <div class="holiday-date-notice wide-field" id="availabilityHolidayNotice" hidden></div>
             </div>
           </section>
 
@@ -928,6 +929,7 @@
                     <strong id="bookingLockedPetType">Dog</strong>
                   </div>
                 </div>
+                <div class="holiday-date-notice wide-field" id="bookingHolidayNotice" hidden></div>
                 <div class="booking-fields stay-grid wide-field" id="stayTimeFields">
                   <label class="boarding-daycare-time">
                     <span data-i18n="fieldArrivalTime">Arrival time (optional)</span>
@@ -1029,6 +1031,10 @@
               <div>
                 <span data-i18n="summaryStay">Stay</span>
                 <strong id="mobileSummaryStayBreakdown">1 night × $50/night = $50</strong>
+              </div>
+              <div id="mobileSummaryHolidayLine" hidden>
+                <span data-i18n="summaryHolidayPricing">Holiday pricing</span>
+                <strong id="mobileSummaryHolidayPricing">$0</strong>
               </div>
               <div>
                 <span data-i18n="summaryPickupFee">Pick-up fee</span>
@@ -1252,6 +1258,10 @@
               <span data-i18n="summaryStay">Stay</span>
               <strong id="summaryNights">1 night</strong>
             </div>
+            <div class="summary-line" id="summaryHolidayLine" hidden>
+              <span data-i18n="summaryHolidayPricing">Holiday pricing</span>
+              <strong id="summaryHolidayPricing">$0</strong>
+            </div>
             <div class="summary-line">
               <span data-i18n="summaryPickupFee">Pick-up fee</span>
               <strong id="summaryAfterFee">$0</strong>
@@ -1273,6 +1283,9 @@
               <strong id="summaryRemainingDesktop">$37</strong>
             </div>
             <p class="summary-longstay" id="summaryLongStay" data-i18n="summaryLongStay"></p>
+            <p class="holiday-rate-explanation" id="holidayRateExplanation" data-i18n="holidayRateExplanation" hidden>
+              Holiday rates apply on select high-demand dates and are automatically reflected in your total.
+            </p>
             <p data-i18n="paymentNote">
               Your card details are processed securely by Stripe. Shingo's Palace never stores card numbers.
             </p>
@@ -1536,6 +1549,7 @@
     <datalist id="bookingBreedOptions"></datalist>
     <datalist id="accountBreedOptions"></datalist>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="holiday-pricing.js" defer></script>
     <script src="script.js" defer></script>
   </body>
 </html>
