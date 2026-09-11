@@ -485,6 +485,7 @@ const translations = {
     summaryDatesEmpty: "Select dates",
     summaryPickupFee: "Pick-up fee",
     summaryHolidayPricing: "Holiday pricing",
+    holidayPricingUnavailable: "Holiday pricing is temporarily unavailable. Please try again in a moment.",
     holidayRateExplanation: "Holiday rates apply on select high-demand dates and are automatically reflected in your total.",
     holidayDatePrefix: "Special date",
     holidayTierHoliday: "Holiday",
@@ -1057,6 +1058,7 @@ const translations = {
     summaryDatesEmpty: "Seleccioná fechas",
     summaryPickupFee: "Cargo de pick-up",
     summaryHolidayPricing: "Tarifa de feriado",
+    holidayPricingUnavailable: "La tarifa de feriado no está disponible temporalmente. Intentá nuevamente en unos minutos.",
     holidayRateExplanation: "Las tarifas de feriados se aplican en fechas seleccionadas de alta demanda y se reflejan automáticamente en el total.",
     holidayDatePrefix: "Fecha especial",
     holidayTierHoliday: "Feriado",
@@ -2848,6 +2850,11 @@ async function getPublicConfig() {
       const payload = await response.json();
       holidayPricingPeriods = Array.isArray(payload.holidayPricing) ? payload.holidayPricing : [];
       holidayPricingAvailable = payload.holidayPricingAvailable === true;
+      if (!holidayPricingAvailable) {
+        console.error("Holiday pricing configuration is unavailable.", {
+          code: payload.holidayPricingErrorCode || "holiday_pricing_lookup_failed",
+        });
+      }
       return payload;
     });
   }
@@ -3617,8 +3624,11 @@ function calculateBookingUnits() {
 }
 
 function selectedHolidayPricing(serviceKey = serviceSelect?.value, dropoffDate = dropoffDateInput?.value, pickupDate = pickupDateInput?.value) {
-  if (serviceKey !== "boarding" || !window.ShingosHolidayPricing) {
+  if (serviceKey !== "boarding") {
     return { nights: [], nightly: [], groups: [], matchedPeriods: [], totalSurcharge: 0 };
+  }
+  if (!holidayPricingAvailable || !window.ShingosHolidayPricing) {
+    return { nights: [], nightly: [], groups: [], matchedPeriods: [], totalSurcharge: 0, unavailable: true };
   }
   return window.ShingosHolidayPricing.calculateBoardingHolidayPricing(dropoffDate, pickupDate, holidayPricingPeriods);
 }
@@ -3647,6 +3657,11 @@ function renderHolidayDateNotice(element, serviceKey, dropoffDate, pickupDate, d
 
   dateInputs.filter(Boolean).forEach((input) => input.classList.toggle("has-holiday-dates", labels.length > 0));
   if (!element) return pricing;
+  if (pricing.unavailable) {
+    element.hidden = false;
+    element.textContent = t("holidayPricingUnavailable");
+    return pricing;
+  }
   element.hidden = labels.length === 0;
   element.textContent = labels.length ? `${t("holidayDatePrefix")}: ${labels.join(" · ")}` : "";
   return pricing;
@@ -3687,7 +3702,7 @@ function updateAvailability() {
   const singleDateService = ["walking", "grooming"].includes(serviceKey);
   const effectivePickupDate = singleDateService ? availabilityDropoffDate?.value : availabilityPickupDate?.value;
   const hasDates = Boolean(availabilityDropoffDate?.value && effectivePickupDate);
-  renderHolidayDateNotice(
+  const holidayPricing = renderHolidayDateNotice(
     availabilityHolidayNotice,
     serviceKey,
     availabilityDropoffDate?.value,
@@ -3699,6 +3714,14 @@ function updateAvailability() {
   if (!hasDates) {
     availabilityStatus.textContent = t("availabilityEmpty");
     availabilityMessage.textContent = t("availabilityEmptyHelp");
+    if (availabilityActions) availabilityActions.hidden = true;
+    return;
+  }
+
+  if (holidayPricing.unavailable) {
+    availabilityResult.classList.add("is-full");
+    availabilityStatus.textContent = t("holidayPricingUnavailable");
+    availabilityMessage.textContent = "";
     if (availabilityActions) availabilityActions.hidden = true;
     return;
   }
@@ -3790,10 +3813,11 @@ function updateSummary() {
   if (summaryDates) summaryDates.textContent = datesLabel();
   if (summaryNights) summaryNights.innerHTML = stayBreakdown;
   const holidayBreakdown = holidayPricingBreakdown(holidayPricing);
-  if (summaryHolidayPricing) summaryHolidayPricing.innerHTML = holidayBreakdown;
-  if (mobileSummaryHolidayPricing) mobileSummaryHolidayPricing.innerHTML = holidayBreakdown;
-  if (summaryHolidayLine) summaryHolidayLine.hidden = !holidayPricing.totalSurcharge;
-  if (mobileSummaryHolidayLine) mobileSummaryHolidayLine.hidden = !holidayPricing.totalSurcharge;
+  const holidaySummary = holidayPricing.unavailable ? t("holidayPricingUnavailable") : holidayBreakdown;
+  if (summaryHolidayPricing) summaryHolidayPricing.innerHTML = holidaySummary;
+  if (mobileSummaryHolidayPricing) mobileSummaryHolidayPricing.innerHTML = holidaySummary;
+  if (summaryHolidayLine) summaryHolidayLine.hidden = !holidayPricing.totalSurcharge && !holidayPricing.unavailable;
+  if (mobileSummaryHolidayLine) mobileSummaryHolidayLine.hidden = !holidayPricing.totalSurcharge && !holidayPricing.unavailable;
   if (holidayRateExplanation) holidayRateExplanation.hidden = !holidayPricing.totalSurcharge;
   if (summaryAfterFee) summaryAfterFee.textContent = currency(after);
   if (summaryAdditionalPets) summaryAdditionalPets.textContent = currency(additionalPetsTotal);
@@ -4335,6 +4359,11 @@ meetGreetForm?.addEventListener("submit", async (event) => {
 bookingForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
   bookingStatus.textContent = "";
+
+  if (serviceSelect?.value === "boarding" && !holidayPricingAvailable) {
+    bookingStatus.textContent = t("holidayPricingUnavailable");
+    return;
+  }
 
   const invalidBreedCard = bookingPetCards().find((card) => !validatePetCardBreed(card));
   if (invalidBreedCard) {

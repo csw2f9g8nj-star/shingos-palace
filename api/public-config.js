@@ -9,6 +9,7 @@ module.exports = async function handler(req, res) {
   const config = getSupabaseConfig();
   let holidayPricing = [];
   let holidayPricingAvailable = false;
+  let holidayPricingErrorCode = "";
   try {
     const supabase = getAdminClient();
     const { data, error } = await supabase
@@ -18,9 +19,20 @@ module.exports = async function handler(req, res) {
       .order("start_date", { ascending: true });
     if (error) throw error;
     holidayPricing = data || [];
+    if (!holidayPricing.length) {
+      const emptyError = new Error("No active holiday pricing rows were returned.");
+      emptyError.code = "holiday_pricing_empty";
+      throw emptyError;
+    }
     holidayPricingAvailable = true;
   } catch (error) {
-    console.error("Could not load public holiday pricing.", error?.message || error);
+    holidayPricingErrorCode = error?.code || "holiday_pricing_lookup_failed";
+    console.error("[public-config] Holiday pricing lookup failed.", {
+      code: error?.code || null,
+      message: error?.message || String(error),
+      details: error?.details || null,
+      hint: error?.hint || null,
+    });
   }
 
   sendJson(res, 200, {
@@ -30,5 +42,6 @@ module.exports = async function handler(req, res) {
     stripePublishableKey: process.env.STRIPE_PUBLISHABLE_KEY || "",
     holidayPricing,
     holidayPricingAvailable,
+    holidayPricingErrorCode,
   });
 };
