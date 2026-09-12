@@ -13,6 +13,12 @@ const zelleOption = document.querySelector("#balanceZelleOption");
 const zelleInput = document.querySelector('input[name="balancePaymentMethod"][value="zelle"]');
 const zelleInstructions = document.querySelector("#balanceZelleInstructions");
 const zelleInstructionsText = document.querySelector("#balanceZelleInstructionsText");
+const zelleAmount = document.querySelector("#balanceZelleAmount");
+const zelleRecipient = document.querySelector("#balanceZelleRecipient");
+const zelleStepThree = document.querySelector("#balanceZelleStepThree");
+const copyZelleAmount = document.querySelector("#copyBalanceZelleAmount");
+const copyZelleRecipient = document.querySelector("#copyBalanceZelleRecipient");
+const zelleCopyStatus = document.querySelector("#balanceZelleCopyStatus");
 const manualConfirmation = document.querySelector("#balanceManualConfirmation");
 const manualConfirmationText = document.querySelector("#balanceManualConfirmationText");
 
@@ -20,6 +26,28 @@ let stripeInstance = null;
 let stripeCheckout = null;
 let paymentDetails = null;
 let publicConfig = null;
+
+async function copyTextValue(value) {
+  if (!value) return;
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(value);
+    } else {
+      const textarea = document.createElement("textarea");
+      textarea.value = value;
+      textarea.setAttribute("readonly", "");
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      textarea.remove();
+    }
+    if (zelleCopyStatus) zelleCopyStatus.textContent = "Copied.";
+  } catch (error) {
+    if (zelleCopyStatus) zelleCopyStatus.textContent = "Could not copy. Please select and copy the value.";
+  }
+}
 
 async function getPublicConfig() {
   const response = await fetch(PUBLIC_CONFIG_ENDPOINT);
@@ -61,6 +89,9 @@ async function getBalanceDetails() {
 function updateZelleDisplay() {
   const isZelle = document.querySelector('input[name="balancePaymentMethod"]:checked')?.value === "zelle";
   if (zelleInstructions) zelleInstructions.hidden = !isZelle;
+  if (continueButton && continueButton.dataset.saved !== "true") {
+    continueButton.textContent = isZelle ? "Save Zelle payment choice" : "Continue to secure card payment";
+  }
 }
 
 async function startStripeBalancePayment() {
@@ -108,16 +139,14 @@ async function requestZelleBalancePayment() {
     throw new Error(payload.error || "We could not save the Zelle payment request.");
   }
 
-  if (methodPanel) methodPanel.hidden = true;
   if (checkoutShell) checkoutShell.hidden = true;
   if (manualConfirmation) manualConfirmation.hidden = false;
-  const recipient = publicConfig.zellePaymentRecipient;
-  const message = publicConfig.zellePaymentInstructions
-    || `Send ${payload.amount} by Zelle to ${recipient}. Include your pet's name in the memo.`;
   if (manualConfirmationText) {
-    manualConfirmationText.textContent = `${message} Your balance will remain pending until the payment is received and verified.`;
+    manualConfirmationText.textContent = "Your payment choice was saved. Send the exact amount using the instructions above. No payment has been marked as received. Your balance will remain pending until Shingo's Palace verifies receipt.";
   }
-  if (intro) intro.textContent = "Your reservation is saved. Complete the Zelle payment using the instructions below.";
+  if (intro) intro.textContent = "Your reservation is saved. Use your bank's app to send the payment off-site with Zelle.";
+  continueButton.dataset.saved = "true";
+  continueButton.textContent = "Zelle payment choice saved";
 }
 
 continueButton?.addEventListener("click", async () => {
@@ -131,13 +160,21 @@ continueButton?.addEventListener("click", async () => {
   } catch (error) {
     if (statusLine) statusLine.textContent = error.message || "We could not start this payment.";
   } finally {
-    continueButton.disabled = false;
+    continueButton.disabled = continueButton.dataset.saved === "true";
   }
 });
 
 document.querySelectorAll('input[name="balancePaymentMethod"]').forEach((input) => {
-  input.addEventListener("change", updateZelleDisplay);
+  input.addEventListener("change", () => {
+    delete continueButton.dataset.saved;
+    continueButton.disabled = false;
+    if (manualConfirmation) manualConfirmation.hidden = true;
+    updateZelleDisplay();
+  });
 });
+
+copyZelleAmount?.addEventListener("click", () => copyTextValue(paymentDetails?.amount || ""));
+copyZelleRecipient?.addEventListener("click", () => copyTextValue(publicConfig?.zellePaymentRecipient || ""));
 
 Promise.all([getPublicConfig(), getBalanceDetails()]).then(([config, details]) => {
   publicConfig = config;
@@ -147,10 +184,12 @@ Promise.all([getPublicConfig(), getBalanceDetails()]).then(([config, details]) =
   const zelleAvailable = config.zelleAvailable === true && Boolean(config.zellePaymentRecipient);
   if (zelleInput) zelleInput.disabled = !zelleAvailable;
   zelleOption?.classList.toggle("is-disabled", !zelleAvailable);
+  if (zelleAmount) zelleAmount.textContent = details.amount;
+  if (zelleRecipient) zelleRecipient.textContent = config.zellePaymentRecipient || "";
+  if (zelleStepThree) zelleStepThree.textContent = `Send exactly ${details.amount} to the recipient shown above.`;
   if (zelleInstructionsText) {
-    zelleInstructionsText.textContent = zelleAvailable
-      ? (config.zellePaymentInstructions || `Send ${details.amount} by Zelle to ${config.zellePaymentRecipient}. Include your pet's name in the memo.`)
-      : "Zelle is temporarily unavailable. Please choose card payment.";
+    zelleInstructionsText.textContent = config.zellePaymentInstructions || "";
+    zelleInstructionsText.hidden = !config.zellePaymentInstructions;
   }
   if (methodPanel) methodPanel.hidden = false;
   updateZelleDisplay();

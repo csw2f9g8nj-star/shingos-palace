@@ -967,8 +967,30 @@
                     </span>
                   </label>
                   <div class="zelle-instructions" id="zelleInstructions" hidden>
-                    <strong data-i18n="zelleInstructionsTitle">Zelle instructions</strong>
-                    <p id="zelleInstructionsText">Zelle instructions will appear here when this payment option is available.</p>
+                    <div class="zelle-instructions-heading">
+                      <strong data-i18n="zelleInstructionsTitle">Pay with Zelle</strong>
+                      <span data-i18n="zelleNoFee">No processing fee</span>
+                    </div>
+                    <div class="zelle-copy-row">
+                      <span data-i18n="zelleAmountLabel">Amount to send</span>
+                      <strong id="zelleAmountToSend">$0</strong>
+                      <button class="zelle-copy-button" id="copyZelleAmount" type="button" data-i18n="zelleCopyAmount">Copy amount</button>
+                    </div>
+                    <div class="zelle-copy-row">
+                      <span data-i18n="zelleRecipientLabel">Send payment to</span>
+                      <strong id="zelleRecipient"></strong>
+                      <button class="zelle-copy-button" id="copyZelleRecipient" type="button" data-i18n="zelleCopyRecipient">Copy recipient</button>
+                    </div>
+                    <p class="zelle-instructions-label" data-i18n="zelleInstructionsLabel">Instructions</p>
+                    <ol class="zelle-instructions-list">
+                      <li data-i18n="zelleStepOne">Open your bank's mobile app.</li>
+                      <li data-i18n="zelleStepTwo">Select Zelle.</li>
+                      <li id="zelleStepThree">Send exactly $0 to the recipient shown above.</li>
+                      <li data-i18n="zelleStepFour">Include your full name and pet's name in the memo.</li>
+                      <li data-i18n="zelleStepFive">Your payment will remain pending until Shingo's Palace verifies receipt.</li>
+                    </ol>
+                    <p class="zelle-additional-instructions" id="zelleInstructionsText" hidden></p>
+                    <p class="zelle-copy-status" id="zelleCopyStatus" aria-live="polite"></p>
                   </div>
                 </div>
                 <label class="checkbox-line required-checkbox wide-field">
@@ -1062,7 +1084,7 @@
             </div>
             <div class="payment-confirmation manual-payment-confirmation" id="manualPaymentConfirmation" hidden>
               <strong data-i18n="manualPaymentTitle">Booking request saved.</strong>
-              <p id="manualPaymentText" data-i18n="manualPaymentText">Your request is pending manual Zelle confirmation. Please send your deposit and we will contact you shortly.</p>
+              <div id="manualPaymentText"></div>
             </div>
             <div class="stripe-checkout-shell" id="stripeCheckout">
               <p data-i18n="paymentLoading">Loading secure payment form...</p>

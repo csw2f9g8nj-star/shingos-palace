@@ -7,6 +7,7 @@ let adminClubMemberships = [];
 let adminClubMatches = [];
 let selectedCanonicalOwner = null;
 let pendingPetCreation = null;
+let pendingZelleConfirmation = null;
 
 const adminLogin = document.querySelector("#adminLogin");
 const adminDashboard = document.querySelector("#adminDashboard");
@@ -35,6 +36,10 @@ const adminTemplate = document.querySelector("#adminDogTemplate");
 const adminSearch = document.querySelector("#adminSearch");
 const adminRefresh = document.querySelector("#adminRefresh");
 const adminSignOut = document.querySelector("#adminSignOut");
+const adminZelleConfirmDialog = document.querySelector("#adminZelleConfirmDialog");
+const adminZelleConfirmText = document.querySelector("#adminZelleConfirmText");
+const adminZelleConfirmCancel = document.querySelector("#adminZelleConfirmCancel");
+const adminZelleConfirmSubmit = document.querySelector("#adminZelleConfirmSubmit");
 
 function setStatus(element, message) {
   if (element) element.textContent = message || "";
@@ -882,10 +887,7 @@ adminReviewsEl?.addEventListener("click", async (event) => {
   }
 });
 
-adminZellePaymentsEl?.addEventListener("submit", async (event) => {
-  const form = event.target.closest(".admin-zelle-confirm-form");
-  if (!form) return;
-  event.preventDefault();
+async function confirmZellePayment(form) {
   const status = form.querySelector(".status-line");
   const button = form.querySelector("button[type='submit']");
   button.disabled = true;
@@ -898,6 +900,41 @@ adminZellePaymentsEl?.addEventListener("submit", async (event) => {
     setStatus(status, error.message);
     button.disabled = false;
   }
+}
+
+adminZellePaymentsEl?.addEventListener("submit", (event) => {
+  const form = event.target.closest(".admin-zelle-confirm-form");
+  if (!form) return;
+  event.preventDefault();
+  const amount = form.elements.amount?.value || "$0";
+  const numericAmount = Number(String(amount).replace(/[^0-9.]/g, ""));
+  const displayAmount = Number.isFinite(numericAmount) ? `$${numericAmount.toFixed(2)}` : amount;
+  const confirmationText = `I confirm that I received ${displayAmount} through Zelle.`;
+
+  if (!adminZelleConfirmDialog?.showModal) {
+    if (window.confirm(confirmationText)) confirmZellePayment(form);
+    return;
+  }
+
+  pendingZelleConfirmation = form;
+  if (adminZelleConfirmText) adminZelleConfirmText.textContent = confirmationText;
+  adminZelleConfirmDialog.showModal();
+});
+
+adminZelleConfirmCancel?.addEventListener("click", () => {
+  pendingZelleConfirmation = null;
+  adminZelleConfirmDialog?.close();
+});
+
+adminZelleConfirmDialog?.addEventListener("cancel", () => {
+  pendingZelleConfirmation = null;
+});
+
+adminZelleConfirmSubmit?.addEventListener("click", async () => {
+  const form = pendingZelleConfirmation;
+  pendingZelleConfirmation = null;
+  adminZelleConfirmDialog?.close();
+  if (form) await confirmZellePayment(form);
 });
 
 adminLoginForm?.addEventListener("submit", async (event) => {

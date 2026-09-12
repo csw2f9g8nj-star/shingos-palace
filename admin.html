@@ -229,6 +229,18 @@
       </section>
     </main>
 
+    <dialog class="admin-confirm-dialog" id="adminZelleConfirmDialog">
+      <form method="dialog">
+        <p class="summary-kicker">Confirm Zelle Payment</p>
+        <h2 id="adminZelleConfirmTitle">Confirm payment received</h2>
+        <p id="adminZelleConfirmText"></p>
+        <div class="admin-confirm-dialog-actions">
+          <button class="ghost-button" id="adminZelleConfirmCancel" type="button">Cancel</button>
+          <button class="submit-button" id="adminZelleConfirmSubmit" type="button">Confirm payment received</button>
+        </div>
+      </form>
+    </dialog>
+
     <template id="adminDogTemplate">
       <article class="admin-dog-card">
         <div class="admin-dog-head">

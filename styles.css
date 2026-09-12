@@ -3818,6 +3818,112 @@ h2 {
   line-height: 1.52;
 }
 
+.zelle-instructions-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.zelle-instructions-heading strong,
+.zelle-copy-row strong {
+  margin: 0;
+}
+
+.zelle-instructions-heading span {
+  color: var(--sage-deep);
+  font-size: 0.82rem;
+  font-weight: 720;
+}
+
+.zelle-copy-row {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.8fr) minmax(130px, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 0;
+  border-top: 1px solid rgba(35, 134, 128, 0.14);
+}
+
+.zelle-copy-row > span {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.zelle-copy-button {
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid rgba(35, 134, 128, 0.24);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--sage-deep);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 720;
+  cursor: pointer;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.zelle-copy-button:hover {
+  background: #fff;
+  transform: translateY(-1px);
+}
+
+.zelle-instructions .zelle-instructions-label {
+  margin-top: 14px;
+  color: var(--ink);
+  font-weight: 720;
+}
+
+.zelle-instructions-list {
+  display: grid;
+  gap: 7px;
+  margin: 8px 0 0;
+  padding-left: 22px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.zelle-instructions .zelle-additional-instructions {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(35, 134, 128, 0.14);
+}
+
+.zelle-instructions .zelle-copy-status {
+  min-height: 20px;
+  margin-top: 8px;
+  color: var(--sage-deep);
+  font-size: 0.82rem;
+  font-weight: 680;
+}
+
+.manual-zelle-instructions {
+  margin-top: 16px;
+  text-align: left;
+}
+
+@media (max-width: 520px) {
+  .zelle-instructions-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .zelle-copy-row {
+    grid-template-columns: 1fr auto;
+  }
+
+  .zelle-copy-row > span {
+    grid-column: 1 / -1;
+  }
+
+  .zelle-copy-button {
+    min-height: 44px;
+  }
+}
+
 .balance-method-panel {
   display: grid;
   gap: 20px;

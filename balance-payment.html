@@ -41,21 +41,43 @@
             <label class="payment-method-option" id="balanceZelleOption">
               <input name="balancePaymentMethod" type="radio" value="zelle" />
               <span>
-                <strong>Zelle</strong>
+                <strong>Pay with Zelle</strong>
                 <small>No processing fee. Payment remains pending until verified.</small>
               </span>
             </label>
           </fieldset>
           <div class="zelle-instructions" id="balanceZelleInstructions" hidden>
-            <strong>Zelle instructions</strong>
-            <p id="balanceZelleInstructionsText"></p>
+            <div class="zelle-instructions-heading">
+              <strong>Pay with Zelle</strong>
+              <span>No processing fee</span>
+            </div>
+            <div class="zelle-copy-row">
+              <span>Amount to send</span>
+              <strong id="balanceZelleAmount">$0</strong>
+              <button class="zelle-copy-button" id="copyBalanceZelleAmount" type="button">Copy amount</button>
+            </div>
+            <div class="zelle-copy-row">
+              <span>Send payment to</span>
+              <strong id="balanceZelleRecipient"></strong>
+              <button class="zelle-copy-button" id="copyBalanceZelleRecipient" type="button">Copy recipient</button>
+            </div>
+            <p class="zelle-instructions-label">Instructions</p>
+            <ol class="zelle-instructions-list">
+              <li>Open your bank's mobile app.</li>
+              <li>Select Zelle.</li>
+              <li id="balanceZelleStepThree">Send exactly $0 to the recipient shown above.</li>
+              <li>Include your full name and pet's name in the memo.</li>
+              <li>Your payment will remain pending until Shingo's Palace verifies receipt.</li>
+            </ol>
+            <p class="zelle-additional-instructions" id="balanceZelleInstructionsText" hidden></p>
+            <p class="zelle-copy-status" id="balanceZelleCopyStatus" aria-live="polite"></p>
           </div>
-          <button class="submit-button" id="balanceContinueButton" type="button">Continue</button>
+          <button class="submit-button" id="balanceContinueButton" type="button">Continue to secure card payment</button>
         </section>
 
         <div class="payment-confirmation manual-payment-confirmation" id="balanceManualConfirmation" hidden>
-          <strong>Payment instructions saved.</strong>
-          <p id="balanceManualConfirmationText"></p>
+          <strong>Zelle payment pending verification.</strong>
+          <p id="balanceManualConfirmationText">Your payment choice was saved. Send the exact amount using the instructions above. No payment has been marked as received.</p>
         </div>
 
         <div class="stripe-checkout-shell balance-checkout-shell" id="balanceStripeCheckout" hidden>

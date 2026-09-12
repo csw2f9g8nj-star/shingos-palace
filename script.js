@@ -420,6 +420,7 @@ const translations = {
     fieldCardNumber: "Card number",
     fieldExpiry: "Expiry",
     bookingSubmit: "Continue to Payment",
+    bookingSubmitZelle: "Save booking and view Zelle instructions",
     bookingSending: "Saving your reservation...",
     bookingSuccess: "Your reservation request is saved. Please complete the deposit to hold your spot.",
     paymentTitle: "Secure deposit payment",
@@ -429,10 +430,21 @@ const translations = {
     paymentMethodCardHelp: "Secure online deposit through Stripe. No card surcharge is added.",
     paymentMethodZelle: "Zelle",
     paymentMethodZelleHelp: "No processing fee. Your request stays pending until payment is verified.",
-    zelleInstructionsTitle: "Zelle instructions",
-    zelleInstructionsText: "Send {amount} by Zelle to {recipient}. Include your pet's name in the memo. Your reservation will be confirmed after your Zelle payment is received and verified.",
-    manualPaymentTitle: "Booking request saved.",
-    manualPaymentText: "Send {amount} by Zelle to {recipient}. Your reservation will be confirmed after your payment is received and verified.",
+    zelleInstructionsTitle: "Pay with Zelle",
+    zelleNoFee: "No processing fee",
+    zelleAmountLabel: "Amount to send",
+    zelleRecipientLabel: "Send payment to",
+    zelleCopyAmount: "Copy amount",
+    zelleCopyRecipient: "Copy recipient",
+    zelleInstructionsLabel: "Instructions",
+    zelleStepOne: "Open your bank's mobile app.",
+    zelleStepTwo: "Select Zelle.",
+    zelleStepThree: "Send exactly {amount} to the recipient shown above.",
+    zelleStepFour: "Include your full name and pet's name in the memo.",
+    zelleStepFive: "Your payment will remain pending until Shingo's Palace verifies receipt.",
+    zelleCopied: "Copied.",
+    zelleCopyError: "Could not copy. Please select and copy the value.",
+    manualPaymentTitle: "Zelle payment pending verification.",
     paymentAmountDue: "Deposit due: {amount}",
     zelleUnavailable: "Zelle is temporarily unavailable. Please choose card payment.",
     paymentLoading: "Loading secure payment form...",
@@ -965,6 +977,7 @@ const translations = {
     fieldCardNumber: "Número de tarjeta",
     fieldExpiry: "Vencimiento",
     bookingSubmit: "Continuar al pago",
+    bookingSubmitZelle: "Guardar reserva y ver instrucciones de Zelle",
     bookingSending: "Guardando tu reserva...",
     bookingSuccess: "Tu solicitud de reserva fue guardada. Completá el depósito para asegurar tu lugar.",
     paymentTitle: "Pago seguro del depósito",
@@ -974,10 +987,21 @@ const translations = {
     paymentMethodCardHelp: "Depósito online seguro a través de Stripe. No se agrega recargo por tarjeta.",
     paymentMethodZelle: "Zelle",
     paymentMethodZelleHelp: "Sin cargo de procesamiento. Tu solicitud queda pendiente hasta verificar el pago.",
-    zelleInstructionsTitle: "Instrucciones para Zelle",
-    zelleInstructionsText: "Envía {amount} por Zelle a {recipient}. Incluye el nombre de tu mascota en la nota. Tu reserva será confirmada después de recibir y verificar el pago.",
-    manualPaymentTitle: "Solicitud de reserva guardada.",
-    manualPaymentText: "Envía {amount} por Zelle a {recipient}. Tu reserva será confirmada después de recibir y verificar el pago.",
+    zelleInstructionsTitle: "Pagar con Zelle",
+    zelleNoFee: "Sin cargo de procesamiento",
+    zelleAmountLabel: "Monto a enviar",
+    zelleRecipientLabel: "Enviar el pago a",
+    zelleCopyAmount: "Copiar monto",
+    zelleCopyRecipient: "Copiar destinatario",
+    zelleInstructionsLabel: "Instrucciones",
+    zelleStepOne: "Abrí la aplicación móvil de tu banco.",
+    zelleStepTwo: "Seleccioná Zelle.",
+    zelleStepThree: "Enviá exactamente {amount} al destinatario indicado arriba.",
+    zelleStepFour: "Incluí tu nombre completo y el nombre de tu mascota en la nota.",
+    zelleStepFive: "Tu pago permanecerá pendiente hasta que Shingo's Palace confirme que fue recibido.",
+    zelleCopied: "Copiado.",
+    zelleCopyError: "No se pudo copiar. Seleccioná y copiá el valor manualmente.",
+    manualPaymentTitle: "Pago por Zelle pendiente de verificación.",
     paymentAmountDue: "Depósito a pagar: {amount}",
     zelleUnavailable: "Zelle no está disponible temporalmente. Elegí el pago con tarjeta.",
     paymentLoading: "Cargando formulario de pago seguro...",
@@ -1453,6 +1477,12 @@ const longStayField = document.querySelector(".long-stay-field");
 const paymentMethodInputs = document.querySelectorAll('input[name="paymentMethod"]');
 const zelleInstructions = document.querySelector("#zelleInstructions");
 const zelleInstructionsText = document.querySelector("#zelleInstructionsText");
+const zelleAmountToSend = document.querySelector("#zelleAmountToSend");
+const zelleRecipient = document.querySelector("#zelleRecipient");
+const zelleStepThree = document.querySelector("#zelleStepThree");
+const copyZelleAmount = document.querySelector("#copyZelleAmount");
+const copyZelleRecipient = document.querySelector("#copyZelleRecipient");
+const zelleCopyStatus = document.querySelector("#zelleCopyStatus");
 const stripeDepositAmount = document.querySelector("#stripeDepositAmount");
 const zelleDepositAmount = document.querySelector("#zelleDepositAmount");
 const bookingSubmit = document.querySelector("#bookingSubmit");
@@ -2494,19 +2524,39 @@ function currentDepositLabel() {
   return depositDueField?.value || mobileSummaryDeposit?.textContent || "$0";
 }
 
+async function copyTextValue(value, statusElement) {
+  if (!value) return;
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(value);
+    } else {
+      const textarea = document.createElement("textarea");
+      textarea.value = value;
+      textarea.setAttribute("readonly", "");
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      textarea.remove();
+    }
+    if (statusElement) statusElement.textContent = t("zelleCopied");
+  } catch (error) {
+    if (statusElement) statusElement.textContent = t("zelleCopyError");
+  }
+}
+
 function updatePaymentAmounts() {
   const amount = currentDepositLabel();
   const label = interpolateText(t("paymentAmountDue"), { amount });
   if (stripeDepositAmount) stripeDepositAmount.textContent = label;
   if (zelleDepositAmount) zelleDepositAmount.textContent = label;
-
+  if (zelleAmountToSend) zelleAmountToSend.textContent = amount;
+  if (zelleRecipient) zelleRecipient.textContent = zellePaymentRecipient;
+  if (zelleStepThree) zelleStepThree.textContent = interpolateText(t("zelleStepThree"), { amount });
   if (zelleInstructionsText) {
-    zelleInstructionsText.textContent = zellePaymentAvailable
-      ? (zellePaymentInstructions || interpolateText(t("zelleInstructionsText"), {
-          amount,
-          recipient: zellePaymentRecipient,
-        }))
-      : t("zelleUnavailable");
+    zelleInstructionsText.textContent = zellePaymentInstructions || "";
+    zelleInstructionsText.hidden = !zellePaymentInstructions;
   }
 }
 
@@ -2522,6 +2572,9 @@ function updatePaymentMethodDisplay() {
   }
   const isZelle = selectedPaymentMethod() === "zelle";
   if (zelleInstructions) zelleInstructions.hidden = !isZelle;
+  if (bookingSubmit && !bookingSubmit.disabled) {
+    bookingSubmit.textContent = t(isZelle ? "bookingSubmitZelle" : "bookingSubmit");
+  }
   updatePaymentAmounts();
 }
 
@@ -3481,12 +3534,38 @@ function showManualPaymentPending(payload) {
   if (manualPaymentConfirmation) manualPaymentConfirmation.hidden = false;
   if (stripeCheckoutContainer) stripeCheckoutContainer.hidden = true;
   if (dogProfileCta) dogProfileCta.hidden = false;
-  const message = interpolateText(t("manualPaymentText"), {
-    amount: payload.depositDueToday || currentDepositLabel(),
-    recipient: zellePaymentRecipient,
-  });
-  if (manualPaymentText) manualPaymentText.textContent = message;
-  if (paymentStatus) paymentStatus.textContent = message;
+  const amount = payload.depositDueToday || currentDepositLabel();
+  if (manualPaymentText) {
+    manualPaymentText.innerHTML = `
+      <div class="zelle-instructions manual-zelle-instructions">
+        <div class="zelle-instructions-heading">
+          <strong>${escapeHtml(t("zelleInstructionsTitle"))}</strong>
+          <span>${escapeHtml(t("zelleNoFee"))}</span>
+        </div>
+        <div class="zelle-copy-row">
+          <span>${escapeHtml(t("zelleAmountLabel"))}</span>
+          <strong>${escapeHtml(amount)}</strong>
+          <button class="zelle-copy-button" type="button" data-copy-zelle="${escapeHtml(amount)}">${escapeHtml(t("zelleCopyAmount"))}</button>
+        </div>
+        <div class="zelle-copy-row">
+          <span>${escapeHtml(t("zelleRecipientLabel"))}</span>
+          <strong>${escapeHtml(zellePaymentRecipient)}</strong>
+          <button class="zelle-copy-button" type="button" data-copy-zelle="${escapeHtml(zellePaymentRecipient)}">${escapeHtml(t("zelleCopyRecipient"))}</button>
+        </div>
+        <p class="zelle-instructions-label">${escapeHtml(t("zelleInstructionsLabel"))}</p>
+        <ol class="zelle-instructions-list">
+          <li>${escapeHtml(t("zelleStepOne"))}</li>
+          <li>${escapeHtml(t("zelleStepTwo"))}</li>
+          <li>${escapeHtml(interpolateText(t("zelleStepThree"), { amount }))}</li>
+          <li>${escapeHtml(t("zelleStepFour"))}</li>
+          <li>${escapeHtml(t("zelleStepFive"))}</li>
+        </ol>
+        ${zellePaymentInstructions ? `<p class="zelle-additional-instructions">${escapeHtml(zellePaymentInstructions)}</p>` : ""}
+        <p class="zelle-copy-status" aria-live="polite"></p>
+      </div>
+    `;
+  }
+  if (paymentStatus) paymentStatus.textContent = t("manualPaymentTitle");
   paymentExperience?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
@@ -4283,6 +4362,14 @@ petTypeInputs.forEach((input) => {
 paymentMethodInputs.forEach((input) => {
   input.addEventListener("change", updatePaymentMethodDisplay);
 });
+
+copyZelleAmount?.addEventListener("click", () => copyTextValue(currentDepositLabel(), zelleCopyStatus));
+copyZelleRecipient?.addEventListener("click", () => copyTextValue(zellePaymentRecipient, zelleCopyStatus));
+manualPaymentText?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-copy-zelle]");
+  if (!button) return;
+  copyTextValue(button.dataset.copyZelle || "", manualPaymentText.querySelector(".zelle-copy-status"));
+});
 vaccinationRecordsInput?.addEventListener("change", () => {
   resetUploadProgress();
   validateVaccinationFiles();
@@ -4413,7 +4500,7 @@ bookingForm?.addEventListener("submit", async (event) => {
     bookingStatus.textContent = error.message || t("bookingError");
   } finally {
     bookingSubmit.disabled = false;
-    bookingSubmit.textContent = t("bookingSubmit");
+    bookingSubmit.textContent = t(selectedPaymentMethod() === "zelle" ? "bookingSubmitZelle" : "bookingSubmit");
   }
 });
 
