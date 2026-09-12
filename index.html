@@ -955,6 +955,7 @@
                     <span>
                       <strong data-i18n="paymentMethodCard">Card / Apple Pay / Google Pay</strong>
                       <small data-i18n="paymentMethodCardHelp">Secure online deposit through Stripe.</small>
+                      <small class="payment-method-amount" id="stripeDepositAmount">Deposit due: $0</small>
                     </span>
                   </label>
                   <label class="payment-method-option">
@@ -962,11 +963,12 @@
                     <span>
                       <strong data-i18n="paymentMethodZelle">Zelle</strong>
                       <small data-i18n="paymentMethodZelleHelp">Send the deposit manually. Your request stays pending until confirmed.</small>
+                      <small class="payment-method-amount" id="zelleDepositAmount">Deposit due: $0</small>
                     </span>
                   </label>
                   <div class="zelle-instructions" id="zelleInstructions" hidden>
                     <strong data-i18n="zelleInstructionsTitle">Zelle instructions</strong>
-                    <p data-i18n="zelleInstructionsText">Send your deposit to info@shingospalace.com and include your pet's name in the memo. We will manually confirm your payment and contact you shortly.</p>
+                    <p id="zelleInstructionsText">Zelle instructions will appear here when this payment option is available.</p>
                   </div>
                 </div>
                 <label class="checkbox-line required-checkbox wide-field">
@@ -1060,9 +1062,7 @@
             </div>
             <div class="payment-confirmation manual-payment-confirmation" id="manualPaymentConfirmation" hidden>
               <strong data-i18n="manualPaymentTitle">Booking request saved.</strong>
-              <p data-i18n="manualPaymentText">
-                Your request is pending manual Zelle confirmation. Please send your deposit and we will contact you shortly.
-              </p>
+              <p id="manualPaymentText" data-i18n="manualPaymentText">Your request is pending manual Zelle confirmation. Please send your deposit and we will contact you shortly.</p>
             </div>
             <div class="stripe-checkout-shell" id="stripeCheckout">
               <p data-i18n="paymentLoading">Loading secure payment form...</p>

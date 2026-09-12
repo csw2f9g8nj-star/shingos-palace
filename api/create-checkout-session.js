@@ -15,7 +15,7 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const { bookingId, paymentType = "deposit" } = req.body || {};
+    const { bookingId, paymentType = "deposit", paymentMethod = "stripe", action = "checkout" } = req.body || {};
     if (!bookingId) {
       throw publicApiError("Missing booking ID.", 400, "missing_booking_id");
     }
@@ -34,6 +34,7 @@ module.exports = async function handler(req, res) {
         pet_type,
         booking_pet_summary,
         balance_payment_status,
+        balance_payment_method,
         owner:owners(first_name,last_name,email),
         dog:dogs(name),
         booking_pets(
@@ -80,6 +81,55 @@ module.exports = async function handler(req, res) {
       );
     }
 
+    if (action === "details") {
+      const petData = getBookingPetDisplay(booking);
+      sendJson(res, 200, {
+        ok: true,
+        bookingId: booking.id,
+        paymentType: isBalancePayment ? "balance" : "deposit",
+        amount: isBalancePayment ? booking.remaining_balance : booking.deposit_due_today,
+        service: booking.service,
+        serviceLabel: serviceLabel(booking.service),
+        petName: petData.namesDisplay,
+        balancePaymentStatus: booking.balance_payment_status || "",
+      });
+      return;
+    }
+
+    if (paymentMethod === "zelle") {
+      if (!isBalancePayment) {
+        throw publicApiError("Zelle deposits must be selected in the booking form.", 400, "invalid_zelle_deposit_flow");
+      }
+      if (!process.env.ZELLE_PAYMENT_RECIPIENT) {
+        throw publicApiError("Zelle is not configured right now. Please choose card payment.", 503, "zelle_not_configured");
+      }
+
+      const { error: zelleUpdateError } = await supabase
+        .from("bookings")
+        .update({
+          balance_payment_method: "zelle",
+          balance_payment_status: "awaiting_zelle_payment",
+        })
+        .eq("id", booking.id);
+      if (zelleUpdateError) {
+        throw publicApiError("We could not save the Zelle payment request.", 500, "zelle_balance_update_failed");
+      }
+
+      sendJson(res, 200, {
+        ok: true,
+        manual: true,
+        bookingId: booking.id,
+        paymentType: "balance",
+        paymentMethod: "zelle",
+        amount: booking.remaining_balance,
+      });
+      return;
+    }
+
+    if (paymentMethod !== "stripe") {
+      throw publicApiError("Please select a valid payment method.", 400, "invalid_payment_method");
+    }
+
     const stripe = getStripeClient();
     const origin = getOrigin(req);
     const customerEmail = booking.owner?.email || undefined;
@@ -122,10 +172,12 @@ module.exports = async function handler(req, res) {
     const updatePayload = isBalancePayment
       ? {
           stripe_balance_checkout_session_id: session.id,
+          balance_payment_method: "stripe",
           balance_payment_status: "pending",
         }
       : {
           stripe_checkout_session_id: session.id,
+          deposit_payment_method: "stripe",
           payment_status: "pending",
           status: "deposit_pending",
         };

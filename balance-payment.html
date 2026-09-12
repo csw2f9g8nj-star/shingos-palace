@@ -24,7 +24,41 @@
           </p>
         </div>
 
-        <div class="stripe-checkout-shell balance-checkout-shell" id="balanceStripeCheckout">
+        <section class="balance-method-panel" id="balanceMethodPanel" hidden>
+          <div class="balance-amount-line">
+            <span>Amount due</span>
+            <strong id="balanceAmountDue">$0</strong>
+          </div>
+          <fieldset class="payment-method-options">
+            <legend>Choose payment method</legend>
+            <label class="payment-method-option">
+              <input name="balancePaymentMethod" type="radio" value="stripe" checked />
+              <span>
+                <strong>Card / Apple Pay / Google Pay</strong>
+                <small>Secure payment through Stripe. No card surcharge is added.</small>
+              </span>
+            </label>
+            <label class="payment-method-option" id="balanceZelleOption">
+              <input name="balancePaymentMethod" type="radio" value="zelle" />
+              <span>
+                <strong>Zelle</strong>
+                <small>No processing fee. Payment remains pending until verified.</small>
+              </span>
+            </label>
+          </fieldset>
+          <div class="zelle-instructions" id="balanceZelleInstructions" hidden>
+            <strong>Zelle instructions</strong>
+            <p id="balanceZelleInstructionsText"></p>
+          </div>
+          <button class="submit-button" id="balanceContinueButton" type="button">Continue</button>
+        </section>
+
+        <div class="payment-confirmation manual-payment-confirmation" id="balanceManualConfirmation" hidden>
+          <strong>Payment instructions saved.</strong>
+          <p id="balanceManualConfirmationText"></p>
+        </div>
+
+        <div class="stripe-checkout-shell balance-checkout-shell" id="balanceStripeCheckout" hidden>
           <p>Loading secure payment form...</p>
         </div>
         <p class="status-line" id="balancePaymentStatus" aria-live="polite"></p>

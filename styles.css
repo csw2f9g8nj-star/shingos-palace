@@ -3760,6 +3760,12 @@ h2 {
   transform: translateY(-1px);
 }
 
+.payment-method-option.is-disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+  transform: none;
+}
+
 .payment-method-option input {
   flex: 0 0 20px;
   width: 20px;
@@ -3780,6 +3786,12 @@ h2 {
   margin-top: 3px;
   color: var(--muted);
   line-height: 1.45;
+}
+
+.payment-method-option .payment-method-amount {
+  margin-top: 7px;
+  color: var(--sage-deep);
+  font-weight: 760;
 }
 
 .zelle-instructions {
@@ -3804,6 +3816,64 @@ h2 {
   margin: 0;
   color: var(--muted);
   line-height: 1.52;
+}
+
+.balance-method-panel {
+  display: grid;
+  gap: 20px;
+  margin-top: 22px;
+  text-align: left;
+}
+
+.balance-method-panel[hidden] {
+  display: none;
+}
+
+.balance-amount-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 16px 18px;
+  border: 1px solid rgba(38, 52, 50, 0.12);
+  border-radius: 16px;
+  background: rgba(255, 250, 244, 0.72);
+}
+
+.balance-amount-line span {
+  color: var(--muted);
+}
+
+.balance-amount-line strong {
+  color: var(--charcoal);
+  font-size: 1.35rem;
+}
+
+.balance-method-panel .payment-method-options {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.balance-method-panel .payment-method-options legend {
+  margin-bottom: 12px;
+  color: var(--charcoal);
+  font-weight: 700;
+}
+
+.balance-method-panel .submit-button {
+  width: 100%;
+}
+
+@media (max-width: 560px) {
+  .balance-method-panel {
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .balance-amount-line {
+    padding: 14px 16px;
+  }
 }
 
 .dog-profile-cta {

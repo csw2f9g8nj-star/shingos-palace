@@ -6,6 +6,7 @@ const handlers = {
   dogs: require("../../lib/api-routes/admin/dogs"),
   "meet-greets": require("../../lib/api-routes/admin/meet-greets"),
   notes: require("../../lib/api-routes/admin/notes"),
+  payments: require("../../lib/api-routes/admin/payments"),
   "vaccination-records": require("../../lib/api-routes/admin/vaccination-records"),
 };
 

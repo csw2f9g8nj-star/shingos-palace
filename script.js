@@ -69,6 +69,7 @@ const translations = {
     accountPayBalance: "Pay remaining balance",
     accountFullyPaid: "Fully paid",
     accountBalancePending: "Balance pending",
+    accountZellePending: "Awaiting Zelle payment verification",
     accountLeaveReview: "Leave a Review",
     accountReviewPending: "Review pending approval",
     accountReviewApproved: "Review approved",
@@ -425,13 +426,15 @@ const translations = {
     paymentIntro: "Your booking request has been saved. Complete the deposit below to hold your spot.",
     paymentMethodTitle: "Deposit payment",
     paymentMethodCard: "Card / Apple Pay / Google Pay",
-    paymentMethodCardHelp: "Secure online deposit through Stripe.",
+    paymentMethodCardHelp: "Secure online deposit through Stripe. No card surcharge is added.",
     paymentMethodZelle: "Zelle",
-    paymentMethodZelleHelp: "Send the deposit manually. Your request stays pending until confirmed.",
+    paymentMethodZelleHelp: "No processing fee. Your request stays pending until payment is verified.",
     zelleInstructionsTitle: "Zelle instructions",
-    zelleInstructionsText: "Send your deposit to info@shingospalace.com and include your pet's name in the memo. We will manually confirm your payment and contact you shortly.",
+    zelleInstructionsText: "Send {amount} by Zelle to {recipient}. Include your pet's name in the memo. Your reservation will be confirmed after your Zelle payment is received and verified.",
     manualPaymentTitle: "Booking request saved.",
-    manualPaymentText: "Your request is pending manual Zelle confirmation. Please send your deposit and we will contact you shortly.",
+    manualPaymentText: "Send {amount} by Zelle to {recipient}. Your reservation will be confirmed after your payment is received and verified.",
+    paymentAmountDue: "Deposit due: {amount}",
+    zelleUnavailable: "Zelle is temporarily unavailable. Please choose card payment.",
     paymentLoading: "Loading secure payment form...",
     paymentConfigMissing: "Payment is not connected yet. Please email info@shingospalace.com to complete your deposit.",
     paymentError: "We could not start the secure payment. Please try again or email info@shingospalace.com.",
@@ -606,6 +609,7 @@ const translations = {
     accountPayBalance: "Pagar saldo restante",
     accountFullyPaid: "Reserva pagada completa",
     accountBalancePending: "Saldo pendiente",
+    accountZellePending: "Esperando verificación del pago por Zelle",
     accountLeaveReview: "Dejar review",
     accountReviewPending: "Review pendiente de aprobación",
     accountReviewApproved: "Review aprobada",
@@ -967,13 +971,15 @@ const translations = {
     paymentIntro: "Tu solicitud de reserva fue guardada. Completá el depósito abajo para asegurar tu lugar.",
     paymentMethodTitle: "Pago del depósito",
     paymentMethodCard: "Tarjeta / Apple Pay / Google Pay",
-    paymentMethodCardHelp: "Depósito online seguro a través de Stripe.",
+    paymentMethodCardHelp: "Depósito online seguro a través de Stripe. No se agrega recargo por tarjeta.",
     paymentMethodZelle: "Zelle",
-    paymentMethodZelleHelp: "Envía el depósito manualmente. Tu solicitud queda pendiente hasta confirmarlo.",
+    paymentMethodZelleHelp: "Sin cargo de procesamiento. Tu solicitud queda pendiente hasta verificar el pago.",
     zelleInstructionsTitle: "Instrucciones para Zelle",
-    zelleInstructionsText: "Envía tu depósito a info@shingospalace.com e incluye el nombre de tu mascota en la nota. Confirmaremos el pago manualmente y te contactaremos pronto.",
+    zelleInstructionsText: "Envía {amount} por Zelle a {recipient}. Incluye el nombre de tu mascota en la nota. Tu reserva será confirmada después de recibir y verificar el pago.",
     manualPaymentTitle: "Solicitud de reserva guardada.",
-    manualPaymentText: "Tu solicitud queda pendiente de confirmación manual por Zelle. Por favor envía el depósito y te contactaremos pronto.",
+    manualPaymentText: "Envía {amount} por Zelle a {recipient}. Tu reserva será confirmada después de recibir y verificar el pago.",
+    paymentAmountDue: "Depósito a pagar: {amount}",
+    zelleUnavailable: "Zelle no está disponible temporalmente. Elegí el pago con tarjeta.",
     paymentLoading: "Cargando formulario de pago seguro...",
     paymentConfigMissing: "El pago todavía no está conectado. Escribinos a info@shingospalace.com para completar el depósito.",
     paymentError: "No pudimos iniciar el pago seguro. Intentá de nuevo o escribinos a info@shingospalace.com.",
@@ -1288,6 +1294,9 @@ let stripeCheckout = null;
 let stripePublishableKey = "";
 let holidayPricingPeriods = [];
 let holidayPricingAvailable = false;
+let zellePaymentAvailable = false;
+let zellePaymentRecipient = "";
+let zellePaymentInstructions = "";
 let publicConfigPromise = null;
 
 const reviews = [
@@ -1443,6 +1452,9 @@ const additionalCatsField = document.querySelector(".additional-cats-field");
 const longStayField = document.querySelector(".long-stay-field");
 const paymentMethodInputs = document.querySelectorAll('input[name="paymentMethod"]');
 const zelleInstructions = document.querySelector("#zelleInstructions");
+const zelleInstructionsText = document.querySelector("#zelleInstructionsText");
+const stripeDepositAmount = document.querySelector("#stripeDepositAmount");
+const zelleDepositAmount = document.querySelector("#zelleDepositAmount");
 const bookingSubmit = document.querySelector("#bookingSubmit");
 const bookingStatus = document.querySelector("#bookingStatus");
 const dogProfileForm = document.querySelector("#dogProfileForm");
@@ -1459,6 +1471,7 @@ const dogSpecificFields = document.querySelectorAll(".dog-specific-field");
 const paymentExperience = document.querySelector("#paymentExperience");
 const paymentConfirmation = document.querySelector("#paymentConfirmation");
 const manualPaymentConfirmation = document.querySelector("#manualPaymentConfirmation");
+const manualPaymentText = document.querySelector("#manualPaymentText");
 const stripeCheckoutContainer = document.querySelector("#stripeCheckout");
 const paymentStatus = document.querySelector("#paymentStatus");
 const bookingSteps = document.querySelectorAll("[data-booking-step]");
@@ -2470,9 +2483,46 @@ function selectedPaymentMethod() {
   return [...paymentMethodInputs].find((input) => input.checked)?.value || "stripe";
 }
 
+function interpolateText(template, values = {}) {
+  return Object.entries(values).reduce(
+    (text, [key, value]) => text.replaceAll(`{${key}}`, value || ""),
+    template,
+  );
+}
+
+function currentDepositLabel() {
+  return depositDueField?.value || mobileSummaryDeposit?.textContent || "$0";
+}
+
+function updatePaymentAmounts() {
+  const amount = currentDepositLabel();
+  const label = interpolateText(t("paymentAmountDue"), { amount });
+  if (stripeDepositAmount) stripeDepositAmount.textContent = label;
+  if (zelleDepositAmount) zelleDepositAmount.textContent = label;
+
+  if (zelleInstructionsText) {
+    zelleInstructionsText.textContent = zellePaymentAvailable
+      ? (zellePaymentInstructions || interpolateText(t("zelleInstructionsText"), {
+          amount,
+          recipient: zellePaymentRecipient,
+        }))
+      : t("zelleUnavailable");
+  }
+}
+
 function updatePaymentMethodDisplay() {
+  const zelleInput = [...paymentMethodInputs].find((input) => input.value === "zelle");
+  if (zelleInput) {
+    zelleInput.disabled = !zellePaymentAvailable;
+    zelleInput.closest(".payment-method-option")?.classList.toggle("is-disabled", !zellePaymentAvailable);
+    if (!zellePaymentAvailable && zelleInput.checked) {
+      const stripeInput = [...paymentMethodInputs].find((input) => input.value === "stripe");
+      if (stripeInput) stripeInput.checked = true;
+    }
+  }
   const isZelle = selectedPaymentMethod() === "zelle";
   if (zelleInstructions) zelleInstructions.hidden = !isZelle;
+  updatePaymentAmounts();
 }
 
 function updateServiceSpecificFields() {
@@ -2747,6 +2797,10 @@ async function getPublicConfig() {
       const payload = await response.json();
       holidayPricingPeriods = Array.isArray(payload.holidayPricing) ? payload.holidayPricing : [];
       holidayPricingAvailable = payload.holidayPricingAvailable === true;
+      zellePaymentAvailable = payload.zelleAvailable === true;
+      zellePaymentRecipient = String(payload.zellePaymentRecipient || "").trim();
+      zellePaymentInstructions = String(payload.zellePaymentInstructions || "").trim();
+      updatePaymentMethodDisplay();
       if (!holidayPricingAvailable) {
         console.error("Holiday pricing configuration is unavailable.", {
           code: payload.holidayPricingErrorCode || "holiday_pricing_lookup_failed",
@@ -2863,6 +2917,7 @@ function amountValue(value) {
 
 function customerPaymentStatusLabel(booking, hasRemainingBalance, balancePaid) {
   if (balancePaid) return t("accountFullyPaid");
+  if (booking.paymentStatus === "awaiting_zelle_payment") return t("accountZellePending");
   if (hasRemainingBalance) return t("accountBalancePending");
   return booking.paymentStatus || booking.status || "";
 }
@@ -2877,12 +2932,13 @@ function reviewStatusLabel(review) {
 function bookingCardMarkup(booking, dogName, options = {}) {
   const balancePaid = booking.balancePaymentStatus === "paid";
   const hasRemainingBalance = amountValue(booking.remainingBalance) > 0;
+  const depositPendingZelle = booking.paymentStatus === "awaiting_zelle_payment";
   const paymentStatusLabel = customerPaymentStatusLabel(booking, hasRemainingBalance, balancePaid);
   const balanceLine = balancePaid
     ? t("summaryRemainingPaid")
     : `${remainingBalanceLabelForService(booking.service)}: ${booking.remainingBalance || "-"}`;
   const balanceAction =
-    !balancePaid && hasRemainingBalance
+    !depositPendingZelle && !balancePaid && hasRemainingBalance
       ? `<a class="ghost-button account-pay-balance" href="balance-payment.html?booking_id=${encodeURIComponent(booking.id)}">${t("accountPayBalance")}</a>`
       : `<small>${balancePaid ? t("accountFullyPaid") : ""}</small>`;
   const reviewAction =
@@ -3377,7 +3433,7 @@ async function startStripePayment(payload) {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify({ bookingId: currentBookingIds.bookingId }),
+      body: JSON.stringify({ bookingId: currentBookingIds.bookingId, paymentMethod: "stripe" }),
     });
     const sessionPayload = await sessionResponse.json().catch(() => ({}));
 
@@ -3425,7 +3481,12 @@ function showManualPaymentPending(payload) {
   if (manualPaymentConfirmation) manualPaymentConfirmation.hidden = false;
   if (stripeCheckoutContainer) stripeCheckoutContainer.hidden = true;
   if (dogProfileCta) dogProfileCta.hidden = false;
-  if (paymentStatus) paymentStatus.textContent = t("manualPaymentText");
+  const message = interpolateText(t("manualPaymentText"), {
+    amount: payload.depositDueToday || currentDepositLabel(),
+    recipient: zellePaymentRecipient,
+  });
+  if (manualPaymentText) manualPaymentText.textContent = message;
+  if (paymentStatus) paymentStatus.textContent = message;
   paymentExperience?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
@@ -3582,6 +3643,7 @@ function applyAuthoritativeBookingTotals(payload) {
   if (mobileSummaryTotal) mobileSummaryTotal.textContent = total;
   if (mobileSummaryDeposit) mobileSummaryDeposit.textContent = deposit;
   if (mobileSummaryRemaining) mobileSummaryRemaining.textContent = remaining;
+  updatePaymentAmounts();
 }
 
 function getAccountBookingHeaders() {
@@ -3788,6 +3850,8 @@ function updateSummary() {
   if (remainingBalanceField) {
     remainingBalanceField.value = remainingLabel;
   }
+
+  updatePaymentAmounts();
 
   updatePrimaryPetFields();
   updateLockedBookingSummary();

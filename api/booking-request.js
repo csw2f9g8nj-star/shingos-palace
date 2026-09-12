@@ -327,6 +327,13 @@ async function handler(req, res) {
     };
 
     const service = normalizeField(fields.service);
+    const paymentMethod = normalizeField(fields.paymentMethod).toLowerCase() || "stripe";
+    if (!["stripe", "zelle"].includes(paymentMethod)) {
+      throw publicApiError("Please select a valid payment method.", 400, "invalid_payment_method");
+    }
+    if (paymentMethod === "zelle" && !process.env.ZELLE_PAYMENT_RECIPIENT) {
+      throw publicApiError("Zelle is not configured right now. Please choose card payment.", 503, "zelle_not_configured");
+    }
     const preferredWalkingTime = normalizeField(fields.preferredWalkingTime);
     const pricing = await calculateAuthoritativeBookingPricing({ supabase, pets, service, fields });
     const units = pricing.units;
@@ -362,8 +369,9 @@ async function handler(req, res) {
       estimated_total: pricing.formatted.total,
       deposit_due_today: pricing.formatted.deposit,
       remaining_balance: pricing.formatted.remaining,
-      payment_status: "not_started",
-      status: "deposit_pending",
+      deposit_payment_method: paymentMethod,
+      payment_status: paymentMethod === "zelle" ? "awaiting_zelle_payment" : "not_started",
+      status: paymentMethod === "zelle" ? "awaiting_zelle_payment" : "deposit_pending",
     };
 
     const missingFieldMessage = firstMissingBookingField(ownerPayload, pets, bookingPayload);
@@ -584,6 +592,7 @@ async function handler(req, res) {
         estimatedTotal: pricing.formatted.total,
         depositDueToday: pricing.formatted.deposit,
         remainingBalance: pricing.formatted.remaining,
+        paymentMethod,
         holidaySurcharge: pricing.holidayPricing.totalSurcharge,
         pricingBreakdown,
       });

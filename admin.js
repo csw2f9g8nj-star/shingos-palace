@@ -2,6 +2,7 @@ let supabaseClient;
 let adminSession;
 let adminDogs = [];
 let adminReviews = [];
+let adminZellePayments = [];
 let adminClubMemberships = [];
 let adminClubMatches = [];
 let selectedCanonicalOwner = null;
@@ -15,6 +16,8 @@ const adminStatus = document.querySelector("#adminStatus");
 const adminDogsEl = document.querySelector("#adminDogs");
 const adminMeetGreetsEl = document.querySelector("#adminMeetGreets");
 const adminReviewsEl = document.querySelector("#adminReviews");
+const adminZellePaymentsEl = document.querySelector("#adminZellePayments");
+const adminZelleStatus = document.querySelector("#adminZelleStatus");
 const adminClubMembersEl = document.querySelector("#adminClubMembers");
 const adminClubStatus = document.querySelector("#adminClubStatus");
 const adminOwnerSearchForm = document.querySelector("#adminOwnerSearchForm");
@@ -429,6 +432,92 @@ function renderAdminReviews(reviews) {
     .join("");
 }
 
+function currencyAmount(value) {
+  const amount = Number(String(value || "").replace(/[^0-9.]/g, ""));
+  if (!Number.isFinite(amount)) return "$0";
+  return `$${amount.toFixed(2).replace(/\.00$/, "")}`;
+}
+
+function zellePaymentEntries(bookings) {
+  return (bookings || []).flatMap((booking) => {
+    const entries = [];
+    if (booking.deposit_payment_method === "zelle") {
+      entries.push({
+        booking,
+        paymentType: "deposit",
+        amount: booking.deposit_due_today,
+        pending: !["deposit_paid", "paid_in_full"].includes(booking.payment_status),
+        confirmedAt: booking.zelle_deposit_confirmed_at,
+        reference: booking.zelle_deposit_reference,
+      });
+    }
+    if (booking.balance_payment_method === "zelle") {
+      entries.push({
+        booking,
+        paymentType: "balance",
+        amount: booking.balance_payment_status === "paid" ? booking.balance_paid_amount : booking.remaining_balance,
+        pending: booking.balance_payment_status !== "paid",
+        confirmedAt: booking.zelle_balance_confirmed_at,
+        reference: booking.zelle_balance_reference,
+      });
+    }
+    return entries;
+  }).sort((a, b) => Number(b.pending) - Number(a.pending));
+}
+
+function zellePetNames(booking) {
+  const names = (booking.booking_pets || []).map((item) => item.dog?.name).filter(Boolean);
+  if (!names.length && booking.dog?.name) names.push(booking.dog.name);
+  return names.join(", ") || booking.booking_pet_summary || "Pet";
+}
+
+function renderAdminZellePayments(bookings) {
+  if (!adminZellePaymentsEl) return;
+  const entries = zellePaymentEntries(bookings);
+  if (!entries.length) {
+    adminZellePaymentsEl.innerHTML = "<p>No Zelle payment requests yet.</p>";
+    return;
+  }
+
+  adminZellePaymentsEl.innerHTML = entries.map(({ booking, paymentType, amount, pending, confirmedAt, reference }) => {
+    const ownerName = [booking.owner?.first_name, booking.owner?.last_name].filter(Boolean).join(" ") || "Pet parent";
+    const label = paymentType === "balance" ? "Remaining balance" : "Deposit";
+    const submitted = booking.created_at ? new Date(booking.created_at).toLocaleString() : "No date";
+    const confirmation = confirmedAt ? new Date(confirmedAt).toLocaleString() : "";
+    return `
+      <article class="admin-request-card admin-zelle-card ${pending ? "is-pending" : "is-confirmed"}">
+        <div class="admin-review-topline">
+          <strong>${safeText(ownerName)} · ${safeText(zellePetNames(booking))}</strong>
+          <span class="admin-review-status ${pending ? "is-pending" : "is-approved"}">${pending ? "Pending verification" : "Confirmed"}</span>
+        </div>
+        <span>${safeText(booking.service, "Reservation")} · ${safeText(booking.dropoff_date, "No date")} → ${safeText(booking.pickup_date, "No date")}</span>
+        <span>${label}: <strong>${safeText(currencyAmount(amount))}</strong></span>
+        <span>${safeText(booking.owner?.email, "No email")} · Requested ${escapeHtml(submitted)}</span>
+        ${pending ? `
+          <form class="admin-form admin-zelle-confirm-form">
+            <input type="hidden" name="bookingId" value="${escapeHtml(booking.id)}" />
+            <input type="hidden" name="paymentType" value="${escapeHtml(paymentType)}" />
+            <label>
+              <span>Exact amount received</span>
+              <input name="amount" value="${escapeHtml(currencyAmount(amount))}" readonly />
+            </label>
+            <label>
+              <span>Zelle reference (optional)</span>
+              <input name="reference" autocomplete="off" />
+            </label>
+            <label>
+              <span>Internal note (optional)</span>
+              <textarea name="note" rows="2"></textarea>
+            </label>
+            <button class="ghost-button" type="submit">Confirm ${label}</button>
+            <p class="status-line" aria-live="polite"></p>
+          </form>
+        ` : `<span>Confirmed ${escapeHtml(confirmation)}${reference ? ` · Reference ${safeText(reference)}` : ""}</span>`}
+      </article>
+    `;
+  }).join("");
+}
+
 function populateDogOptions(select, currentDogId) {
   select.innerHTML = adminDogs
     .filter((dog) => dog.id !== currentDogId)
@@ -633,6 +722,16 @@ async function loadDogs() {
     adminClubMatches = [];
     setStatus(adminClubStatus, `Club management is not ready yet: ${error.message}`);
   }
+  try {
+    const paymentPayload = await apiFetch("/api/admin/payments");
+    adminZellePayments = paymentPayload.payments || [];
+    renderAdminZellePayments(adminZellePayments);
+    setStatus(adminZelleStatus, "");
+  } catch (error) {
+    adminZellePayments = [];
+    renderAdminZellePayments([]);
+    setStatus(adminZelleStatus, `Zelle payment management is not ready yet: ${error.message}`);
+  }
   renderMeetGreets(meetGreetsPayload.requests || []);
   renderAdminReviews(adminReviews);
   renderClubMembers();
@@ -779,6 +878,24 @@ adminReviewsEl?.addEventListener("click", async (event) => {
     await loadDogs();
   } catch (error) {
     setStatus(adminStatus, error.message);
+    button.disabled = false;
+  }
+});
+
+adminZellePaymentsEl?.addEventListener("submit", async (event) => {
+  const form = event.target.closest(".admin-zelle-confirm-form");
+  if (!form) return;
+  event.preventDefault();
+  const status = form.querySelector(".status-line");
+  const button = form.querySelector("button[type='submit']");
+  button.disabled = true;
+  setStatus(status, "Saving the payment confirmation...");
+  try {
+    await apiFetch("/api/admin/payments", { method: "PATCH", body: new FormData(form) });
+    setStatus(status, "Payment confirmed. The customer record has been updated.");
+    await loadDogs();
+  } catch (error) {
+    setStatus(status, error.message);
     button.disabled = false;
   }
 });
