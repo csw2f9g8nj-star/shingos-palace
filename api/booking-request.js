@@ -14,6 +14,7 @@ const {
 } = require("../lib/api-utils/supabase");
 const { parseMultipartForm, toFileArray } = require("../lib/api-utils/forms");
 const { calculateAuthoritativeBookingPricing } = require("../lib/api-utils/booking-pricing");
+const { checkServiceAvailability } = require("../lib/api-utils/availability");
 
 function getInsertErrorMessage(table, error, fallbackMessage) {
   const source = `${error?.message || ""} ${error?.details || ""} ${error?.hint || ""}`.toLowerCase();
@@ -106,6 +107,9 @@ function firstMissingBookingField(ownerPayload, pets, bookingPayload) {
   if (!bookingPayload.emergency_authorization) {
     return "Please accept the emergency veterinary authorization.";
   }
+  if (!bookingPayload.cancellation_policy_acknowledged) {
+    return "Please acknowledge the cancellation policy.";
+  }
 
   return "";
 }
@@ -166,6 +170,17 @@ function petSummary(pets) {
 async function insertSingle(supabase, table, payload, message) {
   const { data, error } = await supabase.from(table).insert(payload).select().single();
   if (error) {
+    if (table === "bookings" && String(error.message || "").includes("booking_capacity_exceeded")) {
+      const capacityError = publicApiError(
+        "Those dates just became fully booked. Please choose different dates or contact us about the waiting list.",
+        409,
+        "booking_capacity_exceeded",
+      );
+      capacityError.supabaseCode = error.code;
+      capacityError.supabaseMessage = error.message;
+      capacityError.details = error.details;
+      throw capacityError;
+    }
     const insertError = publicApiError(getInsertErrorMessage(table, error, message), 500, `${table}_insert_failed`);
     insertError.details = error.details;
     insertError.hint = error.hint;
@@ -337,10 +352,13 @@ async function handler(req, res) {
       pet_count: pets.length,
       booking_pet_summary: petSummary(pets),
       pricing_breakdown: pricingBreakdown,
-      after_hours: service === "walking" ? false : isLatePickup(fields.departureTime),
+      after_hours: service === "boarding" ? isLatePickup(fields.departureTime) : false,
       long_stay: service === "walking" ? false : normalizeField(fields.longStay) === "on",
       notes: normalizeField(fields.notes),
       emergency_authorization: normalizeField(fields.emergencyAuthorization) === "on",
+      cancellation_policy_acknowledged: normalizeField(fields.cancellationPolicyAcknowledged) === "on",
+      cancellation_policy_acknowledged_at:
+        normalizeField(fields.cancellationPolicyAcknowledged) === "on" ? new Date().toISOString() : null,
       estimated_total: pricing.formatted.total,
       deposit_due_today: pricing.formatted.deposit,
       remaining_balance: pricing.formatted.remaining,
@@ -352,6 +370,20 @@ async function handler(req, res) {
     if (missingFieldMessage) {
       sendJson(res, 400, { ok: false, error: missingFieldMessage });
       return;
+    }
+
+    const initialAvailability = await checkServiceAvailability(supabase, {
+      service,
+      startDate: bookingPayload.dropoff_date,
+      endDate: bookingPayload.pickup_date,
+      petCount: bookingPayload.pet_count,
+    });
+    if (!initialAvailability.available) {
+      throw publicApiError(
+        "Those dates are fully booked. Please choose different dates or contact us about the waiting list.",
+        409,
+        "booking_capacity_exceeded",
+      );
     }
 
     try {

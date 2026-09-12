@@ -71,7 +71,6 @@ function serviceLabel(service) {
     boarding: "Boarding",
     daycare: "Daycare",
     walking: "Dog Walking",
-    grooming: "Grooming",
   };
   return labels[service] || service || "-";
 }

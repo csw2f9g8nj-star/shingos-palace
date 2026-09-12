@@ -514,7 +514,7 @@
           </details>
           <details>
             <summary data-i18n="faqLateQuestion">What is the late pick-up policy?</summary>
-            <p data-i18n="faqLateAnswer">Pick-ups from 12:01 PM through 6:00 PM add a $25 late pick-up fee. Pick-ups after 6:00 PM are charged as an additional day.</p>
+            <p data-i18n="faqLateAnswer">Boarding pick-ups from 12:01 PM through 9:00 PM add a $25 late pick-up fee. Pick-ups after 9:00 PM are charged as an additional night.</p>
           </details>
           <details>
             <summary data-i18n="faqDepositQuestion">How do deposits and remaining balances work?</summary>
@@ -522,7 +522,7 @@
           </details>
           <details>
             <summary data-i18n="faqCancellationQuestion">What is the cancellation policy?</summary>
-            <p data-i18n="faqCancellationAnswer">The final cancellation policy still needs to be confirmed by Shingo's Palace before it is published.</p>
+            <p data-i18n="faqCancellationAnswer">For standard dates, deposits are refundable with at least 7 days' notice and non-refundable with less than 7 days' notice. For peak and holiday periods, deposits are refundable with at least 14 days' notice and non-refundable with less than 14 days' notice.</p>
           </details>
           <details>
             <summary data-i18n="faqBringQuestion">What should owners bring?</summary>
@@ -550,7 +550,7 @@
       <footer class="footer">
         <div>
           <strong>Shingo's Palace Pet Hotel</strong>
-          <span data-i18n="footerLine">Boarding, day care, drop-ins, cat care, and dog walking.</span>
+          <span data-i18n="footerLine">Boarding, daycare, and dog walking.</span>
         </div>
         <div class="footer-links">
           <a href="mailto:info@shingospalace.com">info@shingospalace.com</a>
@@ -603,16 +603,6 @@
             <h3 data-i18n="daycareLabel">Daycare Packages</h3>
             <div class="price-row"><span data-i18n="pricingDay">Day</span><strong>$35</strong></div>
             <div class="price-row"><span data-i18n="pricingWeek">Week</span><strong>$150</strong></div>
-            <p class="price-note">
-              <span data-i18n="pricingConcierge">Concierge pick-up & drop-off service</span><br />
-              <span data-i18n="pickupPrice">Starting at $10 each way</span>
-            </p>
-          </section>
-
-          <section class="pricing-group">
-            <h3 data-i18n="pricingDropinTitle">DROP-IN VISITS</h3>
-            <div class="price-row"><span data-i18n="pricingDay">Day</span><strong>$25</strong></div>
-            <div class="price-row"><span data-i18n="pricingWeek">Week</span><strong>$100</strong></div>
           </section>
 
           <section class="pricing-group">
@@ -621,13 +611,6 @@
             <div class="price-row"><span data-i18n="pricingWeek">Week</span><strong>$75</strong></div>
           </section>
 
-          <section class="pricing-group pricing-group-wide">
-            <h3 data-i18n="pricingSpaTitle">SPA & GROOMING SERVICES</h3>
-            <div class="price-row"><span data-i18n="spaBathLabel">Spa Bath</span><strong data-i18n="spaBathPrice">Starting at $30</strong></div>
-            <p class="price-note" data-i18n="spaBathDesc">Includes shampoo, conditioner, and light drying.</p>
-            <div class="price-row"><span data-i18n="fullGroomLabel">Full Grooming Spa</span><strong data-i18n="fullGroomPrice">Custom quote</strong></div>
-            <p class="price-note" data-i18n="fullGroomDesc">Haircut, blow dry, nails, and ear cleaning. Pricing based on dog size and coat condition.</p>
-          </section>
         </div>
 
         <div class="detail-grid">
@@ -654,11 +637,11 @@
                 <strong data-i18n="boardingPolicyIncluded">Included</strong>
               </div>
               <div class="policy-row">
-                <span data-i18n="boardingPolicyLate">Late check-out (12:00 PM - 6:00 PM)</span>
+                <span data-i18n="boardingPolicyLate">Late check-out (12:01 PM - 9:00 PM)</span>
                 <strong>$25</strong>
               </div>
               <div class="policy-row">
-                <span data-i18n="boardingPolicyEvening">Evening check-out (after 6:00 PM)</span>
+                <span data-i18n="boardingPolicyEvening">Late-night check-out (after 9:00 PM)</span>
                 <strong data-i18n="boardingPolicyExtraNight">Additional night</strong>
               </div>
             </div>
@@ -712,7 +695,6 @@
                   <option value="boarding" data-i18n="optionBoarding">Boarding</option>
                   <option value="daycare" data-i18n="optionDaycare">Daycare</option>
                   <option value="walking" data-i18n="optionWalking">Walking</option>
-                  <option value="grooming" data-i18n="optionGrooming">Grooming</option>
                 </select>
               </label>
               <div class="booking-fields stay-grid wide-field">
@@ -950,7 +932,7 @@
                     </select>
                   </label>
                   <p class="pickup-policy-note wide-field" data-i18n="pickupPolicyNote">
-                    Pick-ups after 12:00 PM incur a $25 late pick-up fee. Pick-ups after 6:00 PM are charged as an additional day.
+                    Boarding pick-ups from 12:01 PM through 9:00 PM incur a $25 late pick-up fee. Pick-ups after 9:00 PM are charged as an additional night.
                   </p>
                 </div>
                 <label>
@@ -990,6 +972,10 @@
                 <label class="checkbox-line required-checkbox wide-field">
                   <input name="emergencyAuthorization" id="emergencyAuthorization" type="checkbox" required />
                   <span data-i18n="fieldEmergencyAuthorization">I authorize Shingo's Palace to seek veterinary care in case of an emergency if I cannot be reached. I understand that all veterinary expenses are my responsibility.</span>
+                </label>
+                <label class="checkbox-line required-checkbox wide-field">
+                  <input name="cancellationPolicyAcknowledged" id="cancellationPolicyAcknowledged" type="checkbox" required />
+                  <span data-i18n="fieldCancellationPolicyAcknowledgment">I have read and agree to the cancellation policy: standard dates require 7 days' notice for a refundable deposit; peak and holiday dates require 14 days' notice. Deposits are non-refundable after those deadlines.</span>
                 </label>
               </div>
             </section>
@@ -1037,7 +1023,7 @@
                 <strong id="mobileSummaryHolidayPricing">$0</strong>
               </div>
               <div>
-                <span data-i18n="summaryPickupFee">Pick-up fee</span>
+                <span data-i18n="summaryPickupFee">Late pick-up</span>
                 <strong id="mobileSummaryAfterFee">$0</strong>
               </div>
               <div>
@@ -1263,7 +1249,7 @@
               <strong id="summaryHolidayPricing">$0</strong>
             </div>
             <div class="summary-line">
-              <span data-i18n="summaryPickupFee">Pick-up fee</span>
+              <span data-i18n="summaryPickupFee">Late pick-up</span>
               <strong id="summaryAfterFee">$0</strong>
             </div>
             <div class="summary-line">

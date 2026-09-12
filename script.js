@@ -210,25 +210,6 @@ const translations = {
       "Jefe spent time at Shingo's Palace while waiting for his forever home, surrounded by calm routines, affection, and safe care.",
     jefeStory:
       "His story is one of hope: a dog who needed time, patience, and the right people to see his heart. During his stay, Jefe was treated like family until the day he found one of his own.",
-    chesterStatus: "Available for Adoption 🏡",
-    chesterPreview:
-      "Chester arrived at Shingo's Palace unexpectedly, but quickly won everyone's heart. Friendly with dogs, cats, and people, he's currently staying with us while we search for the forever family he deserves.",
-    chesterStoryOne: "A few days ago, Chester appeared at the gates of Shingo's Palace all by himself.",
-    chesterStoryTwo:
-      "When I saw him standing outside, I went to check if someone was looking for him, but he was completely alone. I invited him in, gave him fresh water, a good meal, and a safe place to rest. He looked tired, hungry, and unsure of where he belonged.",
-    chesterStoryThree:
-      "At first, we introduced him carefully. Whenever a new dog arrives, safety comes first. But it didn't take long to discover what a wonderful dog Chester truly is.",
-    chesterStoryFour:
-      "He loves people, enjoys playing with other dogs, and, to my surprise, gets along beautifully with cats. Day by day, he showed us a gentle, playful personality and a huge desire to be part of a family.",
-    chesterStoryFive:
-      "As we learned more about his past, we realized his story had not been an easy one. Chester has experienced more uncertainty than any dog should. What matters now is not where he came from, but where he is going.",
-    chesterStorySix:
-      "For the time being, Chester is safe here at Shingo's Palace. He is receiving care, structure, affection, and the chance to simply be a dog again. We plan to have him neutered and continue helping him build confidence while we search for the right forever family.",
-    chesterStorySeven: "Finding a home is easy. Finding the right home is much harder.",
-    chesterStoryEight:
-      "Our goal is not to place Chester quickly. Our goal is to find a family that will love him, protect him, and make a lifelong commitment to him.",
-    chesterStoryNine: "Until that family arrives, Chester is home with us.",
-    chesterStoryTen: "And every day, we will remind him that he is loved, wanted, and never alone.",
     homeGalleryKicker: "The property",
     homeGalleryHeading: "Where Dogs Stay, Play & Relax",
     homeGalleryIntro: "Everything guests need for a safe, comfortable and enjoyable stay.",
@@ -240,7 +221,7 @@ const translations = {
     homeServiceAreaHeading: "Boutique pet care close to home",
     homeServiceAreaBody:
       "Based in Margate and welcoming families from Coral Springs, Coconut Creek, Tamarac, and North Lauderdale.",
-    footerLine: "Boarding, day care, drop-ins, cat care, and dog walking.",
+    footerLine: "Boarding, daycare, and dog walking.",
     servicesHeading: "Boutique care options, thoughtfully grouped.",
     featureLabel: "What families usually love",
     servicesFeature: "Small-volume care, outdoor play, and a calmer environment than a big kennel setup.",
@@ -254,19 +235,7 @@ const translations = {
     daycareLabel: "Daycare Packages",
     pricingDay: "Day",
     pricingWeek: "Week",
-    pricingConcierge: "Concierge pick-up & drop-off service",
-    pricingDropinTitle: "DROP-IN VISITS",
     pricingWalkingTitle: "DOG WALKING",
-    pricingSpaTitle: "SPA & GROOMING SERVICES",
-    spaBathLabel: "Spa Bath",
-    spaBathPrice: "Starting at $30",
-    spaBathDesc: "Includes shampoo, conditioner, and light drying.",
-    fullGroomLabel: "Full Grooming Spa",
-    fullGroomPrice: "Custom quote",
-    fullGroomDesc: "Haircut, blow dry, nails, and ear cleaning. Pricing based on dog size and coat condition.",
-    pickupLabel: "Concierge Pick-up & Drop-off Service",
-    pickupPrice: "Starting at $10 each way",
-    pickupDesc: "Final rate based on distance.",
     additionalDogLabel: "Additional Dog",
     additionalDogDesc: "Added to shared bookings.",
     additionalCatLabel: "Additional Cat",
@@ -283,8 +252,8 @@ const translations = {
     boardingPolicyCheckinIndividual: "Check-in times are flexible and scheduled individually with each family.",
     boardingPolicyCheckout: "Check-out is complimentary until 12:00 PM.",
     boardingPolicyIncluded: "Included",
-    boardingPolicyLate: "Late check-out (12:00 PM - 6:00 PM)",
-    boardingPolicyEvening: "Evening check-out (after 6:00 PM)",
+    boardingPolicyLate: "Late check-out (12:01 PM - 9:00 PM)",
+    boardingPolicyEvening: "Late-night check-out (after 9:00 PM)",
     boardingPolicyExtraNight: "Additional night",
     boardingPolicyReason:
       "This policy helps us reserve space, maintain staffing, and continue providing personalized care for every guest.",
@@ -308,11 +277,11 @@ const translations = {
     faqPickupQuestion: "How do drop-off and pick-up times work?",
     faqPickupAnswer: "Check-in times are flexible and scheduled individually with each family. Check-out is complimentary until 12:00 PM.",
     faqLateQuestion: "What is the late pick-up policy?",
-    faqLateAnswer: "Pick-ups from 12:01 PM through 6:00 PM add a $25 late pick-up fee. Pick-ups after 6:00 PM are charged as an additional day.",
+    faqLateAnswer: "Boarding pick-ups from 12:01 PM through 9:00 PM add a $25 late pick-up fee. Pick-ups after 9:00 PM are charged as an additional night.",
     faqDepositQuestion: "How do deposits and remaining balances work?",
     faqDepositAnswer: "A deposit is collected to hold the reservation. For Boarding and Daycare, the remaining balance is due at check-in. For Dog Walking, the remaining balance is due before the first scheduled service.",
     faqCancellationQuestion: "What is the cancellation policy?",
-    faqCancellationAnswer: "The final cancellation policy still needs to be confirmed by Shingo's Palace before it is published.",
+    faqCancellationAnswer: "For standard dates, deposits are refundable with at least 7 days' notice and non-refundable with less than 7 days' notice. For peak and holiday periods, deposits are refundable with at least 14 days' notice and non-refundable with less than 14 days' notice.",
     faqBringQuestion: "What should owners bring?",
     faqBringAnswer: "A final packing list should be confirmed with Carla before arrival so each pet has exactly what they need for their stay.",
     faqCatsQuestion: "Do you accept cats?",
@@ -340,6 +309,10 @@ const translations = {
     availabilityHostMessage: "We have availability for your selected dates.",
     availabilityContinueMessage: "Continue to complete your reservation.",
     availabilityFullMessage: "Unfortunately we're fully booked for those dates.",
+    availabilityChecking: "Checking live availability...",
+    availabilityError: "We couldn't verify availability right now. Please try again before booking.",
+    availabilityRemainingOne: "We'd love to host your pet. 1 spot remains for your selected dates.",
+    availabilityRemainingMany: "We'd love to host your pet. {count} spots remain for your selected dates.",
     joinWaitlist: "Join Waitlist",
     continueBookNow: "Book Now",
     continueBooking: "Continue to Booking",
@@ -431,7 +404,7 @@ const translations = {
     fieldArrivalTime: "Arrival time (optional)",
     fieldDepartureTime: "Pick-up time",
     fieldPreferredWalkingTime: "Preferred Walking Time",
-    pickupPolicyNote: "Pick-ups after 12:00 PM incur a $25 late pick-up fee. Pick-ups after 6:00 PM are charged as an additional day.",
+    pickupPolicyNote: "Boarding pick-ups from 12:01 PM through 9:00 PM incur a $25 late pick-up fee. Pick-ups after 9:00 PM are charged as an additional night.",
     fieldArea: "Area",
     fieldUnits: "Nights, days, or visits",
     fieldDogs: "Additional dogs",
@@ -440,6 +413,8 @@ const translations = {
     fieldNotes: "Notes",
     fieldEmergencyAuthorization:
       "I authorize Shingo's Palace to seek veterinary care in case of an emergency if I cannot be reached. I understand that all veterinary expenses are my responsibility.",
+    fieldCancellationPolicyAcknowledgment:
+      "I have read and agree to the cancellation policy: standard dates require 7 days' notice for a refundable deposit; peak and holiday dates require 14 days' notice. Deposits are non-refundable after those deadlines.",
     fieldCard: "Cardholder",
     fieldCardNumber: "Card number",
     fieldExpiry: "Expiry",
@@ -483,7 +458,7 @@ const translations = {
     summaryDogCount: "Number of pets",
     summaryDates: "Dates",
     summaryDatesEmpty: "Select dates",
-    summaryPickupFee: "Pick-up fee",
+    summaryPickupFee: "Late pick-up",
     summaryHolidayPricing: "Holiday pricing",
     holidayPricingUnavailable: "Holiday pricing is temporarily unavailable. Please try again in a moment.",
     holidayRateExplanation: "Holiday rates apply on select high-demand dates and are automatically reflected in your total.",
@@ -544,15 +519,9 @@ const translations = {
     optionDaycarePackage: "Day Care - Week",
     optionMeetGreet: "Meet & Greet",
     optionWalking: "Walking",
-    optionGrooming: "Grooming",
-    optionSpaBath: "Spa Bath",
-    optionFullGroom: "Full Grooming Spa",
-    optionDropin: "Drop-In Visits Daily",
-    optionDropinWeekly: "Drop-In Visits Weekly",
     optionCatStay: "Cat Stay",
     optionWalking: "Dog Walking Daily",
     optionWalkingWeekly: "Dog Walking Weekly",
-    optionPickup: "Pick Up / Drop Off",
     storyHeading: "Born from the love for Shingo.",
     storyBody1:
       "Shingo's Palace was born from the love for one very special dog: Shingo, my chocolate Labrador.",
@@ -778,25 +747,6 @@ const translations = {
       "Jefe pasó tiempo en Shingo's Palace mientras esperaba su hogar definitivo, rodeado de rutinas tranquilas, cariño y cuidado seguro.",
     jefeStory:
       "Su historia es una historia de esperanza: un perro que necesitaba tiempo, paciencia y las personas correctas para ver su corazón. Durante su estadía, Jefe fue tratado como familia hasta el día en que encontró una propia.",
-    chesterStatus: "Disponible para adopción 🏡",
-    chesterPreview:
-      "Chester llegó inesperadamente a Shingo's Palace, pero rápidamente se ganó el corazón de todos. Es amigable con perros, gatos y personas, y actualmente se queda con nosotros mientras buscamos la familia definitiva que merece.",
-    chesterStoryOne: "Hace unos días, Chester apareció solo en la entrada de Shingo's Palace.",
-    chesterStoryTwo:
-      "Cuando lo vi parado afuera, fui a revisar si alguien lo estaba buscando, pero estaba completamente solo. Lo invité a entrar, le di agua fresca, una buena comida y un lugar seguro para descansar. Se veía cansado, hambriento y sin saber muy bien a dónde pertenecía.",
-    chesterStoryThree:
-      "Al principio lo presentamos con cuidado. Cada vez que llega un perro nuevo, la seguridad es lo primero. Pero no pasó mucho tiempo hasta descubrir lo maravilloso que realmente es Chester.",
-    chesterStoryFour:
-      "Ama a las personas, disfruta jugar con otros perros y, para mi sorpresa, se lleva hermoso con los gatos. Día a día nos mostró una personalidad gentil, juguetona y un deseo enorme de ser parte de una familia.",
-    chesterStoryFive:
-      "A medida que fuimos conociendo más sobre su pasado, entendimos que su historia no había sido fácil. Chester vivió más incertidumbre de la que cualquier perro debería vivir. Lo importante ahora no es de dónde viene, sino hacia dónde va.",
-    chesterStorySix:
-      "Por ahora, Chester está seguro aquí en Shingo's Palace. Está recibiendo cuidado, estructura, cariño y la oportunidad de simplemente volver a ser perro. Planeamos castrarlo y seguir ayudándolo a ganar confianza mientras buscamos la familia definitiva correcta.",
-    chesterStorySeven: "Encontrar un hogar es fácil. Encontrar el hogar correcto es mucho más difícil.",
-    chesterStoryEight:
-      "Nuestro objetivo no es ubicar a Chester rápido. Nuestro objetivo es encontrar una familia que lo ame, lo proteja y se comprometa con él para toda la vida.",
-    chesterStoryNine: "Hasta que esa familia llegue, Chester está en casa con nosotros.",
-    chesterStoryTen: "Y todos los días le vamos a recordar que es amado, querido y que nunca está solo.",
     homeGalleryKicker: "El espacio",
     homeGalleryHeading: "Donde los perros se hospedan, juegan y descansan",
     homeGalleryIntro: "Todo lo que los huéspedes necesitan para una estadía segura, cómoda y feliz.",
@@ -808,7 +758,7 @@ const translations = {
     homeServiceAreaHeading: "Cuidado boutique cerca de casa",
     homeServiceAreaBody:
       "Estamos en Margate y recibimos familias de Coral Springs, Coconut Creek, Tamarac y North Lauderdale.",
-    footerLine: "Hospedaje, guardería diaria, visitas, cuidado de gatos y paseos.",
+    footerLine: "Hospedaje, guardería diaria y paseos de perros.",
     servicesHeading: "Opciones boutique de cuidado, agrupadas con claridad.",
     featureLabel: "Lo que más suelen valorar",
     servicesFeature: "Cuidado con pocos perros, juego al aire libre y un ambiente más tranquilo que una guardería grande.",
@@ -822,19 +772,7 @@ const translations = {
     daycareLabel: "Paquetes de Daycare",
     pricingDay: "Día",
     pricingWeek: "Semana",
-    pricingConcierge: "Servicio concierge de pick-up y drop-off",
-    pricingDropinTitle: "DROP-IN VISITS",
     pricingWalkingTitle: "PASEO DE PERROS",
-    pricingSpaTitle: "SPA & GROOMING SERVICES",
-    spaBathLabel: "Spa Bath",
-    spaBathPrice: "Desde $30",
-    spaBathDesc: "Incluye shampoo, acondicionador y secado ligero.",
-    fullGroomLabel: "Full Grooming Spa",
-    fullGroomPrice: "Cotización personalizada",
-    fullGroomDesc: "Corte, secado, uñas y limpieza de oídos. El precio depende del tamaño del perro y la condición del pelaje.",
-    pickupLabel: "Servicio concierge de pick-up y drop-off",
-    pickupPrice: "Desde $10 por tramo",
-    pickupDesc: "La tarifa final depende de la distancia.",
     additionalDogLabel: "Perro adicional",
     additionalDogDesc: "Se suma a reservas compartidas.",
     additionalCatLabel: "Gato extra",
@@ -851,8 +789,8 @@ const translations = {
     boardingPolicyCheckinIndividual: "Los horarios de check-in son flexibles y se coordinan individualmente con cada familia.",
     boardingPolicyCheckout: "El check-out está incluido sin cargo hasta las 12:00 PM.",
     boardingPolicyIncluded: "Incluido",
-    boardingPolicyLate: "Late check-out (12:00 PM - 6:00 PM)",
-    boardingPolicyEvening: "Evening check-out (después de las 6:00 PM)",
+    boardingPolicyLate: "Late check-out (12:01 PM - 9:00 PM)",
+    boardingPolicyEvening: "Late-night check-out (después de las 9:00 PM)",
     boardingPolicyExtraNight: "Noche adicional",
     boardingPolicyReason:
       "Esta política nos ayuda a reservar espacio, organizar el cuidado y seguir brindando atención personalizada a cada huésped.",
@@ -876,11 +814,11 @@ const translations = {
     faqPickupQuestion: "¿Cómo funcionan los horarios de drop-off y pick-up?",
     faqPickupAnswer: "Los horarios de check-in son flexibles y se coordinan individualmente con cada familia. El check-out está incluido sin cargo hasta las 12:00 PM.",
     faqLateQuestion: "¿Cuál es la política de late pick-up?",
-    faqLateAnswer: "Los pick-ups desde las 12:01 PM hasta las 6:00 PM suman un cargo de $25. Los pick-ups después de las 6:00 PM se cobran como un día adicional.",
+    faqLateAnswer: "Los pick-ups de Boarding desde las 12:01 PM hasta las 9:00 PM suman un cargo de $25. Los pick-ups después de las 9:00 PM se cobran como una noche adicional.",
     faqDepositQuestion: "¿Cómo funcionan los depósitos y saldos restantes?",
     faqDepositAnswer: "Se cobra un depósito para guardar la reserva. Para Boarding y Daycare, el saldo restante se paga en el check-in. Para Paseo de perros, el saldo restante se paga antes del primer servicio programado.",
     faqCancellationQuestion: "¿Cuál es la política de cancelación?",
-    faqCancellationAnswer: "La política final de cancelación todavía debe ser confirmada por Shingo's Palace antes de publicarse.",
+    faqCancellationAnswer: "Para fechas estándar, el depósito es reembolsable con al menos 7 días de aviso y no es reembolsable con menos de 7 días. Para períodos peak y feriados, es reembolsable con al menos 14 días de aviso y no es reembolsable con menos de 14 días.",
     faqBringQuestion: "¿Qué deberían traer los dueños?",
     faqBringAnswer: "La lista final de cosas para traer debe confirmarse con Carla antes de la llegada para que cada mascota tenga exactamente lo que necesita.",
     faqCatsQuestion: "¿Aceptan gatos?",
@@ -913,6 +851,10 @@ const translations = {
     availabilityHostMessage: "Tenemos disponibilidad para las fechas seleccionadas.",
     availabilityContinueMessage: "Continuá para completar tu reserva.",
     availabilityFullMessage: "Lamentablemente estamos completos para esas fechas.",
+    availabilityChecking: "Consultando disponibilidad en tiempo real...",
+    availabilityError: "No pudimos verificar la disponibilidad en este momento. Intentá nuevamente antes de reservar.",
+    availabilityRemainingOne: "Nos encantaría recibir a tu mascota. Queda 1 lugar para las fechas seleccionadas.",
+    availabilityRemainingMany: "Nos encantaría recibir a tu mascota. Quedan {count} lugares para las fechas seleccionadas.",
     joinWaitlist: "Unirme a lista de espera",
     continueBookNow: "Reservar ahora",
     continueBooking: "Continuar con la reserva",
@@ -1004,7 +946,7 @@ const translations = {
     fieldArrivalTime: "Horario de llegada (opcional)",
     fieldDepartureTime: "Horario de pick-up",
     fieldPreferredWalkingTime: "Horario preferido para el paseo",
-    pickupPolicyNote: "Los pick-ups después de las 12:00 PM tienen un cargo de $25. Los pick-ups después de las 6:00 PM se cobran como un día adicional.",
+    pickupPolicyNote: "Los pick-ups de Boarding desde las 12:01 PM hasta las 9:00 PM tienen un cargo de $25. Los pick-ups después de las 9:00 PM se cobran como una noche adicional.",
     fieldArea: "Zona",
     fieldUnits: "Noches, días o visitas",
     fieldDogs: "Perros adicionales",
@@ -1013,6 +955,8 @@ const translations = {
     fieldNotes: "Notas",
     fieldEmergencyAuthorization:
       "Autorizo a Shingo's Palace a buscar atención veterinaria en caso de emergencia si no pueden contactarme. Entiendo que todos los gastos veterinarios son mi responsabilidad.",
+    fieldCancellationPolicyAcknowledgment:
+      "Leí y acepto la política de cancelación: las fechas estándar requieren 7 días de aviso para que el depósito sea reembolsable; los períodos peak y feriados requieren 14 días. Después de esos plazos, el depósito no es reembolsable.",
     fieldCard: "Titular",
     fieldCardNumber: "Número de tarjeta",
     fieldExpiry: "Vencimiento",
@@ -1056,7 +1000,7 @@ const translations = {
     summaryDogCount: "Cantidad de mascotas",
     summaryDates: "Fechas",
     summaryDatesEmpty: "Seleccioná fechas",
-    summaryPickupFee: "Cargo de pick-up",
+    summaryPickupFee: "Retiro tardío",
     summaryHolidayPricing: "Tarifa de feriado",
     holidayPricingUnavailable: "La tarifa de feriado no está disponible temporalmente. Intentá nuevamente en unos minutos.",
     holidayRateExplanation: "Las tarifas de feriados se aplican en fechas seleccionadas de alta demanda y se reflejan automáticamente en el total.",
@@ -1117,15 +1061,9 @@ const translations = {
     optionDaycarePackage: "Daycare - semana",
     optionMeetGreet: "Meet & Greet",
     optionWalking: "Paseo",
-    optionGrooming: "Baño y grooming",
-    optionSpaBath: "Spa Bath",
-    optionFullGroom: "Full Grooming Spa",
-    optionDropin: "Drop-In Visits diario",
-    optionDropinWeekly: "Drop-In Visits semana",
     optionCatStay: "Estadía de gatos",
     optionWalking: "Paseo de perros diario",
     optionWalkingWeekly: "Paseo de perros semana",
-    optionPickup: "Pick Up / Drop Off",
     storyHeading: "Nació del amor por Shingo.",
     storyBody1:
       "Shingo's Palace nació del amor por un perro muy especial: Shingo, mi labrador chocolate.",
@@ -1146,7 +1084,6 @@ const serviceRates = {
   boarding: 50,
   daycare: 35,
   walking: 18,
-  grooming: 30,
 };
 
 const commonBreedOptions = ["Mixed Breed", "Unknown", "Other"];
@@ -1319,21 +1256,6 @@ const catBreeds = [
   ...commonBreedOptions,
 ];
 
-const availabilityCapacity = {
-  boarding: 10,
-  daycare: 8,
-  walking: 4,
-  grooming: 3,
-};
-
-// Temporary local capacity snapshot. Later this can be replaced by an admin calendar or database.
-const occupiedSpots = {
-  boarding: 5,
-  daycare: 4,
-  walking: 1,
-  grooming: 1,
-};
-
 const additionalDogRate = 35;
 const catBoardingRate = 30;
 const additionalCatRate = 20;
@@ -1343,6 +1265,7 @@ const MEET_GREET_ENDPOINT = "/api/meet-greet";
 const STRIPE_SESSION_ENDPOINT = "/api/create-checkout-session";
 const STRIPE_VERIFY_ENDPOINT = "/api/verify-checkout-session";
 const PUBLIC_CONFIG_ENDPOINT = "/api/public-config";
+const AVAILABILITY_ENDPOINT = "/api/availability";
 const ACCOUNT_ENDPOINT = "/api/account/me";
 const ACCOUNT_DOGS_ENDPOINT = "/api/account/dogs";
 const REVIEWS_ENDPOINT = "/api/reviews";
@@ -1353,6 +1276,8 @@ const defaultBookingSelection = {
   numberOfDogs: 1,
 };
 let bookingSelection = { ...defaultBookingSelection };
+let availabilityRequestSequence = 0;
+let verifiedAvailabilitySignature = "";
 let currentBookingIds = {
   bookingId: "",
   ownerId: "",
@@ -1454,15 +1379,6 @@ const galleryItems = [
     es: "Espacio interior cómodo para el descanso de los huéspedes nocturnos.",
   },
   {
-    icon: "🛏️",
-    image: "assets/gallery-pool-dogs.jpeg",
-    alt: "Outdoor rest area at Shingo's Palace with raised beds for relaxing",
-    enTitle: "Elevated Chew-Resistant Beds",
-    esTitle: "Camas elevadas resistentes",
-    en: "Raised durable beds designed for comfort and easy cleaning.",
-    es: "Camas elevadas y duraderas, pensadas para comodidad y fácil limpieza.",
-  },
-  {
     icon: "🚰",
     image: "assets/carla-poolside-dogs.jpeg",
     alt: "Backyard area at Shingo's Palace where fresh water is available during outdoor time",
@@ -1479,24 +1395,6 @@ const galleryItems = [
     esTitle: "Pileta baja para perros pequeños",
     en: "Shallow cooling area designed for smaller guests.",
     es: "Área baja para refrescarse, pensada para huéspedes pequeños.",
-  },
-  {
-    icon: "🌞",
-    image: "assets/hero-pool.jpeg",
-    alt: "Outdoor shaded areas around the backyard at Shingo's Palace",
-    enTitle: "Shaded Relaxation Areas",
-    esTitle: "Áreas de descanso con sombra",
-    en: "Comfortable spots for dogs to rest outdoors.",
-    es: "Espacios cómodos para que los perros descansen al aire libre.",
-  },
-  {
-    icon: "🍽️",
-    image: "assets/gallery-cat.jpeg",
-    alt: "Indoor home area at Shingo's Palace used for personalized routines",
-    enTitle: "Personalized Feeding Areas",
-    esTitle: "Áreas de alimentación personalizadas",
-    en: "Individual feeding routines when needed.",
-    es: "Rutinas de alimentación individuales cuando se necesitan.",
   },
 ];
 
@@ -1894,7 +1792,6 @@ function serviceLabel(serviceKey) {
     boarding: t("optionBoarding"),
     daycare: t("optionDaycare"),
     walking: t("optionWalking"),
-    grooming: t("optionGrooming"),
   };
 
   return labels[serviceKey] || serviceKey;
@@ -1905,7 +1802,7 @@ function unitsLabel(units, serviceKey = serviceSelect?.value) {
     return units === 1 ? t("oneDay") : `${units} ${t("multipleDays")}`;
   }
 
-  if (serviceKey === "walking" || serviceKey === "grooming") {
+  if (serviceKey === "walking") {
     return units === 1 ? t("oneVisit") : `${units} ${t("multipleVisits")}`;
   }
 
@@ -1914,7 +1811,7 @@ function unitsLabel(units, serviceKey = serviceSelect?.value) {
 
 function rateUnitLabel(serviceKey = serviceSelect?.value) {
   if (serviceKey === "daycare") return t("rateDay");
-  if (serviceKey === "walking" || serviceKey === "grooming") return t("rateVisit");
+  if (serviceKey === "walking") return t("rateVisit");
   return t("rateNight");
 }
 
@@ -2668,7 +2565,7 @@ function getPickupFee(nightlyRate) {
     return { amount: 0, extraUnit: 0 };
   }
 
-  if (minutes <= 18 * 60) {
+  if (minutes <= 21 * 60) {
     return { amount: 25, extraUnit: 0 };
   }
 
@@ -3695,11 +3592,21 @@ function getAccountBookingHeaders() {
   return { Authorization: `Bearer ${customerSession.access_token}` };
 }
 
-function updateAvailability() {
+function currentAvailabilitySignature() {
+  const service = availabilityService?.value || "";
+  const startDate = availabilityDropoffDate?.value || "";
+  const singleDateService = service === "walking";
+  const endDate = singleDateService ? startDate : availabilityPickupDate?.value || "";
+  return [service, startDate, endDate].join("|");
+}
+
+async function updateAvailability() {
   if (!availabilityResult || !availabilityStatus || !availabilityMessage) return;
 
-  const serviceKey = availabilityService?.value || "boarding";
-  const singleDateService = ["walking", "grooming"].includes(serviceKey);
+  const requestSequence = ++availabilityRequestSequence;
+  verifiedAvailabilitySignature = "";
+  const serviceKey = availabilityService?.value || "";
+  const singleDateService = serviceKey === "walking";
   const effectivePickupDate = singleDateService ? availabilityDropoffDate?.value : availabilityPickupDate?.value;
   const hasDates = Boolean(availabilityDropoffDate?.value && effectivePickupDate);
   const holidayPricing = renderHolidayDateNotice(
@@ -3726,35 +3633,62 @@ function updateAvailability() {
     return;
   }
 
-  const capacity = availabilityCapacity[serviceKey] ?? availabilityCapacity.boarding;
-  const occupied = occupiedSpots[serviceKey] ?? 0;
-  const remaining = Math.max(0, capacity - occupied - 1);
+  availabilityStatus.textContent = t("availabilityChecking");
+  availabilityMessage.textContent = "";
+  if (availabilityActions) availabilityActions.hidden = true;
 
-  if (remaining <= 0) {
-    availabilityResult.classList.add("is-full");
-    availabilityStatus.textContent = `❌ ${t("availabilityFullMessage")}`;
-    availabilityMessage.textContent = t("waitlistNote");
+  try {
+    const response = await fetch(AVAILABILITY_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        service: serviceKey,
+        startDate: availabilityDropoffDate?.value,
+        endDate: effectivePickupDate,
+        petCount: 1,
+      }),
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (requestSequence !== availabilityRequestSequence) return;
+    if (!response.ok || !payload.ok) {
+      throw new Error(payload.error || t("availabilityError"));
+    }
+
+    const remaining = Math.max(0, Number(payload.remainingCapacity) || 0);
+    if (!payload.available) {
+      availabilityResult.classList.add("is-full");
+      availabilityStatus.textContent = `❌ ${t("availabilityFullMessage")}`;
+      availabilityMessage.textContent = t("waitlistNote");
+      if (availabilityActions) availabilityActions.hidden = false;
+      if (availabilityBookButton) availabilityBookButton.hidden = true;
+      if (waitlistButton) waitlistButton.hidden = false;
+      return;
+    }
+
+    verifiedAvailabilitySignature = currentAvailabilitySignature();
+    availabilityResult.classList.add(remaining === 1 ? "is-limited" : "is-available");
+    availabilityStatus.textContent = `✅ ${t("availabilityAvailableMessage")}`;
+    const remainingMessage = remaining === 1
+      ? t("availabilityRemainingOne")
+      : t("availabilityRemainingMany").replace("{count}", String(remaining));
+    availabilityMessage.textContent = `${remainingMessage} ${t("availabilityContinueMessage")}`;
     if (availabilityActions) availabilityActions.hidden = false;
-    if (availabilityBookButton) availabilityBookButton.hidden = true;
-    if (waitlistButton) waitlistButton.hidden = false;
-    return;
+    if (availabilityBookButton) availabilityBookButton.hidden = false;
+    if (waitlistButton) waitlistButton.hidden = true;
+  } catch (error) {
+    if (requestSequence !== availabilityRequestSequence) return;
+    console.error("Live availability check failed.", error);
+    availabilityResult.classList.add("is-full");
+    availabilityStatus.textContent = t("availabilityError");
+    availabilityMessage.textContent = "";
+    if (availabilityActions) availabilityActions.hidden = true;
   }
-
-  availabilityResult.classList.add(remaining === 1 ? "is-limited" : "is-available");
-  availabilityStatus.textContent = `✅ ${t("availabilityAvailableMessage")}`;
-  availabilityMessage.textContent = [
-    t("availabilityHostMessage"),
-    t("availabilityContinueMessage"),
-  ].join(" ");
-  if (availabilityActions) availabilityActions.hidden = false;
-  if (availabilityBookButton) availabilityBookButton.hidden = false;
-  if (waitlistButton) waitlistButton.hidden = true;
 }
 
 function updateAvailabilityFields() {
   if (!availabilityDropoffField || !availabilityPickupField || !availabilityDropoffLabel || !availabilityPickupDate) return;
   const serviceKey = availabilityService?.value || "boarding";
-  const singleDateService = ["walking", "grooming"].includes(serviceKey);
+  const singleDateService = serviceKey === "walking";
 
   availabilityDropoffLabel.textContent = singleDateService ? t("fieldServiceDate") : t("fieldDropoffDate");
   availabilityPickupField.hidden = singleDateService;
@@ -3870,9 +3804,11 @@ langButtons.forEach((button) => {
 modalButtons.forEach((button) => {
   button.addEventListener("click", (event) => {
     const hasAvailabilitySelection = Boolean(availabilityService?.value && availabilityDropoffDate?.value && availabilityPickupDate?.value);
-    if (button.id === "availabilityBookButton" && !hasAvailabilitySelection) {
+    const hasVerifiedAvailability = verifiedAvailabilitySignature === currentAvailabilitySignature();
+    if (button.id === "availabilityBookButton" && (!hasAvailabilitySelection || !hasVerifiedAvailability)) {
       event.preventDefault();
       availabilityForm?.reportValidity();
+      updateAvailability();
       return;
     }
 
@@ -4312,13 +4248,13 @@ mobileSummaryToggle?.addEventListener("click", () => {
 availabilityService?.addEventListener("change", updateAvailability);
 availabilityDropoffDate?.addEventListener("change", updateAvailability);
 availabilityPickupDate?.addEventListener("change", updateAvailability);
-availabilityForm?.addEventListener("submit", (event) => {
+availabilityForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
-  updateAvailability();
+  await updateAvailability();
 });
 availabilityService?.addEventListener("change", updateAvailabilityFields);
 availabilityDropoffDate?.addEventListener("change", () => {
-  if ((availabilityService?.value === "walking" || availabilityService?.value === "grooming") && availabilityPickupDate) {
+  if (availabilityService?.value === "walking" && availabilityPickupDate) {
     availabilityPickupDate.value = availabilityDropoffDate?.value || "";
   }
 });
@@ -4456,7 +4392,7 @@ dogProfileSkip?.addEventListener("click", () => {
 });
 
 populateTimeSelect(arrivalTimeInput);
-populateTimeSelect(departureTimeInput);
+populateTimeSelect(departureTimeInput, { end: 22 * 60 });
 populateTimeSelect(preferredWalkingTimeInput);
 renderBookingPets([blankBookingPet()]);
 updateBreedDatalists();
