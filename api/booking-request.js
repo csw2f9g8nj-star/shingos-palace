@@ -10,11 +10,13 @@ const {
   requireCustomerUser,
   sanitizePathPart,
   sendJson,
-  validateUploadFile,
+  validateUploadFileContent,
 } = require("../lib/api-utils/supabase");
 const { parseMultipartForm, toFileArray } = require("../lib/api-utils/forms");
 const { calculateAuthoritativeBookingPricing } = require("../lib/api-utils/booking-pricing");
 const { checkServiceAvailability } = require("../lib/api-utils/availability");
+const { createBookingActionToken } = require("../lib/api-utils/action-tokens");
+const { enforceRateLimit } = require("../lib/api-utils/request-security");
 
 function getInsertErrorMessage(table, error, fallbackMessage) {
   const source = `${error?.message || ""} ${error?.details || ""} ${error?.hint || ""}`.toLowerCase();
@@ -116,6 +118,36 @@ function firstMissingBookingField(ownerPayload, pets, bookingPayload) {
 
 function normalizePetType(value) {
   return normalizeField(value).toLowerCase() === "cat" ? "cat" : "dog";
+}
+
+function validateBookingInput({ ownerPayload, pets, dogPayload, bookingPayload }) {
+  const validEmail = ownerPayload.email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ownerPayload.email);
+  if (!validEmail) return "Please enter a valid email address.";
+
+  const limits = [
+    [ownerPayload.first_name, 100],
+    [ownerPayload.last_name, 100],
+    [ownerPayload.phone, 40],
+    [ownerPayload.emergency_contact, 250],
+    [bookingPayload.notes, 5000],
+    [dogPayload.medications, 2000],
+    [dogPayload.allergies, 2000],
+    [dogPayload.behavioral_concerns, 3000],
+    [dogPayload.favorite_activities, 2000],
+    [dogPayload.feeding_instructions, 3000],
+    [dogPayload.sleeping_routine, 2000],
+    [dogPayload.veterinary_clinic, 200],
+    [dogPayload.veterinarian_name, 200],
+    [dogPayload.clinic_phone, 40],
+    [dogPayload.clinic_address, 500],
+  ];
+  if (limits.some(([value, max]) => String(value || "").length > max)) {
+    return "One or more booking fields are longer than allowed.";
+  }
+  if (pets.some((pet) => pet.name.length > 100 || pet.breed.length > 120)) {
+    return "Please keep each pet name under 100 characters and breed under 120 characters.";
+  }
+  return "";
 }
 
 function parseBookingPets(fields) {
@@ -269,6 +301,7 @@ async function handler(req, res) {
     sendJson(res, 405, { ok: false, error: "Method not allowed." });
     return;
   }
+  if (!enforceRateLimit(req, res, { key: "booking-request", limit: 12, windowMs: 60 * 60 * 1000 })) return;
 
   try {
     const supabase = getAdminClient();
@@ -284,7 +317,7 @@ async function handler(req, res) {
       storagePaths: [],
     };
 
-    const fileErrors = records.map(validateUploadFile).filter(Boolean);
+    const fileErrors = (await Promise.all(records.map(validateUploadFileContent))).filter(Boolean);
     if (fileErrors.length) {
       sendJson(res, 400, { ok: false, error: fileErrors[0] });
       return;
@@ -377,6 +410,11 @@ async function handler(req, res) {
     const missingFieldMessage = firstMissingBookingField(ownerPayload, pets, bookingPayload);
     if (missingFieldMessage) {
       sendJson(res, 400, { ok: false, error: missingFieldMessage });
+      return;
+    }
+    const invalidInputMessage = validateBookingInput({ ownerPayload, pets, dogPayload, bookingPayload });
+    if (invalidInputMessage) {
+      sendJson(res, 400, { ok: false, error: invalidInputMessage });
       return;
     }
 
@@ -595,6 +633,19 @@ async function handler(req, res) {
         paymentMethod,
         holidaySurcharge: pricing.holidayPricing.totalSurcharge,
         pricingBreakdown,
+        bookingActionToken: createBookingActionToken({
+          scope: "deposit",
+          bookingId: booking.id,
+          ownerId: owner.id,
+          petIds: savedPets.map((pet) => pet.id),
+        }),
+        profileActionToken: createBookingActionToken({
+          scope: "profile",
+          bookingId: booking.id,
+          ownerId: owner.id,
+          petIds: savedPets.map((pet) => pet.id),
+          lifetimeSeconds: 7 * 24 * 60 * 60,
+        }),
       });
     } catch (error) {
       await removeCreatedRecords(supabase, created);

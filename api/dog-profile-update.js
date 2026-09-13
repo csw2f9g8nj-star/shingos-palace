@@ -8,9 +8,10 @@ const {
   publicApiError,
   sanitizePathPart,
   sendJson,
-  validateUploadFile,
+  validateUploadFileContent,
 } = require("../lib/api-utils/supabase");
 const { parseMultipartForm, toFileArray } = require("../lib/api-utils/forms");
+const { authorizeBookingAction, enforceRateLimit } = require("../lib/api-utils/request-security");
 
 async function updateSingle(supabase, table, payload, filters, message) {
   if (!Object.keys(payload).length) return null;
@@ -39,6 +40,12 @@ function compactPayload(payload) {
 
 function normalizePetType(value) {
   return normalizeField(value).toLowerCase() === "cat" ? "cat" : "dog";
+}
+
+function assertFieldLength(value, maxLength, message) {
+  if (String(value || "").length > maxLength) {
+    throw publicApiError(message, 400, "field_too_long");
+  }
 }
 
 async function insertVaccinationRecord(supabase, config, owner, dog, bookingId, file, index) {
@@ -103,6 +110,7 @@ async function handler(req, res) {
     sendJson(res, 405, { ok: false, error: "Method not allowed." });
     return;
   }
+  if (!enforceRateLimit(req, res, { key: "dog-profile-update", limit: 20, windowMs: 60 * 60 * 1000 })) return;
 
   try {
     const supabase = getAdminClient();
@@ -111,37 +119,65 @@ async function handler(req, res) {
     const ownerId = normalizeField(fields.ownerId);
     const dogId = normalizeField(fields.dogId);
     const bookingId = normalizeField(fields.bookingId);
+    const actionToken = normalizeField(fields.actionToken);
     const records = toFileArray(files.vaccinationRecords);
 
-    if (!ownerId || !dogId) {
+    if (!ownerId || !dogId || !bookingId) {
       sendJson(res, 400, { ok: false, error: "Missing pet profile reference. Please submit the booking request first." });
       return;
     }
 
-    const fileErrors = records.map(validateUploadFile).filter(Boolean);
+    const { data: linkedBooking, error: linkedBookingError } = await supabase
+      .from("bookings")
+      .select("id,owner_id,dog_id,booking_pets(dog_id)")
+      .eq("id", bookingId)
+      .eq("owner_id", ownerId)
+      .maybeSingle();
+    if (linkedBookingError || !linkedBooking) {
+      throw publicApiError("We could not find the booking to update.", 404, "booking_not_found");
+    }
+
+    const access = await authorizeBookingAction({ req, supabase, booking: linkedBooking, scope: "profile", token: actionToken });
+    const linkedPetIds = (linkedBooking.booking_pets || []).map((pet) => pet.dog_id).filter(Boolean);
+    const allowedPetIds = linkedPetIds.length ? linkedPetIds : [linkedBooking.dog_id].filter(Boolean);
+    if (!allowedPetIds.includes(dogId) || (access.type === "signed_link" && !access.claims.petIds.includes(dogId))) {
+      throw publicApiError("This pet is not linked to the booking.", 403, "booking_pet_forbidden");
+    }
+
+    const fileErrors = (await Promise.all(records.map(validateUploadFileContent))).filter(Boolean);
     if (fileErrors.length) {
       sendJson(res, 400, { ok: false, error: fileErrors[0] });
       return;
     }
 
-    const { data: existingOwner, error: ownerReadError } = await supabase
-      .from("owners")
-      .select("*")
-      .eq("id", ownerId)
-      .single();
+    const [{ data: existingOwner, error: ownerReadError }, { data: existingDog, error: dogReadError }] = await Promise.all([
+      supabase.from("owners").select("*").eq("id", ownerId).single(),
+      supabase.from("dogs").select("*").eq("id", dogId).eq("owner_id", ownerId).single(),
+    ]);
     if (ownerReadError || !existingOwner) {
       throw publicApiError("We could not find the owner record to update.", 404, "owner_not_found");
     }
-
-    const { data: existingDog, error: dogReadError } = await supabase
-      .from("dogs")
-      .select("*")
-      .eq("id", dogId)
-      .eq("owner_id", ownerId)
-      .single();
     if (dogReadError || !existingDog) {
       throw publicApiError("We could not find the pet profile to update.", 404, "dog_not_found");
     }
+
+    const lengthRules = [
+      [fields.emergencyContact, 200, "Emergency contact is too long."],
+      [fields.age, 40, "Age is too long."],
+      [fields.weight, 40, "Weight is too long."],
+      [fields.sex, 40, "Sex is too long."],
+      [fields.veterinaryClinic, 160, "Veterinary clinic is too long."],
+      [fields.veterinarianName, 160, "Veterinarian name is too long."],
+      [fields.clinicPhone, 40, "Clinic phone is too long."],
+      [fields.clinicAddress, 300, "Clinic address is too long."],
+      [fields.medications, 3000, "Medication details are too long."],
+      [fields.allergies, 3000, "Allergy details are too long."],
+      [fields.behavioralConcerns, 3000, "Behavior details are too long."],
+      [fields.favoriteActivities, 1000, "Favorite activities are too long."],
+      [fields.feedingInstructions, 3000, "Feeding instructions are too long."],
+      [fields.notes, 5000, "Notes are too long."],
+    ];
+    lengthRules.forEach(([value, maxLength, message]) => assertFieldLength(normalizeField(value), maxLength, message));
 
     const ownerPayload = compactPayload({
       emergency_contact: normalizeField(fields.emergencyContact),
@@ -191,23 +227,6 @@ async function handler(req, res) {
 
     const notes = normalizeField(fields.notes);
     if (bookingId && notes) {
-      const { data: linkedBooking, error: linkedBookingError } = await supabase
-        .from("bookings")
-        .select("id,dog_id,booking_pets(dog_id)")
-        .eq("id", bookingId)
-        .eq("owner_id", ownerId)
-        .maybeSingle();
-
-      if (linkedBookingError || !linkedBooking) {
-        throw publicApiError("We could not find the booking to update.", 404, "booking_not_found");
-      }
-
-      const linkedPetIds = (linkedBooking.booking_pets || []).map((pet) => pet.dog_id).filter(Boolean);
-      const allowedPetIds = linkedPetIds.length ? linkedPetIds : [linkedBooking.dog_id].filter(Boolean);
-      if (allowedPetIds.length && !allowedPetIds.includes(dogId)) {
-        throw publicApiError("This pet is not linked to the booking.", 403, "booking_pet_forbidden");
-      }
-
       await updateSingle(
         supabase,
         "bookings",

@@ -4,19 +4,12 @@ const {
   reconcileCheckoutSession,
 } = require("../lib/api-utils/payment-reconciliation");
 const { getAdminClient, handleApiError, publicApiError, sendJson } = require("../lib/api-utils/supabase");
+const { trustedOrigin } = require("../lib/api-utils/request-security");
 
 async function readRawBody(req) {
   const chunks = [];
   for await (const chunk of req) chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
   return Buffer.concat(chunks);
-}
-
-function getOrigin(req) {
-  const configuredOrigin = String(process.env.SITE_URL || "").replace(/\/$/, "");
-  if (configuredOrigin) return configuredOrigin;
-  const host = req.headers["x-forwarded-host"] || req.headers.host;
-  const protocol = req.headers["x-forwarded-proto"] || "https";
-  return `${protocol}://${host}`;
 }
 
 module.exports = async function handler(req, res) {
@@ -45,7 +38,7 @@ module.exports = async function handler(req, res) {
       await reconcileCheckoutSession({
         supabase: getAdminClient(),
         session,
-        origin: getOrigin(req),
+        origin: trustedOrigin(req),
       });
     } else if (event.type === "checkout.session.expired") {
       await expireDepositCheckoutSession({

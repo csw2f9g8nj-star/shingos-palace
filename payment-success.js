@@ -59,6 +59,7 @@ const successAccountEmail = document.querySelector("#successAccountEmail");
 let verifiedOwnerEmail = "";
 let customerSupabase = null;
 let verifiedPets = [];
+let verifiedProfileActionToken = "";
 
 function showState(state) {
   if (loadingState) loadingState.hidden = state !== "loading";
@@ -222,7 +223,9 @@ function submitProfileWithProgress() {
     });
 
     request.addEventListener("error", () => reject(new Error("Something went wrong. Please try again.")));
-    request.send(new FormData(successDogProfileForm));
+    const formData = new FormData(successDogProfileForm);
+    if (verifiedProfileActionToken) formData.set("actionToken", verifiedProfileActionToken);
+    request.send(formData);
   });
 }
 
@@ -249,6 +252,7 @@ async function verifyPayment() {
     }
 
     const isBalancePayment = payload.paymentType === "balance";
+    verifiedProfileActionToken = payload.profileActionToken || "";
     populateSuccessPets(payload);
 
     if (paymentSuccessKicker) paymentSuccessKicker.textContent = isBalancePayment ? "Balance paid" : "Deposit received";

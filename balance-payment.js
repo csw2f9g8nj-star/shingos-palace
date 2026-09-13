@@ -3,6 +3,7 @@ const PUBLIC_CONFIG_ENDPOINT = "/api/public-config";
 
 const params = new URLSearchParams(window.location.search);
 const bookingId = params.get("booking_id") || params.get("bookingId") || "";
+const actionToken = params.get("token") || "";
 const intro = document.querySelector("#balancePaymentIntro");
 const statusLine = document.querySelector("#balancePaymentStatus");
 const checkoutShell = document.querySelector("#balanceStripeCheckout");
@@ -26,6 +27,7 @@ let stripeInstance = null;
 let stripeCheckout = null;
 let paymentDetails = null;
 let publicConfig = null;
+let customerSupabase = null;
 
 async function copyTextValue(value) {
   if (!value) return;
@@ -60,6 +62,21 @@ async function getPublicConfig() {
   return payload;
 }
 
+function initializeCustomerSession(config) {
+  if (!window.supabase?.createClient || !config.supabaseUrl || !config.supabasePublishableKey) return;
+  customerSupabase = window.supabase.createClient(config.supabaseUrl, config.supabasePublishableKey, {
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false },
+  });
+}
+
+async function secureRequestHeaders() {
+  const headers = { "Content-Type": "application/json", Accept: "application/json" };
+  if (!customerSupabase) return headers;
+  const { data } = await customerSupabase.auth.getSession();
+  if (data?.session?.access_token) headers.Authorization = `Bearer ${data.session.access_token}`;
+  return headers;
+}
+
 async function getBalanceDetails() {
   if (!bookingId) {
     throw new Error("This balance payment link is missing the booking information.");
@@ -67,14 +84,12 @@ async function getBalanceDetails() {
 
   const response = await fetch(STRIPE_SESSION_ENDPOINT, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
+    headers: await secureRequestHeaders(),
     body: JSON.stringify({
       bookingId,
       paymentType: "balance",
       action: "details",
+      actionToken,
     }),
   });
   const payload = await response.json().catch(() => ({}));
@@ -101,8 +116,8 @@ async function startStripeBalancePayment() {
 
   const sessionResponse = await fetch(STRIPE_SESSION_ENDPOINT, {
     method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify({ bookingId, paymentType: "balance", paymentMethod: "stripe" }),
+    headers: await secureRequestHeaders(),
+    body: JSON.stringify({ bookingId, paymentType: "balance", paymentMethod: "stripe", actionToken }),
   });
   const sessionPayload = await sessionResponse.json().catch(() => ({}));
 
@@ -131,8 +146,8 @@ async function startStripeBalancePayment() {
 async function requestZelleBalancePayment() {
   const response = await fetch(STRIPE_SESSION_ENDPOINT, {
     method: "POST",
-    headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify({ bookingId, paymentType: "balance", paymentMethod: "zelle" }),
+    headers: await secureRequestHeaders(),
+    body: JSON.stringify({ bookingId, paymentType: "balance", paymentMethod: "zelle", actionToken }),
   });
   const payload = await response.json().catch(() => ({}));
   if (!response.ok || payload.ok === false || !payload.manual) {
@@ -176,9 +191,11 @@ document.querySelectorAll('input[name="balancePaymentMethod"]').forEach((input) 
 copyZelleAmount?.addEventListener("click", () => copyTextValue(paymentDetails?.amount || ""));
 copyZelleRecipient?.addEventListener("click", () => copyTextValue(publicConfig?.zellePaymentRecipient || ""));
 
-Promise.all([getPublicConfig(), getBalanceDetails()]).then(([config, details]) => {
+getPublicConfig().then(async (config) => {
   publicConfig = config;
-  paymentDetails = details;
+  initializeCustomerSession(config);
+  paymentDetails = await getBalanceDetails();
+  const details = paymentDetails;
   if (amountDue) amountDue.textContent = details.amount;
   if (intro) intro.textContent = `Choose how you would like to pay the ${details.amount} remaining balance.`;
   const zelleAvailable = config.zelleAvailable === true && Boolean(config.zellePaymentRecipient);

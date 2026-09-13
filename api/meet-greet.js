@@ -1,11 +1,17 @@
 const { getAdminClient, handleApiError, normalizeField, sendJson } = require("../lib/api-utils/supabase");
 const { parseMultipartForm } = require("../lib/api-utils/forms");
+const { enforceRateLimit } = require("../lib/api-utils/request-security");
+
+function validEmail(value) {
+  return value.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
 
 async function handler(req, res) {
   if (req.method !== "POST") {
     sendJson(res, 405, { ok: false, error: "Method not allowed." });
     return;
   }
+  if (!enforceRateLimit(req, res, { key: "meet-greet", limit: 10, windowMs: 60 * 60 * 1000 })) return;
 
   try {
     const supabase = getAdminClient();
@@ -23,6 +29,14 @@ async function handler(req, res) {
 
     if (!payload.owner_name || !payload.phone || !payload.email || !payload.dog_name) {
       sendJson(res, 400, { ok: false, error: "Please complete the required Meet & Greet fields." });
+      return;
+    }
+    if (!validEmail(payload.email)) {
+      sendJson(res, 400, { ok: false, error: "Please enter a valid email address." });
+      return;
+    }
+    if (payload.owner_name.length > 160 || payload.phone.length > 40 || payload.dog_name.length > 100 || payload.message.length > 2000) {
+      sendJson(res, 400, { ok: false, error: "One or more fields are longer than allowed." });
       return;
     }
 

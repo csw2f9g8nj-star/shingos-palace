@@ -27,12 +27,17 @@ module.exports = async function handler(req, res) {
     holidayPricingAvailable = true;
   } catch (error) {
     holidayPricingErrorCode = error?.code || "holiday_pricing_lookup_failed";
-    console.error("[public-config] Holiday pricing lookup failed.", {
+    const logEntry = {
       code: error?.code || null,
-      message: error?.message || String(error),
-      details: error?.details || null,
-      hint: error?.hint || null,
-    });
+    };
+    if (process.env.NODE_ENV === "development") {
+      Object.assign(logEntry, {
+        message: error?.message || String(error),
+        details: error?.details || null,
+        hint: error?.hint || null,
+      });
+    }
+    console.error("[public-config] Holiday pricing lookup failed.", logEntry);
   }
 
   sendJson(res, 200, {

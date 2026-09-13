@@ -1,21 +1,17 @@
 const { getBookingPetDisplay, serviceLabel } = require("../lib/api-utils/booking-emails");
 const { amountToCents, getStripeClient } = require("../lib/api-utils/payments");
 const { getAdminClient, handleApiError, publicApiError, sendJson } = require("../lib/api-utils/supabase");
-
-function getOrigin(req) {
-  const host = req.headers["x-forwarded-host"] || req.headers.host;
-  const protocol = req.headers["x-forwarded-proto"] || "https";
-  return `${protocol}://${host}`;
-}
+const { authorizeBookingAction, enforceRateLimit, trustedOrigin } = require("../lib/api-utils/request-security");
 
 module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
     sendJson(res, 405, { ok: false, error: "Method not allowed." });
     return;
   }
+  if (!enforceRateLimit(req, res, { key: "checkout-session", limit: 30, windowMs: 15 * 60 * 1000 })) return;
 
   try {
-    const { bookingId, paymentType = "deposit", paymentMethod = "stripe", action = "checkout" } = req.body || {};
+    const { bookingId, paymentType = "deposit", paymentMethod = "stripe", action = "checkout", actionToken = "" } = req.body || {};
     if (!bookingId) {
       throw publicApiError("Missing booking ID.", 400, "missing_booking_id");
     }
@@ -25,6 +21,8 @@ module.exports = async function handler(req, res) {
     const bookingSelect = isBalancePayment
       ? `
         id,
+        owner_id,
+        updated_at,
         service,
         dropoff_date,
         pickup_date,
@@ -35,6 +33,7 @@ module.exports = async function handler(req, res) {
         booking_pet_summary,
         balance_payment_status,
         balance_payment_method,
+        stripe_balance_checkout_session_id,
         owner:owners(first_name,last_name,email),
         dog:dogs(name),
         booking_pets(
@@ -44,6 +43,8 @@ module.exports = async function handler(req, res) {
       `
       : `
         id,
+        owner_id,
+        updated_at,
         service,
         dropoff_date,
         pickup_date,
@@ -52,6 +53,7 @@ module.exports = async function handler(req, res) {
         remaining_balance,
         pet_type,
         booking_pet_summary,
+        stripe_checkout_session_id,
         owner:owners(first_name,last_name,email),
         dog:dogs(name),
         booking_pets(
@@ -65,6 +67,14 @@ module.exports = async function handler(req, res) {
     if (error || !booking) {
       throw publicApiError("We could not find this booking request.", 404, "booking_not_found");
     }
+
+    await authorizeBookingAction({
+      req,
+      supabase,
+      booking,
+      scope: isBalancePayment ? "balance" : "deposit",
+      token: actionToken,
+    });
 
     if (isBalancePayment && booking.balance_payment_status === "paid") {
       throw publicApiError("The remaining balance for this booking has already been paid.", 409, "balance_already_paid");
@@ -131,12 +141,35 @@ module.exports = async function handler(req, res) {
     }
 
     const stripe = getStripeClient();
-    const origin = getOrigin(req);
+    const origin = trustedOrigin(req);
     const customerEmail = booking.owner?.email || undefined;
     const petData = getBookingPetDisplay(booking);
     const petName = petData.namesDisplay;
     const serviceName = serviceLabel(booking.service);
     const paymentLabel = isBalancePayment ? "Remaining Balance" : "Deposit";
+
+    const storedCheckoutSessionId = isBalancePayment
+      ? booking.stripe_balance_checkout_session_id
+      : booking.stripe_checkout_session_id;
+    if (storedCheckoutSessionId) {
+      try {
+        const existingSession = await stripe.checkout.sessions.retrieve(storedCheckoutSessionId);
+        const samePayment = existingSession.metadata?.booking_id === booking.id
+          && existingSession.metadata?.payment_type === (isBalancePayment ? "balance" : "deposit")
+          && Number(existingSession.amount_total || 0) === amountCents;
+        if (samePayment && existingSession.status === "open" && existingSession.client_secret) {
+          sendJson(res, 200, {
+            ok: true,
+            sessionId: existingSession.id,
+            clientSecret: existingSession.client_secret,
+            paymentType: isBalancePayment ? "balance" : "deposit",
+          });
+          return;
+        }
+      } catch (error) {
+        // A missing or expired prior session is replaced below with the same authoritative amount.
+      }
+    }
 
     const session = await stripe.checkout.sessions.create({
       ui_mode: "embedded",
@@ -167,6 +200,8 @@ module.exports = async function handler(req, res) {
         deposit_due_today: booking.deposit_due_today || "",
         remaining_balance: booking.remaining_balance || "",
       },
+    }, {
+      idempotencyKey: ["booking", booking.id, isBalancePayment ? "balance" : "deposit", amountCents, booking.updated_at || "initial"].join(":"),
     });
 
     const updatePayload = isBalancePayment

@@ -7,6 +7,7 @@ const {
   requireCustomerUser,
   sendJson,
 } = require("../lib/api-utils/supabase");
+const { enforceRateLimit } = require("../lib/api-utils/request-security");
 
 function parseBody(req) {
   if (!req.body) return {};
@@ -158,6 +159,9 @@ async function createCustomerReview(req, supabase, res) {
   if (!bookingId || !Number.isInteger(rating) || rating < 1 || rating > 5 || !reviewText) {
     throw publicApiError("Please choose a rating and write a short review.", 400, "review_invalid");
   }
+  if (reviewText.length > 3000) {
+    throw publicApiError("Please keep your review under 3,000 characters.", 400, "review_too_long");
+  }
 
   const { data: booking, error: bookingError } = await supabase
     .from("bookings")
@@ -264,6 +268,7 @@ module.exports = async function handler(req, res) {
     const supabase = getAdminClient();
 
     if (req.method === "GET") {
+      if (!enforceRateLimit(req, res, { key: "reviews-read", limit: 120, windowMs: 10 * 60 * 1000 })) return;
       if (req.query?.scope === "admin") {
         await listAdminReviews(req, supabase, res);
         return;
@@ -273,6 +278,7 @@ module.exports = async function handler(req, res) {
     }
 
     if (req.method === "POST") {
+      if (!enforceRateLimit(req, res, { key: "reviews-create", limit: 10, windowMs: 60 * 60 * 1000 })) return;
       await createCustomerReview(req, supabase, res);
       return;
     }

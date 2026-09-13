@@ -4,18 +4,15 @@ const {
   reconcileCheckoutSession,
 } = require("../lib/api-utils/payment-reconciliation");
 const { getAdminClient, handleApiError, publicApiError, sendJson } = require("../lib/api-utils/supabase");
-
-function getOrigin(req) {
-  const host = req.headers["x-forwarded-host"] || req.headers.host;
-  const protocol = req.headers["x-forwarded-proto"] || "https";
-  return `${protocol}://${host}`;
-}
+const { createBookingActionToken } = require("../lib/api-utils/action-tokens");
+const { enforceRateLimit, trustedOrigin } = require("../lib/api-utils/request-security");
 
 module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
     sendJson(res, 405, { ok: false, error: "Method not allowed." });
     return;
   }
+  if (!enforceRateLimit(req, res, { key: "verify-checkout", limit: 60, windowMs: 15 * 60 * 1000 })) return;
 
   try {
     const { bookingId, sessionId } = req.body || {};
@@ -32,9 +29,17 @@ module.exports = async function handler(req, res) {
     const result = await reconcileCheckoutSession({
       supabase: getAdminClient(),
       session,
-      origin: getOrigin(req),
+      origin: trustedOrigin(req),
     });
-    sendJson(res, 200, paymentConfirmationPayload({ ...result, session }));
+    const payload = paymentConfirmationPayload({ ...result, session });
+    payload.profileActionToken = createBookingActionToken({
+      scope: "profile",
+      bookingId: result.booking.id,
+      ownerId: result.booking.owner_id,
+      petIds: payload.pets.map((pet) => pet.id).filter(Boolean),
+      lifetimeSeconds: 7 * 24 * 60 * 60,
+    });
+    sendJson(res, 200, payload);
   } catch (error) {
     handleApiError(res, error);
   }

@@ -1,12 +1,7 @@
 const { buildBalanceReminderEmail, getBalanceDueDate, sendResendEmail } = require("../lib/api-utils/booking-emails");
 const { amountToCents } = require("../lib/api-utils/payments");
 const { getAdminClient, handleApiError, publicApiError, sendJson } = require("../lib/api-utils/supabase");
-
-function getOrigin(req) {
-  const host = req.headers["x-forwarded-host"] || req.headers.host;
-  const protocol = req.headers["x-forwarded-proto"] || "https";
-  return `${protocol}://${host}`;
-}
+const { timingSafeSecretMatch, trustedOrigin } = require("../lib/api-utils/request-security");
 
 function dateInNewYork(date) {
   return new Intl.DateTimeFormat("en-CA", {
@@ -29,7 +24,7 @@ function assertCronAccess(req) {
 
   const authToken = String(req.headers.authorization || "").replace(/^Bearer\s+/i, "");
   const headerToken = req.headers["x-cron-secret"] || "";
-  if (authToken !== cronSecret && headerToken !== cronSecret) {
+  if (!timingSafeSecretMatch(authToken, cronSecret) && !timingSafeSecretMatch(headerToken, cronSecret)) {
     throw publicApiError("Unauthorized reminder request.", 401, "unauthorized_cron");
   }
 }
@@ -77,6 +72,7 @@ module.exports = async function handler(req, res) {
       .select(
         `
         id,
+        owner_id,
         service,
         status,
         dropoff_date,
@@ -105,7 +101,7 @@ module.exports = async function handler(req, res) {
       throw publicApiError("Could not load bookings for payment reminders.", 500, "reminder_booking_lookup_failed");
     }
 
-    const origin = getOrigin(req);
+    const origin = trustedOrigin(req);
     const dueBookings = (bookings || []).filter((booking) => {
       const hasDeposit = booking.payment_status === "deposit_paid" || booking.deposit_paid_amount;
       const hasBalance = amountToCents(booking.remaining_balance) > 0;

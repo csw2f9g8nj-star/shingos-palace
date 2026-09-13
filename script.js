@@ -1312,6 +1312,8 @@ let currentBookingIds = {
   bookingId: "",
   ownerId: "",
   dogId: "",
+  bookingActionToken: "",
+  profileActionToken: "",
 };
 let stripeInstance = null;
 let stripeCheckout = null;
@@ -1700,7 +1702,13 @@ function resetBookingExperience(messageKey = "") {
     stripeCheckout.destroy();
     stripeCheckout = null;
   }
-  currentBookingIds = { bookingId: "", ownerId: "", dogId: "" };
+  currentBookingIds = {
+    bookingId: "",
+    ownerId: "",
+    dogId: "",
+    bookingActionToken: "",
+    profileActionToken: "",
+  };
   if (bookingForm) bookingForm.hidden = false;
   if (paymentExperience) paymentExperience.hidden = true;
   if (paymentConfirmation) paymentConfirmation.hidden = true;
@@ -3442,6 +3450,7 @@ async function verifyStripePayment(sessionId) {
   if (!response.ok || payload.ok === false) {
     throw new Error(payload.error || t("paymentError"));
   }
+  currentBookingIds.profileActionToken = payload.profileActionToken || currentBookingIds.profileActionToken;
 
   if (stripeCheckout) {
     stripeCheckout.destroy();
@@ -3460,6 +3469,8 @@ async function startStripePayment(payload) {
     bookingId: payload.bookingId || "",
     ownerId: payload.ownerId || "",
     dogId: payload.dogId || "",
+    bookingActionToken: payload.bookingActionToken || "",
+    profileActionToken: payload.profileActionToken || "",
   };
 
   if (profileOwnerId) profileOwnerId.value = currentBookingIds.ownerId;
@@ -3486,7 +3497,11 @@ async function startStripePayment(payload) {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify({ bookingId: currentBookingIds.bookingId, paymentMethod: "stripe" }),
+      body: JSON.stringify({
+        bookingId: currentBookingIds.bookingId,
+        paymentMethod: "stripe",
+        actionToken: currentBookingIds.bookingActionToken,
+      }),
     });
     const sessionPayload = await sessionResponse.json().catch(() => ({}));
 
@@ -3522,6 +3537,8 @@ function showManualPaymentPending(payload) {
     bookingId: payload.bookingId || "",
     ownerId: payload.ownerId || "",
     dogId: payload.dogId || "",
+    bookingActionToken: payload.bookingActionToken || "",
+    profileActionToken: payload.profileActionToken || "",
   };
 
   if (profileOwnerId) profileOwnerId.value = currentBookingIds.ownerId;
@@ -3630,6 +3647,9 @@ function submitFormWithProgress(form, endpoint, statusElement, submitButton, suc
     request.addEventListener("error", () => reject(new Error(t("bookingError"))));
     request.addEventListener("abort", () => reject(new Error(t("bookingError"))));
     const formData = new FormData(form);
+    if (form === dogProfileForm && currentBookingIds.profileActionToken) {
+      formData.set("actionToken", currentBookingIds.profileActionToken);
+    }
     if (form === bookingForm) {
       updatePrimaryPetFields();
       formData.set("petsJson", bookingPetsJson?.value || "[]");
