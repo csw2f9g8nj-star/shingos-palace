@@ -8,6 +8,8 @@ let adminClubMatches = [];
 let selectedCanonicalOwner = null;
 let pendingPetCreation = null;
 let pendingZelleConfirmation = null;
+let adminPetFilter = "active";
+let pendingPetAction = null;
 
 const adminLogin = document.querySelector("#adminLogin");
 const adminDashboard = document.querySelector("#adminDashboard");
@@ -40,6 +42,16 @@ const adminZelleConfirmDialog = document.querySelector("#adminZelleConfirmDialog
 const adminZelleConfirmText = document.querySelector("#adminZelleConfirmText");
 const adminZelleConfirmCancel = document.querySelector("#adminZelleConfirmCancel");
 const adminZelleConfirmSubmit = document.querySelector("#adminZelleConfirmSubmit");
+const adminPetFilterButtons = [...document.querySelectorAll("[data-pet-filter]")];
+const adminPetActionDialog = document.querySelector("#adminPetActionDialog");
+const adminPetActionTitle = document.querySelector("#adminPetActionTitle");
+const adminPetActionText = document.querySelector("#adminPetActionText");
+const adminPetNameConfirmWrap = document.querySelector("#adminPetNameConfirmWrap");
+const adminPetNameConfirm = document.querySelector("#adminPetNameConfirm");
+const adminPetActionStatus = document.querySelector("#adminPetActionStatus");
+const adminPetActionCancel = document.querySelector("#adminPetActionCancel");
+const adminPetArchiveInstead = document.querySelector("#adminPetArchiveInstead");
+const adminPetActionSubmit = document.querySelector("#adminPetActionSubmit");
 
 function setStatus(element, message) {
   if (element) element.textContent = message || "";
@@ -137,8 +149,90 @@ function activeClubMatches(dogId) {
 
 function activeClubDogs(excludeDogId = "") {
   return adminDogs.filter(
-    (dog) => dog.id !== excludeDogId && dog.pet_type === "dog" && activeClubMembership(dog.id),
+    (dog) => dog.id !== excludeDogId && !dog.archived_at && dog.pet_type === "dog" && activeClubMembership(dog.id),
   );
+}
+
+function openPetActionDialog(dog, action) {
+  if (!adminPetActionDialog) return;
+  pendingPetAction = { dog, action };
+  const actions = {
+    archive: {
+      title: `Archive ${dog.name}?`,
+      text: "The profile and all history will be preserved. It will no longer appear in active lists or new booking selections.",
+      label: "Archive Pet",
+    },
+    restore: {
+      title: `Restore ${dog.name}?`,
+      text: "The pet will return to active lists. Club membership and previous Club Matches will remain inactive.",
+      label: "Restore Pet",
+    },
+    removeClub: {
+      title: `Remove ${dog.name} from the Club?`,
+      text: "The pet profile and all history will remain. Active Club Matches will be deactivated and preserved.",
+      label: "Remove from Club",
+    },
+    delete: {
+      title: `Permanently delete ${dog.name}?`,
+      text: "This action cannot be undone. Deletion will be blocked if this pet has any protected history.",
+      label: "Delete Permanently",
+    },
+  };
+  const detail = actions[action];
+  adminPetActionTitle.textContent = detail.title;
+  adminPetActionText.textContent = detail.text;
+  adminPetActionSubmit.textContent = detail.label;
+  adminPetActionSubmit.hidden = false;
+  adminPetActionSubmit.classList.toggle("admin-danger-button", action === "delete");
+  adminPetNameConfirmWrap.hidden = action !== "delete";
+  adminPetNameConfirm.value = "";
+  adminPetActionSubmit.disabled = action === "delete";
+  adminPetArchiveInstead.hidden = true;
+  setStatus(adminPetActionStatus, "");
+  adminPetActionDialog.showModal();
+  if (action === "delete") adminPetNameConfirm.focus();
+}
+
+async function runPetAction(actionOverride = "") {
+  if (!pendingPetAction) return;
+  const { dog } = pendingPetAction;
+  const action = actionOverride || pendingPetAction.action;
+  const data = new FormData();
+  data.set("dogId", dog.id);
+
+  let path = "/api/admin/dogs";
+  let method = "PATCH";
+  if (action === "removeClub") {
+    path = "/api/admin/club";
+    method = "POST";
+    data.set("action", "membership");
+    data.set("isActive", "false");
+  } else if (action === "delete") {
+    method = "DELETE";
+    data.set("confirmationName", adminPetNameConfirm.value);
+  } else {
+    data.set("action", action);
+  }
+
+  adminPetActionSubmit.disabled = true;
+  adminPetArchiveInstead.disabled = true;
+  setStatus(adminPetActionStatus, "Saving...");
+  try {
+    await apiFetch(path, { method, body: data });
+    adminPetActionDialog.close();
+    pendingPetAction = null;
+    await loadDogs();
+  } catch (error) {
+    setStatus(adminPetActionStatus, error.message);
+    if (action === "delete" && error.code === "pet_delete_blocked") {
+      adminPetNameConfirmWrap.hidden = true;
+      adminPetActionSubmit.hidden = true;
+      adminPetArchiveInstead.hidden = Boolean(dog.archived_at);
+    } else {
+      adminPetActionSubmit.disabled = action === "delete" && adminPetNameConfirm.value !== dog.name;
+    }
+    adminPetArchiveInstead.disabled = false;
+  }
 }
 
 function relatedClubDogId(match, dogId) {
@@ -525,7 +619,7 @@ function renderAdminZellePayments(bookings) {
 
 function populateDogOptions(select, currentDogId) {
   select.innerHTML = adminDogs
-    .filter((dog) => dog.id !== currentDogId)
+    .filter((dog) => dog.id !== currentDogId && !dog.archived_at)
     .map((dog) => `<option value="${escapeHtml(dog.id)}">${safeText(dog.name, "Unnamed dog")}</option>`)
     .join("");
 }
@@ -537,7 +631,10 @@ function renderDogs() {
       .filter(Boolean)
       .join(" ")
       .toLowerCase();
-    return !query || haystack.includes(query);
+    const matchesSearch = !query || haystack.includes(query);
+    const matchesArchive = adminPetFilter === "all"
+      || (adminPetFilter === "archived" ? Boolean(dog.archived_at) : !dog.archived_at);
+    return matchesSearch && matchesArchive;
   });
 
   adminDogsEl.innerHTML = "";
@@ -550,13 +647,25 @@ function renderDogs() {
     const node = adminTemplate.content.firstElementChild.cloneNode(true);
     node.dataset.dogId = dog.id;
     node.dataset.ownerId = dog.owner_id;
+    const isArchived = Boolean(dog.archived_at);
+    node.classList.toggle("is-archived", isArchived);
     node.querySelector(".admin-dog-avatar").textContent = (dog.name || "?").slice(0, 1).toUpperCase();
     node.querySelector("h2").textContent = dog.name || "Unnamed dog";
     node.querySelector(".admin-owner").textContent = formatOwner(dog.owner);
     const isClubMember = Boolean(activeClubMembership(dog.id));
     const clubBadge = node.querySelector(".admin-club-badge");
     clubBadge.hidden = !isClubMember;
-    node.querySelector(".admin-club-management").hidden = dog.pet_type !== "dog";
+    node.querySelector(".admin-archived-badge").hidden = !isArchived;
+    node.querySelector(".admin-club-management").hidden = dog.pet_type !== "dog" || isArchived;
+
+    const archiveButton = node.querySelector(".admin-archive-pet");
+    const restoreButton = node.querySelector(".admin-restore-pet");
+    const deleteButton = node.querySelector(".admin-delete-pet");
+    archiveButton.hidden = isArchived;
+    restoreButton.hidden = !isArchived;
+    archiveButton.addEventListener("click", () => openPetActionDialog(dog, "archive"));
+    restoreButton.addEventListener("click", () => openPetActionDialog(dog, "restore"));
+    deleteButton.addEventListener("click", () => openPetActionDialog(dog, "delete"));
 
     const membershipState = node.querySelector(".admin-club-membership-state");
     membershipState.textContent = dog.pet_type !== "dog"
@@ -567,10 +676,14 @@ function renderDogs() {
 
     const membershipForm = node.querySelector(".admin-club-membership-form");
     const membershipButton = membershipForm.querySelector("button");
-    membershipButton.textContent = isClubMember ? "Deactivate Membership" : "Add to Club";
-    membershipButton.disabled = dog.pet_type !== "dog";
+    membershipButton.textContent = isClubMember ? "Remove from Club" : "Add to Club";
+    membershipButton.disabled = dog.pet_type !== "dog" || isArchived;
     membershipForm.addEventListener("submit", async (event) => {
       event.preventDefault();
+      if (isClubMember) {
+        openPetActionDialog(dog, "removeClub");
+        return;
+      }
       membershipButton.disabled = true;
       setStatus(adminStatus, isClubMember ? "Deactivating Club membership..." : "Adding Club member...");
       const data = new FormData();
@@ -650,7 +763,7 @@ function renderDogs() {
     const noteForm = node.querySelector(".admin-note-form");
     const relatedNoteDogSelect = noteForm.querySelector("select[name='relatedDogId']");
     relatedNoteDogSelect.innerHTML = `<option value="">None</option>${adminDogs
-      .filter((item) => item.id !== dog.id)
+      .filter((item) => item.id !== dog.id && !item.archived_at)
       .map((item) => `<option value="${escapeHtml(item.id)}">${safeText(item.name, "Unnamed dog")}</option>`)
       .join("")}`;
     noteForm.addEventListener("submit", async (event) => {
@@ -703,6 +816,10 @@ function renderDogs() {
         setStatus(status, error.message);
       }
     });
+
+    noteForm.hidden = isArchived;
+    compatibilityForm.hidden = isArchived;
+    uploadForm.hidden = isArchived;
 
     adminDogsEl.appendChild(node);
   });
@@ -963,6 +1080,26 @@ adminSignOut?.addEventListener("click", async () => {
 
 adminRefresh?.addEventListener("click", () => loadDogs().catch((error) => setStatus(adminStatus, error.message)));
 adminSearch?.addEventListener("input", renderDogs);
+adminPetFilterButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    adminPetFilter = button.dataset.petFilter || "active";
+    adminPetFilterButtons.forEach((item) => item.classList.toggle("is-active", item === button));
+    renderDogs();
+  });
+});
+adminPetNameConfirm?.addEventListener("input", () => {
+  if (!pendingPetAction || pendingPetAction.action !== "delete") return;
+  adminPetActionSubmit.disabled = adminPetNameConfirm.value !== pendingPetAction.dog.name;
+});
+adminPetActionCancel?.addEventListener("click", () => {
+  adminPetActionDialog?.close();
+  pendingPetAction = null;
+});
+adminPetActionDialog?.addEventListener("cancel", () => {
+  pendingPetAction = null;
+});
+adminPetActionSubmit?.addEventListener("click", () => runPetAction());
+adminPetArchiveInstead?.addEventListener("click", () => runPetAction("archive"));
 
 loadAdminConfig()
   .then(async () => {

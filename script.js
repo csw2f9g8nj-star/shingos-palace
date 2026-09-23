@@ -1895,11 +1895,15 @@ function bookingPetCards() {
 }
 
 function hasSavedAccountPets() {
-  return Boolean(customerSession && (customerAccount.dogs || []).length);
+  return Boolean(customerSession && activeCustomerPets().length);
 }
 
 function shouldUseSavedPetSelection() {
   return hasSavedAccountPets();
+}
+
+function activeCustomerPets() {
+  return (customerAccount.dogs || []).filter((dog) => !dog.archivedAt);
 }
 
 function selectedSavedPetIds() {
@@ -2238,7 +2242,7 @@ function updateRabiesNotices() {
 }
 
 function savedPetOptions(selectedId = "") {
-  const dogs = customerAccount.dogs || [];
+  const dogs = activeCustomerPets();
   return [
     `<option value="">${t("accountNewDogOption")}</option>`,
     ...dogs.map(
@@ -2260,7 +2264,7 @@ function savedPetStatusLabel(dog = {}) {
 function renderSavedPetSelector() {
   if (!bookingSavedPetsGrid) return;
 
-  const dogs = customerAccount.dogs || [];
+  const dogs = activeCustomerPets();
   if (!shouldUseSavedPetSelection() || !dogs.length) {
     bookingSavedPetsGrid.innerHTML = "";
     return;
@@ -2295,7 +2299,7 @@ function syncSelectedSavedPets() {
   const selectedIds = selectedSavedPetIds();
   const currentPets = getBookingPetsFromCards();
   const newPets = currentPets.filter((pet) => pet.source !== "saved");
-  const savedPets = (customerAccount.dogs || [])
+  const savedPets = activeCustomerPets()
     .filter((dog) => selectedIds.has(dog.id))
     .map((dog, index) => dogToBookingPet(dog, index));
 
@@ -3128,7 +3132,7 @@ function renderCustomerAccount() {
 
 function populateAccountDogPicker() {
   if (!accountDogPicker) return;
-  const dogs = customerAccount.dogs || [];
+  const dogs = activeCustomerPets();
   const useSavedPets = Boolean(customerSession && dogs.length);
   accountDogPicker.hidden = !useSavedPets;
   document.querySelector(".pet-count-field")?.toggleAttribute("hidden", useSavedPets);

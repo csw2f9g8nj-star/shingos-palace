@@ -47,6 +47,11 @@
             <span>Search dog or owner</span>
             <input id="adminSearch" type="search" placeholder="Search records..." />
           </label>
+          <div class="admin-pet-filters" role="group" aria-label="Filter pet profiles">
+            <button class="is-active" type="button" data-pet-filter="active">Active</button>
+            <button type="button" data-pet-filter="archived">Archived</button>
+            <button type="button" data-pet-filter="all">All</button>
+          </div>
           <button class="ghost-button" id="adminRefresh" type="button">Refresh</button>
         </div>
 
@@ -241,6 +246,24 @@
       </form>
     </dialog>
 
+    <dialog class="admin-confirm-dialog" id="adminPetActionDialog">
+      <form method="dialog">
+        <p class="summary-kicker">Pet Profile Action</p>
+        <h2 id="adminPetActionTitle"></h2>
+        <p id="adminPetActionText"></p>
+        <label id="adminPetNameConfirmWrap" hidden>
+          <span>Type the pet's name to confirm</span>
+          <input id="adminPetNameConfirm" autocomplete="off" />
+        </label>
+        <p class="status-line" id="adminPetActionStatus" aria-live="polite"></p>
+        <div class="admin-confirm-dialog-actions">
+          <button class="ghost-button" id="adminPetActionCancel" type="button">Cancel</button>
+          <button class="ghost-button" id="adminPetArchiveInstead" type="button" hidden>Archive instead</button>
+          <button class="submit-button" id="adminPetActionSubmit" type="button"></button>
+        </div>
+      </form>
+    </dialog>
+
     <template id="adminDogTemplate">
       <article class="admin-dog-card">
         <div class="admin-dog-head">
@@ -249,8 +272,17 @@
             <div class="admin-dog-title-row">
               <h2></h2>
               <span class="admin-club-badge" hidden>Club Member</span>
+              <span class="admin-archived-badge" hidden>Archived</span>
             </div>
             <p class="admin-owner"></p>
+          </div>
+        </div>
+        <div class="admin-card-section admin-pet-actions">
+          <h3>Profile Actions</h3>
+          <div class="admin-pet-action-buttons">
+            <button class="ghost-button admin-archive-pet" type="button">Archive Pet</button>
+            <button class="ghost-button admin-restore-pet" type="button" hidden>Restore Pet</button>
+            <button class="admin-danger-button admin-delete-pet" type="button">Delete Permanently</button>
           </div>
         </div>
         <div class="admin-card-section admin-club-management">

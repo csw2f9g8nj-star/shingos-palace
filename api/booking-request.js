@@ -508,6 +508,7 @@ async function handler(req, res) {
             .select("*")
             .eq("id", pet.dogId)
             .eq("owner_id", owner.id)
+            .is("archived_at", null)
             .single();
 
           if (existingPetError || !existingPet) {
@@ -519,6 +520,7 @@ async function handler(req, res) {
             .update(payload)
             .eq("id", existingPet.id)
             .eq("owner_id", owner.id)
+            .is("archived_at", null)
             .select()
             .single();
 

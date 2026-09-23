@@ -398,6 +398,71 @@
   text-transform: uppercase;
 }
 
+.admin-archived-badge {
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: rgba(68, 70, 69, 0.12);
+  color: #464948;
+  font-size: 0.7rem;
+  font-weight: 760;
+  text-transform: uppercase;
+}
+
+.admin-dog-card.is-archived {
+  border-color: rgba(68, 70, 69, 0.18);
+  background: rgba(248, 247, 244, 0.88);
+}
+
+.admin-pet-filters,
+.admin-pet-action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.admin-pet-filters button {
+  min-height: 42px;
+  padding: 0 14px;
+  border: 1px solid rgba(39, 50, 47, 0.14);
+  border-radius: 999px;
+  background: transparent;
+  color: #27322f;
+  cursor: pointer;
+}
+
+.admin-pet-filters button.is-active {
+  border-color: #39736f;
+  background: #39736f;
+  color: #fff;
+}
+
+.admin-danger-button {
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid rgba(143, 77, 70, 0.45);
+  border-radius: 999px;
+  background: transparent;
+  color: #8f4d46;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-danger-button:hover {
+  background: rgba(143, 77, 70, 0.08);
+}
+
+#adminPetNameConfirmWrap {
+  display: grid;
+  gap: 7px;
+  margin-top: 18px;
+}
+
+#adminPetNameConfirmWrap[hidden] {
+  display: none;
+}
+
 .admin-club-management {
   border: 1px solid rgba(98, 157, 151, 0.14);
   background: rgba(98, 157, 151, 0.1);
@@ -626,5 +691,15 @@
 
   .admin-club-membership-form .ghost-button {
     width: 100%;
+  }
+
+  .admin-pet-filters,
+  .admin-pet-action-buttons,
+  .admin-pet-action-buttons button {
+    width: 100%;
+  }
+
+  .admin-pet-filters button {
+    flex: 1 1 0;
   }
 }
