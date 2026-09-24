@@ -563,6 +563,98 @@
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr));
 }
 
+.admin-section-nav,
+.admin-zelle-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.admin-section-nav {
+  margin: 22px 0;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(38, 52, 50, 0.12);
+}
+
+.admin-section-nav button,
+.admin-zelle-tabs button {
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid rgba(38, 52, 50, 0.16);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--charcoal);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-section-nav button.is-active,
+.admin-zelle-tabs button.is-active {
+  border-color: var(--sage-deep);
+  background: var(--sage-deep);
+  color: #fff;
+}
+
+.admin-view[hidden] {
+  display: none;
+}
+
+.admin-zelle-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 22px 0;
+  padding: 18px 20px;
+  border: 1px solid rgba(168, 129, 70, 0.32);
+  border-radius: 16px;
+  background: rgba(255, 250, 241, 0.92);
+}
+
+.admin-zelle-summary[hidden] {
+  display: none;
+}
+
+.admin-zelle-summary p {
+  margin: 0 0 5px;
+}
+
+.admin-zelle-view {
+  padding-top: 8px;
+}
+
+.admin-zelle-view-head {
+  margin-bottom: 18px;
+}
+
+.admin-zelle-view-head h2,
+.admin-zelle-view-head p {
+  margin-top: 0;
+}
+
+.admin-zelle-tabs {
+  margin-bottom: 12px;
+}
+
+.admin-zelle-empty {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 24px;
+  border: 1px dashed rgba(38, 52, 50, 0.18);
+  border-radius: 16px;
+  text-align: center;
+}
+
+.admin-zelle-load-more {
+  display: block;
+  margin: 20px auto 0;
+}
+
+.admin-zelle-load-more[hidden] {
+  display: none;
+}
+
 .admin-zelle-card {
   gap: 10px;
 }
@@ -697,6 +789,24 @@
   .admin-pet-action-buttons,
   .admin-pet-action-buttons button {
     width: 100%;
+  }
+
+  .admin-section-nav,
+  .admin-zelle-tabs {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .admin-section-nav button,
+  .admin-zelle-tabs button,
+  .admin-zelle-summary .ghost-button,
+  .admin-zelle-load-more {
+    width: 100%;
+  }
+
+  .admin-zelle-summary {
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .admin-pet-filters button {

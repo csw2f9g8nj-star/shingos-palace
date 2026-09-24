@@ -10,6 +10,10 @@ let pendingPetCreation = null;
 let pendingZelleConfirmation = null;
 let adminPetFilter = "active";
 let pendingPetAction = null;
+let adminZelleFilter = "pending";
+let adminZelleVisibleCount = 20;
+
+const ZELLE_PAGE_SIZE = 20;
 
 const adminLogin = document.querySelector("#adminLogin");
 const adminDashboard = document.querySelector("#adminDashboard");
@@ -21,6 +25,14 @@ const adminMeetGreetsEl = document.querySelector("#adminMeetGreets");
 const adminReviewsEl = document.querySelector("#adminReviews");
 const adminZellePaymentsEl = document.querySelector("#adminZellePayments");
 const adminZelleStatus = document.querySelector("#adminZelleStatus");
+const adminMainView = document.querySelector("#adminMainView");
+const adminZelleView = document.querySelector("#adminZelleView");
+const adminViewButtons = [...document.querySelectorAll("[data-admin-view]")];
+const adminZelleFilterButtons = [...document.querySelectorAll("[data-zelle-filter]")];
+const adminZellePendingSummary = document.querySelector("#adminZellePendingSummary");
+const adminZellePendingCount = document.querySelector("#adminZellePendingCount");
+const adminOpenZellePayments = document.querySelector("#adminOpenZellePayments");
+const adminZelleLoadMore = document.querySelector("#adminZelleLoadMore");
 const adminClubMembersEl = document.querySelector("#adminClubMembers");
 const adminClubStatus = document.querySelector("#adminClubStatus");
 const adminOwnerSearchForm = document.querySelector("#adminOwnerSearchForm");
@@ -93,6 +105,18 @@ async function apiFetch(path, options = {}) {
 function showDashboard(show) {
   adminLogin.hidden = show;
   adminDashboard.hidden = !show;
+}
+
+function showAdminView(view) {
+  const nextView = view === "zelle" ? "zelle" : "dashboard";
+  if (adminMainView) adminMainView.hidden = nextView !== "dashboard";
+  if (adminZelleView) adminZelleView.hidden = nextView !== "zelle";
+  adminViewButtons.forEach((button) => {
+    const active = button.dataset.adminView === nextView;
+    button.classList.toggle("is-active", active);
+    if (active) button.setAttribute("aria-current", "page");
+    else button.removeAttribute("aria-current");
+  });
 }
 
 function formatOwner(owner) {
@@ -548,6 +572,8 @@ function zellePaymentEntries(bookings) {
         pending: !["deposit_paid", "paid_in_full"].includes(booking.payment_status),
         confirmedAt: booking.zelle_deposit_confirmed_at,
         reference: booking.zelle_deposit_reference,
+        note: booking.zelle_deposit_note,
+        requestedAt: booking.created_at,
       });
     }
     if (booking.balance_payment_method === "zelle") {
@@ -558,10 +584,12 @@ function zellePaymentEntries(bookings) {
         pending: booking.balance_payment_status !== "paid",
         confirmedAt: booking.zelle_balance_confirmed_at,
         reference: booking.zelle_balance_reference,
+        note: booking.zelle_balance_note,
+        requestedAt: booking.created_at,
       });
     }
     return entries;
-  }).sort((a, b) => Number(b.pending) - Number(a.pending));
+  });
 }
 
 function zellePetNames(booking) {
@@ -573,15 +601,39 @@ function zellePetNames(booking) {
 function renderAdminZellePayments(bookings) {
   if (!adminZellePaymentsEl) return;
   const entries = zellePaymentEntries(bookings);
-  if (!entries.length) {
-    adminZellePaymentsEl.innerHTML = "<p>No Zelle payment requests yet.</p>";
+  const pendingCount = entries.filter((entry) => entry.pending).length;
+  if (adminZellePendingSummary) adminZellePendingSummary.hidden = pendingCount === 0;
+  if (adminZellePendingCount) adminZellePendingCount.textContent = `Zelle payments pending: ${pendingCount}`;
+
+  const filteredEntries = entries
+    .filter((entry) => {
+      if (adminZelleFilter === "pending") return entry.pending;
+      if (adminZelleFilter === "confirmed") return !entry.pending;
+      return true;
+    })
+    .sort((a, b) => {
+      const aDate = new Date(adminZelleFilter === "confirmed" ? a.confirmedAt : (a.confirmedAt || a.requestedAt || 0)).getTime();
+      const bDate = new Date(adminZelleFilter === "confirmed" ? b.confirmedAt : (b.confirmedAt || b.requestedAt || 0)).getTime();
+      return bDate - aDate;
+    });
+
+  if (!filteredEntries.length) {
+    const emptyMessage = adminZelleFilter === "pending"
+      ? "No Zelle payments awaiting verification."
+      : adminZelleFilter === "confirmed"
+        ? "No confirmed Zelle payments yet."
+        : "No Zelle payment requests yet.";
+    adminZellePaymentsEl.innerHTML = `<p class="admin-zelle-empty">${emptyMessage}</p>`;
+    if (adminZelleLoadMore) adminZelleLoadMore.hidden = true;
     return;
   }
 
-  adminZellePaymentsEl.innerHTML = entries.map(({ booking, paymentType, amount, pending, confirmedAt, reference }) => {
+  adminZellePaymentsEl.innerHTML = filteredEntries
+    .slice(0, adminZelleVisibleCount)
+    .map(({ booking, paymentType, amount, pending, confirmedAt, reference, note, requestedAt }) => {
     const ownerName = [booking.owner?.first_name, booking.owner?.last_name].filter(Boolean).join(" ") || "Pet parent";
     const label = paymentType === "balance" ? "Remaining balance" : "Deposit";
-    const submitted = booking.created_at ? new Date(booking.created_at).toLocaleString() : "No date";
+    const submitted = requestedAt ? new Date(requestedAt).toLocaleString() : "No date";
     const confirmation = confirmedAt ? new Date(confirmedAt).toLocaleString() : "";
     return `
       <article class="admin-request-card admin-zelle-card ${pending ? "is-pending" : "is-confirmed"}">
@@ -611,10 +663,18 @@ function renderAdminZellePayments(bookings) {
             <button class="ghost-button" type="submit">Confirm ${label}</button>
             <p class="status-line" aria-live="polite"></p>
           </form>
-        ` : `<span>Confirmed ${escapeHtml(confirmation)}${reference ? ` · Reference ${safeText(reference)}` : ""}</span>`}
+        ` : `
+          <span>Confirmed ${escapeHtml(confirmation)}</span>
+          ${reference ? `<span>Reference: ${safeText(reference)}</span>` : ""}
+          ${note ? `<span>Internal note: ${safeText(note)}</span>` : ""}
+        `}
       </article>
     `;
   }).join("");
+
+  if (adminZelleLoadMore) {
+    adminZelleLoadMore.hidden = filteredEntries.length <= adminZelleVisibleCount;
+  }
 }
 
 function populateDogOptions(select, currentDogId) {
@@ -1038,6 +1098,44 @@ adminZellePaymentsEl?.addEventListener("submit", (event) => {
   adminZelleConfirmDialog.showModal();
 });
 
+adminViewButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    showAdminView(button.dataset.adminView);
+    if (button.dataset.adminView === "zelle") {
+      adminZelleFilter = "pending";
+      adminZelleVisibleCount = ZELLE_PAGE_SIZE;
+      adminZelleFilterButtons.forEach((item) => {
+        const active = item.dataset.zelleFilter === adminZelleFilter;
+        item.classList.toggle("is-active", active);
+        item.setAttribute("aria-selected", String(active));
+      });
+      renderAdminZellePayments(adminZellePayments);
+    }
+  });
+});
+
+adminOpenZellePayments?.addEventListener("click", () => {
+  adminViewButtons.find((item) => item.dataset.adminView === "zelle")?.click();
+});
+
+adminZelleFilterButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    adminZelleFilter = button.dataset.zelleFilter || "pending";
+    adminZelleVisibleCount = ZELLE_PAGE_SIZE;
+    adminZelleFilterButtons.forEach((item) => {
+      const active = item === button;
+      item.classList.toggle("is-active", active);
+      item.setAttribute("aria-selected", String(active));
+    });
+    renderAdminZellePayments(adminZellePayments);
+  });
+});
+
+adminZelleLoadMore?.addEventListener("click", () => {
+  adminZelleVisibleCount += ZELLE_PAGE_SIZE;
+  renderAdminZellePayments(adminZellePayments);
+});
+
 adminZelleConfirmCancel?.addEventListener("click", () => {
   pendingZelleConfirmation = null;
   adminZelleConfirmDialog?.close();
@@ -1075,6 +1173,7 @@ adminLoginForm?.addEventListener("submit", async (event) => {
 adminSignOut?.addEventListener("click", async () => {
   await supabaseClient?.auth.signOut();
   adminSession = null;
+  showAdminView("dashboard");
   showDashboard(false);
 });
 

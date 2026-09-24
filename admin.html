@@ -42,6 +42,12 @@
           <button class="ghost-button" id="adminSignOut" type="button">Sign Out</button>
         </header>
 
+        <nav class="admin-section-nav" aria-label="Admin sections">
+          <button class="is-active" type="button" data-admin-view="dashboard" aria-current="page">Dashboard</button>
+          <button type="button" data-admin-view="zelle">Zelle Payments</button>
+        </nav>
+
+        <div class="admin-view" id="adminMainView">
         <div class="admin-toolbar">
           <label>
             <span>Search dog or owner</span>
@@ -218,19 +224,35 @@
           <div class="admin-request-list admin-reviews-list" id="adminReviews"></div>
         </section>
 
-        <section class="admin-panel">
-          <div class="admin-panel-head">
-            <div>
-              <h2>Zelle Payments</h2>
-              <p>Verify payments received outside Stripe. Confirm only after the exact amount appears in Zelle.</p>
-            </div>
+        <section class="admin-zelle-summary" id="adminZellePendingSummary" hidden>
+          <div>
+            <p class="modal-kicker">Action Required</p>
+            <strong id="adminZellePendingCount">Zelle payments pending: 0</strong>
           </div>
-          <p class="status-line" id="adminZelleStatus" aria-live="polite"></p>
-          <div class="admin-request-list admin-zelle-list" id="adminZellePayments"></div>
+          <button class="ghost-button" id="adminOpenZellePayments" type="button">Review payments</button>
         </section>
 
         <div class="admin-grid" id="adminDogs"></div>
         <p class="status-line" id="adminStatus"></p>
+        </div>
+
+        <section class="admin-view admin-zelle-view" id="adminZelleView" hidden>
+          <div class="admin-panel-head admin-zelle-view-head">
+            <div>
+              <p class="modal-kicker">Private Payment Records</p>
+              <h2>Zelle Payments</h2>
+              <p>Verify pending payments and review confirmed payment history. Confirm only after the exact amount appears in Zelle.</p>
+            </div>
+          </div>
+          <div class="admin-zelle-tabs" role="tablist" aria-label="Filter Zelle payments">
+            <button class="is-active" type="button" role="tab" aria-selected="true" data-zelle-filter="pending">Pending</button>
+            <button type="button" role="tab" aria-selected="false" data-zelle-filter="confirmed">Confirmed / History</button>
+            <button type="button" role="tab" aria-selected="false" data-zelle-filter="all">All</button>
+          </div>
+          <p class="status-line" id="adminZelleStatus" aria-live="polite"></p>
+          <div class="admin-request-list admin-zelle-list" id="adminZellePayments"></div>
+          <button class="ghost-button admin-zelle-load-more" id="adminZelleLoadMore" type="button" hidden>Load More</button>
+        </section>
       </section>
     </main>
 
