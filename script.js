@@ -223,6 +223,11 @@ const translations = {
     homeServiceAreaBody:
       "Based in Margate and welcoming families from Coral Springs, Coconut Creek, Tamarac, and North Lauderdale.",
     footerLine: "Boarding, daycare, and dog walking.",
+    footerPrivacy: "Privacy Policy",
+    footerCookies: "Cookie Policy",
+    footerTerms: "Terms of Service",
+    footerBookingPolicies: "Booking Policies",
+    footerCookieSettings: "Cookie Settings",
     servicesHeading: "Boutique care options, thoughtfully grouped.",
     featureLabel: "What families usually love",
     servicesFeature: "Small-volume care, outdoor play, and a calmer environment than a big kennel setup.",
@@ -416,6 +421,8 @@ const translations = {
       "I authorize Shingo's Palace to seek veterinary care in case of an emergency if I cannot be reached. I understand that all veterinary expenses are my responsibility.",
     fieldCancellationPolicyAcknowledgment:
       "I have read and agree to the cancellation policy: standard dates require 7 days' notice for a refundable deposit; peak and holiday dates require 14 days' notice. Deposits are non-refundable after those deadlines.",
+    bookingPrivacyNotice: "We use the information in this request to arrange care, process payment, and manage your pet profile.",
+    bookingPrivacyLink: "Read our Privacy Policy.",
     fieldCard: "Cardholder",
     fieldCardNumber: "Card number",
     fieldExpiry: "Expiry",
@@ -775,6 +782,11 @@ const translations = {
     homeServiceAreaBody:
       "Estamos en Margate y recibimos familias de Coral Springs, Coconut Creek, Tamarac y North Lauderdale.",
     footerLine: "Hospedaje, guardería diaria y paseos de perros.",
+    footerPrivacy: "Política de Privacidad",
+    footerCookies: "Política de Cookies",
+    footerTerms: "Términos del Servicio",
+    footerBookingPolicies: "Políticas de Reserva",
+    footerCookieSettings: "Configuración de Cookies",
     servicesHeading: "Opciones boutique de cuidado, agrupadas con claridad.",
     featureLabel: "Lo que más suelen valorar",
     servicesFeature: "Cuidado con pocos perros, juego al aire libre y un ambiente más tranquilo que una guardería grande.",
@@ -973,6 +985,8 @@ const translations = {
       "Autorizo a Shingo's Palace a buscar atención veterinaria en caso de emergencia si no pueden contactarme. Entiendo que todos los gastos veterinarios son mi responsabilidad.",
     fieldCancellationPolicyAcknowledgment:
       "Leí y acepto la política de cancelación: las fechas estándar requieren 7 días de aviso para que el depósito sea reembolsable; los períodos peak y feriados requieren 14 días. Después de esos plazos, el depósito no es reembolsable.",
+    bookingPrivacyNotice: "Usamos la información de esta solicitud para coordinar el cuidado, procesar el pago y administrar el perfil de tu mascota.",
+    bookingPrivacyLink: "Leé nuestra Política de Privacidad.",
     fieldCard: "Titular",
     fieldCardNumber: "Número de tarjeta",
     fieldExpiry: "Vencimiento",
@@ -1659,6 +1673,7 @@ window.setSiteLanguage = (lang) => {
   currentLang = lang;
   localStorage.setItem("shingos-language", currentLang);
   applyLanguage();
+  window.dispatchEvent(new CustomEvent("shingos:languagechange", { detail: { language: currentLang } }));
 };
 
 window.openSiteModal = (modalId) => {

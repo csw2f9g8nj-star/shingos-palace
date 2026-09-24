@@ -479,6 +479,7 @@ window.setFriendsLanguage = (lang) => {
   currentLang = lang;
   localStorage.setItem("shingos-language", currentLang);
   applyLanguage();
+  window.dispatchEvent(new CustomEvent("shingos:languagechange", { detail: { language: currentLang } }));
 };
 
 langButtons.forEach((button) => {

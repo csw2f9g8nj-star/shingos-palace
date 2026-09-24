@@ -555,6 +555,13 @@
         <div class="footer-links">
           <a href="mailto:info@shingospalace.com">info@shingospalace.com</a>
           <a href="tel:7857579475">7857579475</a>
+          <nav class="footer-legal-links" aria-label="Legal and privacy links">
+            <a href="privacy-policy.html" data-i18n="footerPrivacy">Privacy Policy</a>
+            <a href="cookie-policy.html" data-i18n="footerCookies">Cookie Policy</a>
+            <a href="terms-of-service.html" data-i18n="footerTerms">Terms of Service</a>
+            <a href="#faq" data-i18n="footerBookingPolicies">Booking Policies</a>
+            <button class="footer-link-button cookie-settings-trigger" type="button" data-i18n="footerCookieSettings">Cookie Settings</button>
+          </nav>
           <div class="social-links footer-social" aria-label="Social media links">
             <a class="social-icon" href="https://instagram.com/Shingos_palace" target="_blank" rel="noreferrer" aria-label="Instagram">
               <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -1001,6 +1008,10 @@
                   <input name="cancellationPolicyAcknowledged" id="cancellationPolicyAcknowledged" type="checkbox" required />
                   <span data-i18n="fieldCancellationPolicyAcknowledgment">I have read and agree to the cancellation policy: standard dates require 7 days' notice for a refundable deposit; peak and holiday dates require 14 days' notice. Deposits are non-refundable after those deadlines.</span>
                 </label>
+                <p class="booking-privacy-notice wide-field">
+                  <span data-i18n="bookingPrivacyNotice">We use the information in this request to arrange care, process payment, and manage your pet profile.</span>
+                  <a href="privacy-policy.html" target="_blank" rel="noopener" data-i18n="bookingPrivacyLink">Read our Privacy Policy.</a>
+                </p>
               </div>
             </section>
 
@@ -1559,5 +1570,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <script src="holiday-pricing.js" defer></script>
     <script src="script.js" defer></script>
+    <script src="privacy-controls.js" defer></script>
   </body>
 </html>
