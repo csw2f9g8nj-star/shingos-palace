@@ -218,10 +218,10 @@ const translations = {
     galleryCategoryYard: "Play Yard",
     galleryCategoryGuests: "Happy Guests",
     galleryCategoryBoarding: "Boarding Experience",
-    homeServiceAreaKicker: "Serving nearby families",
+    homeServiceAreaKicker: "Serving Broward & Beyond",
     homeServiceAreaHeading: "Boutique pet care close to home",
     homeServiceAreaBody:
-      "Based in Margate and welcoming families from Coral Springs, Coconut Creek, Tamarac, and North Lauderdale.",
+      "Based in Broward County and welcoming pets from anywhere. Pickup is available throughout Broward County for boarding stays.",
     footerLine: "Boarding, daycare, and dog walking.",
     footerPrivacy: "Privacy Policy",
     footerCookies: "Cookie Policy",
@@ -777,10 +777,10 @@ const translations = {
     galleryCategoryYard: "Juegos en el patio",
     galleryCategoryGuests: "Huéspedes felices",
     galleryCategoryBoarding: "Experiencia de hospedaje",
-    homeServiceAreaKicker: "Cerca de las familias de la zona",
+    homeServiceAreaKicker: "Atendemos Broward y más allá",
     homeServiceAreaHeading: "Cuidado boutique cerca de casa",
     homeServiceAreaBody:
-      "Estamos en Margate y recibimos familias de Coral Springs, Coconut Creek, Tamarac y North Lauderdale.",
+      "Estamos en el condado de Broward y recibimos mascotas de cualquier lugar. Ofrecemos servicio de recogida en todo el condado de Broward para estadías de hospedaje.",
     footerLine: "Hospedaje, guardería diaria y paseos de perros.",
     footerPrivacy: "Política de Privacidad",
     footerCookies: "Política de Cookies",
@@ -1401,7 +1401,7 @@ const reviews = [
 const galleryItems = [
   {
     icon: "🏊",
-    image: "assets/pool-time-featured.png",
+    image: "assets/swimming-pool-dogs.jpg",
     alt: "The swimming pool at Shingo's Palace prepared for supervised swim sessions",
     enTitle: "Swimming Pool",
     esTitle: "Pileta",

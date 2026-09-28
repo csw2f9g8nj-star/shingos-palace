@@ -16,8 +16,8 @@
     <meta property="og:type" content="website" />
     <meta property="og:image" content="assets/shingo-original.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
-    <link rel="icon" type="image/jpeg" href="assets/logo-shingos-palace.jpeg" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/png" href="assets/logo-sp-black-gold.png" />
+    <link rel="stylesheet" href="styles.css?v=brand-header-20260926" />
     <script src="https://js.stripe.com/clover/stripe.js" defer></script>
     <script type="application/ld+json">
       {
@@ -50,16 +50,15 @@
   </head>
   <body>
     <div class="page-shell">
-      <header class="topbar">
+      <header class="topbar topbar-home">
         <a class="brand" href="#home" aria-label="Shingo's Palace home">
-          <img src="assets/logo-shingos-palace.jpeg" alt="Shingo's Palace Pet Hotel logo" />
-          <div class="brand-text">
-            <strong>Shingo's Palace</strong>
-            <span data-i18n="tagline">Boutique home boarding</span>
-          </div>
+          <span class="brand-logo-crop">
+            <img src="assets/logo-shingos-palace-black-gold.png" alt="Shingo's Palace black and gold logo" />
+          </span>
+          <span class="brand-hotel-label">Boutique Pet Hotel</span>
         </a>
 
-        <div class="toolbar">
+        <div class="header-controls header-controls-left">
           <div class="lang-switch" role="group" aria-label="Language selector">
             <button class="lang-button active" data-lang="en" type="button" onclick="window.setSiteLanguage('en')">EN</button>
             <button class="lang-button" data-lang="es" type="button" onclick="window.setSiteLanguage('es')">ES</button>
@@ -79,6 +78,8 @@
               </svg>
             </a>
           </div>
+        </div>
+        <div class="header-controls header-controls-right">
           <button class="account-nav-button" id="accountNavButton" data-modal="accountModal" type="button" data-i18n="accountSignInNav">
             Sign In / My Account
           </button>
@@ -89,9 +90,6 @@
       <main class="hero" id="home">
         <div class="hero-media">
           <img class="hero-shingo-portrait" src="assets/shingo-hero-portrait.png" alt="Shingo, the chocolate Labrador who inspired Shingo's Palace" />
-          <div class="hero-logo-float">
-            <img src="assets/logo-shingos-palace.jpeg" alt="" />
-          </div>
         </div>
 
         <section class="hero-copy">
@@ -540,17 +538,20 @@
       </section>
 
       <section class="service-area-strip" aria-labelledby="service-area-heading">
-        <p class="section-kicker" data-i18n="homeServiceAreaKicker">Serving nearby families</p>
+        <p class="section-kicker" data-i18n="homeServiceAreaKicker">Serving Broward &amp; Beyond</p>
         <h2 id="service-area-heading" data-i18n="homeServiceAreaHeading">Boutique pet care close to home</h2>
         <p data-i18n="homeServiceAreaBody">
-          Based in Margate and welcoming families from Coral Springs, Coconut Creek, Tamarac, and North Lauderdale.
+          Based in Broward County and welcoming pets from anywhere. Pickup is available throughout Broward County for boarding stays.
         </p>
       </section>
 
       <footer class="footer">
-        <div>
-          <strong>Shingo's Palace Pet Hotel</strong>
-          <span data-i18n="footerLine">Boarding, daycare, and dog walking.</span>
+        <div class="footer-brand-lockup">
+          <img src="assets/logo-shingos-palace-black-gold.png" alt="Shingo's Palace Boutique Pet Hotel black and gold logo" />
+          <div class="footer-brand-copy">
+            <strong>Shingo's Palace Pet Hotel</strong>
+            <span data-i18n="footerLine">Boarding, daycare, and dog walking.</span>
+          </div>
         </div>
         <div class="footer-links">
           <a href="mailto:info@shingospalace.com">info@shingospalace.com</a>
