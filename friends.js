@@ -122,8 +122,11 @@ const friendsTranslations = {
 };
 
 const filterOptions = ["small", "medium", "large", "high-energy", "calm", "loves-swimming", "loves-fetch"];
-const profilesById = new Map(window.dogMatchData.profiles.map((profile) => [profile.id, profile]));
-const profilesByName = new Map(window.dogMatchData.profiles.map((profile) => [profile.name.toLowerCase(), profile]));
+const memorialProfiles = window.dogMatchData.profiles.filter((profile) => profile.status === "memorial");
+const memorialProfileNames = new Set(memorialProfiles.map((profile) => profile.name.toLowerCase()));
+const activeProfiles = window.dogMatchData.profiles.filter((profile) => profile.status !== "memorial");
+const profilesById = new Map(activeProfiles.map((profile) => [profile.id, profile]));
+const profilesByName = new Map(activeProfiles.map((profile) => [profile.name.toLowerCase(), profile]));
 const langButtons = document.querySelectorAll(".lang-button");
 const profileModal = document.querySelector("#profileModal");
 const profileModalContent = document.querySelector("#profileModalContent");
@@ -249,7 +252,8 @@ function chipForName(name) {
 }
 
 function dogChips(names = []) {
-  return `<div class="dog-chip-row">${names.map(chipForName).join("")}</div>`;
+  const activeNames = names.filter((name) => !memorialProfileNames.has(String(name).toLowerCase()));
+  return `<div class="dog-chip-row">${activeNames.map(chipForName).join("")}</div>`;
 }
 
 function memberBadge() {
@@ -300,7 +304,7 @@ function profileImage(profile, index = 0) {
 
 function renderProfiles() {
   const profileGrid = document.querySelector("#dogProfiles");
-  const profiles = window.dogMatchData.profiles.filter(profileMatchesFilters);
+  const profiles = activeProfiles.filter(profileMatchesFilters);
 
   profileGrid.innerHTML = profiles.length
     ? profiles

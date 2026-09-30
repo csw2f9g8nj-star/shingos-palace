@@ -313,6 +313,7 @@ window.dogMatchData = {
     {
       id: "avery",
       name: "Avery",
+      status: "memorial",
       breed: "Mixed Breed",
       age: "16 years",
       size: "Medium",

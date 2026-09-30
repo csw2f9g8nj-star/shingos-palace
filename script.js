@@ -242,6 +242,18 @@ const translations = {
     pricingDay: "Day",
     pricingWeek: "Week",
     pricingWalkingTitle: "DOG WALKING",
+    holidayRatesKicker: "Seasonal boarding",
+    holidayRatesHeading: "Holiday Rates",
+    holidayRatesIntro:
+      "During designated high-demand periods, Boarding includes the nightly holiday surcharge shown below. These dates and rates are reflected automatically in your booking estimate.",
+    holidayRatesBoardingOnly:
+      "Holiday pricing currently applies to Boarding only. Daycare and Dog Walking remain at their regular listed rates.",
+    holidayRatesLoading: "Loading current holiday periods...",
+    holidayRatesUnavailable:
+      "Holiday pricing is temporarily unavailable. Please check your booking estimate or contact us before booking holiday dates.",
+    holidayRatesEmpty: "No holiday rate periods are currently published.",
+    holidayRateNightlySurcharge: "per boarding night",
+    holidayRateOneDogExample: "One-dog rate",
     additionalDogLabel: "Additional Dog",
     additionalDogDesc: "Added to shared bookings.",
     additionalCatLabel: "Additional Cat",
@@ -801,6 +813,18 @@ const translations = {
     pricingDay: "Día",
     pricingWeek: "Semana",
     pricingWalkingTitle: "PASEO DE PERROS",
+    holidayRatesKicker: "Boarding de temporada",
+    holidayRatesHeading: "Tarifas de feriados",
+    holidayRatesIntro:
+      "Durante los períodos festivos de alta demanda, el Boarding incluye el recargo nocturno que se muestra a continuación. Estas fechas y tarifas se reflejan automáticamente en el estimado de la reserva.",
+    holidayRatesBoardingOnly:
+      "Actualmente, las tarifas de feriados se aplican solo al Boarding. Daycare y Paseo de Perros mantienen sus tarifas regulares publicadas.",
+    holidayRatesLoading: "Cargando los períodos festivos vigentes...",
+    holidayRatesUnavailable:
+      "Las tarifas de feriados no están disponibles temporalmente. Revisá el estimado de tu reserva o consultanos antes de reservar fechas festivas.",
+    holidayRatesEmpty: "Actualmente no hay períodos con tarifa de feriado publicados.",
+    holidayRateNightlySurcharge: "por noche de boarding",
+    holidayRateOneDogExample: "Tarifa para un perro",
     additionalDogLabel: "Perro adicional",
     additionalDogDesc: "Se suma a reservas compartidas.",
     additionalCatLabel: "Gato extra",
@@ -1334,6 +1358,7 @@ let stripeCheckout = null;
 let stripePublishableKey = "";
 let holidayPricingPeriods = [];
 let holidayPricingAvailable = false;
+let publicConfigLoaded = false;
 let zellePaymentAvailable = false;
 let zellePaymentRecipient = "";
 let zellePaymentInstructions = "";
@@ -1453,6 +1478,7 @@ const galleryItems = [
 
 const publicReviewList = document.querySelector("#publicReviewList");
 const publicReviewEmpty = document.querySelector("#publicReviewEmpty");
+const holidayRatesList = document.querySelector("#holidayRatesList");
 const homeGallery = document.querySelector("#homeGallery");
 const langButtons = document.querySelectorAll(".lang-button");
 const modalButtons = document.querySelectorAll("[data-modal]");
@@ -1666,6 +1692,7 @@ function applyLanguage() {
 
   renderReviews();
   renderHomeGallery();
+  renderPublicHolidayRates();
   renderCustomerAccount();
   updateAccountNav();
   updateAvailability();
@@ -1855,6 +1882,64 @@ function renderHomeGallery() {
 
 function currency(amount) {
   return `$${amount}`;
+}
+
+function formatHolidayRateDate(value) {
+  const parts = String(value || "").split("-").map(Number);
+  if (parts.length !== 3 || parts.some((part) => !Number.isFinite(part))) return "";
+  const [year, month, day] = parts;
+  return new Intl.DateTimeFormat(currentLang === "es" ? "es-US" : "en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(Date.UTC(year, month - 1, day)));
+}
+
+function renderPublicHolidayRates() {
+  if (!holidayRatesList) return;
+
+  if (!publicConfigLoaded) {
+    holidayRatesList.innerHTML = `<p class="holiday-rates-status">${escapeHtml(t("holidayRatesLoading"))}</p>`;
+    return;
+  }
+
+  if (!holidayPricingAvailable) {
+    holidayRatesList.innerHTML = `<p class="holiday-rates-status holiday-rates-status-error">${escapeHtml(t("holidayRatesUnavailable"))}</p>`;
+    return;
+  }
+
+  const pricedPeriods = holidayPricingPeriods.filter((period) => (
+    period?.active !== false && Number(period?.boarding_surcharge ?? period?.surcharge) > 0
+  ));
+
+  if (!pricedPeriods.length) {
+    holidayRatesList.innerHTML = `<p class="holiday-rates-status">${escapeHtml(t("holidayRatesEmpty"))}</p>`;
+    return;
+  }
+
+  holidayRatesList.innerHTML = pricedPeriods.map((period) => {
+    const surcharge = Number(period.boarding_surcharge ?? period.surcharge) || 0;
+    const label = period.calendar_label || period.calendarLabel || period.name || t("holidayRatesHeading");
+    const startDate = formatHolidayRateDate(period.start_date || period.startDate);
+    const endDate = formatHolidayRateDate(period.end_date || period.endDate);
+    const dateRange = startDate && endDate && startDate !== endDate ? `${startDate} – ${endDate}` : startDate;
+    const oneDogRate = serviceRates.boarding + surcharge;
+
+    return `
+      <article class="holiday-rate-row">
+        <div class="holiday-rate-period">
+          <strong>${escapeHtml(label)}</strong>
+          <span>${escapeHtml(dateRange)}</span>
+        </div>
+        <div class="holiday-rate-price">
+          <strong>+${escapeHtml(currency(surcharge))}</strong>
+          <span>${escapeHtml(t("holidayRateNightlySurcharge"))}</span>
+          <small>${escapeHtml(t("holidayRateOneDogExample"))}: ${escapeHtml(currency(serviceRates.boarding))} + ${escapeHtml(currency(surcharge))} = ${escapeHtml(currency(oneDogRate))}/${escapeHtml(rateUnitLabel("boarding"))}</small>
+        </div>
+      </article>
+    `;
+  }).join("");
 }
 
 function serviceLabel(serviceKey) {
@@ -2881,6 +2966,7 @@ async function getPublicConfig() {
       const payload = await response.json();
       holidayPricingPeriods = Array.isArray(payload.holidayPricing) ? payload.holidayPricing : [];
       holidayPricingAvailable = payload.holidayPricingAvailable === true;
+      publicConfigLoaded = true;
       zellePaymentAvailable = payload.zelleAvailable === true;
       zellePaymentRecipient = String(payload.zellePaymentRecipient || "").trim();
       zellePaymentInstructions = String(payload.zellePaymentInstructions || "").trim();
@@ -2890,6 +2976,7 @@ async function getPublicConfig() {
           code: payload.holidayPricingErrorCode || "holiday_pricing_lookup_failed",
         });
       }
+      renderPublicHolidayRates();
       return payload;
     });
   }
@@ -4602,7 +4689,9 @@ getPublicConfig()
     updateSummary();
   })
   .catch((error) => {
+    publicConfigLoaded = true;
     holidayPricingAvailable = false;
+    renderPublicHolidayRates();
     console.error("Holiday pricing display is temporarily unavailable.", error);
   });
 loadApprovedReviews();
