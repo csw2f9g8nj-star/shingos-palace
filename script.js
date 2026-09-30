@@ -1440,13 +1440,14 @@ const galleryItems = [
     es: "Camas limpias y resistentes ofrecen ventilación y un lugar cómodo para descansar.",
   },
   {
-    icon: "🐶",
-    image: "assets/pool-time-featured.png",
-    alt: "Pool area at Shingo's Palace for supervised water play",
-    enTitle: "Small Dog Splash Pool",
-    esTitle: "Pileta baja para perros pequeños",
-    en: "Shallow cooling area designed for smaller guests.",
-    es: "Área baja para refrescarse, pensada para huéspedes pequeños.",
+    icon: "💦",
+    image: "assets/outdoor-water-play.jpg",
+    cardClass: "facility-card-water-play",
+    alt: "Dogs enjoying supervised outdoor water play at Shingo's Palace",
+    enTitle: "Outdoor Water Play",
+    esTitle: "Juegos de agua al aire libre",
+    en: "Supervised water play adds joyful enrichment and a refreshing way to cool off outdoors.",
+    es: "Los juegos de agua supervisados suman diversión y una forma refrescante de disfrutar al aire libre.",
   },
 ];
 

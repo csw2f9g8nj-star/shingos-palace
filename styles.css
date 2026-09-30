@@ -1568,6 +1568,10 @@ a.action-tile {
   filter: brightness(1.035) saturate(1.045) contrast(1.035);
 }
 
+.home-gallery-card.facility-card-water-play img {
+  object-position: 50% 60%;
+}
+
 .home-gallery-card.facility-card-preserve {
   height: 560px;
   min-height: 560px;
@@ -1590,11 +1594,11 @@ a.action-tile {
 }
 
 .home-gallery-card.facility-card-air-conditioned::before {
-  background-image: url("assets/air-conditioned-sleeping-area.png");
+  display: none;
 }
 
 .home-gallery-card.facility-card-elevated-beds::before {
-  background-image: url("assets/elevated-beds-pool.jpg");
+  display: none;
 }
 
 .home-gallery-card.facility-card-preserve img {
@@ -1628,6 +1632,30 @@ a.action-tile {
 .home-gallery-card.facility-card-elevated-beds:hover img {
   transform: scale(1.115);
   filter: drop-shadow(0 14px 30px rgba(20, 19, 18, 0.18));
+}
+
+.home-gallery-card.facility-card-air-conditioned img {
+  object-fit: cover;
+  object-position: 50% 50%;
+  transform: none;
+  filter: none;
+}
+
+.home-gallery-card.facility-card-air-conditioned:hover img {
+  transform: scale(1.035);
+  filter: saturate(1.04);
+}
+
+.home-gallery-card.facility-card-elevated-beds img {
+  object-fit: cover;
+  object-position: 50% 50%;
+  transform: none;
+  filter: none;
+}
+
+.home-gallery-card.facility-card-elevated-beds:hover img {
+  transform: scale(1.035);
+  filter: saturate(1.04);
 }
 
 .home-gallery-card.facility-card-preserve::after {
