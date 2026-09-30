@@ -1411,8 +1411,9 @@ const galleryItems = [
   },
   {
     icon: "🌴",
-    image: "assets/large-fenced-yard-dogs.jpg",
-    alt: "Two dogs relaxing in the large fenced yard at Shingo's Palace",
+    image: "assets/large-fenced-yard-playing-dogs.jpg",
+    cardClass: "facility-card-preserve facility-card-yard",
+    alt: "Three dogs running and playing in the large fenced yard at Shingo's Palace",
     enTitle: "Large Fenced Yard",
     esTitle: "Patio grande cercado",
     en: "Safe outdoor area with plenty of room to run and explore.",
@@ -1420,21 +1421,23 @@ const galleryItems = [
   },
   {
     icon: "❄️",
-    image: "assets/gallery-budders.jpeg",
-    alt: "Indoor home environment at Shingo's Palace for comfortable overnight rest",
+    image: "assets/air-conditioned-sleeping-area.png",
+    cardClass: "facility-card-preserve facility-card-air-conditioned",
+    alt: "Dog resting on an elevated bed in the clean air-conditioned indoor area at Shingo's Palace",
     enTitle: "Air-Conditioned Sleeping Area",
     esTitle: "Área de descanso con aire acondicionado",
-    en: "Comfortable indoor sleeping space for overnight guests.",
-    es: "Espacio interior cómodo para el descanso de los huéspedes nocturnos.",
+    en: "A cool, secure indoor space for comfortable sleep and restful breaks on hot Florida days.",
+    es: "Un espacio interior fresco y seguro para dormir cómodamente y descansar durante los días calurosos de Florida.",
   },
   {
-    icon: "🚰",
-    image: "assets/carla-poolside-dogs.jpeg",
-    alt: "Backyard area at Shingo's Palace where fresh water is available during outdoor time",
-    enTitle: "Fresh Water Stations",
-    esTitle: "Estaciones de agua fresca",
-    en: "Multiple water areas available throughout the property.",
-    es: "Múltiples puntos de agua disponibles en la propiedad.",
+    icon: "🛏️",
+    image: "assets/elevated-beds-pool.jpg",
+    cardClass: "facility-card-preserve facility-card-elevated-beds",
+    alt: "Dog resting on an elevated bed beside the pool at Shingo's Palace",
+    enTitle: "Elevated Beds",
+    esTitle: "Camas elevadas",
+    en: "Clean, durable beds provide airflow and a comfortable place to rest.",
+    es: "Camas limpias y resistentes ofrecen ventilación y un lugar cómodo para descansar.",
   },
   {
     icon: "🐶",
@@ -1836,7 +1839,7 @@ function renderHomeGallery() {
   homeGallery.innerHTML = galleryItems
     .map(
       (item) => `
-        <figure class="home-gallery-card${item.featured ? " featured" : ""}">
+        <figure class="home-gallery-card${item.featured ? " featured" : ""}${item.cardClass ? ` ${item.cardClass}` : ""}">
           <img src="${item.image}" alt="${item.alt}" loading="lazy" />
           <figcaption>
             <span class="facility-icon" aria-hidden="true">${item.icon}</span>

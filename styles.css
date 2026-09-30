@@ -1568,13 +1568,74 @@ a.action-tile {
   filter: brightness(1.035) saturate(1.045) contrast(1.035);
 }
 
-.home-gallery-card img[src$="large-fenced-yard-dogs.jpg"] {
-  object-position: center 46%;
+.home-gallery-card.facility-card-preserve {
+  height: 560px;
+  min-height: 560px;
+  isolation: isolate;
+}
+
+.home-gallery-card.facility-card-preserve::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: -22px;
+  background-position: center;
+  background-size: cover;
+  filter: blur(16px) brightness(0.68) saturate(0.88);
+  transform: scale(1.06);
+}
+
+.home-gallery-card.facility-card-yard::before {
+  background-image: url("assets/large-fenced-yard-playing-dogs.jpg");
+}
+
+.home-gallery-card.facility-card-air-conditioned::before {
+  background-image: url("assets/air-conditioned-sleeping-area.png");
+}
+
+.home-gallery-card.facility-card-elevated-beds::before {
+  background-image: url("assets/elevated-beds-pool.jpg");
+}
+
+.home-gallery-card.facility-card-preserve img {
+  position: relative;
+  z-index: 1;
+  object-fit: contain;
+  object-position: center;
+  filter: drop-shadow(0 14px 30px rgba(20, 19, 18, 0.18));
+}
+
+.home-gallery-card.facility-card-yard img {
+  transform: scale(1.04);
+}
+
+.home-gallery-card.facility-card-air-conditioned img,
+.home-gallery-card.facility-card-elevated-beds img {
+  transform: scale(1.1);
 }
 
 .home-gallery-card:hover img {
   transform: scale(1.035);
   filter: saturate(1.04);
+}
+
+.home-gallery-card.facility-card-yard:hover img {
+  transform: scale(1.055);
+  filter: drop-shadow(0 14px 30px rgba(20, 19, 18, 0.18));
+}
+
+.home-gallery-card.facility-card-air-conditioned:hover img,
+.home-gallery-card.facility-card-elevated-beds:hover img {
+  transform: scale(1.115);
+  filter: drop-shadow(0 14px 30px rgba(20, 19, 18, 0.18));
+}
+
+.home-gallery-card.facility-card-preserve::after {
+  z-index: 2;
+}
+
+.home-gallery-card.facility-card-preserve figcaption {
+  z-index: 3;
 }
 
 .home-gallery-card.featured:hover img {
@@ -5213,6 +5274,11 @@ textarea {
   .home-gallery-card:only-child {
     min-height: 430px;
     border-radius: 22px;
+  }
+
+  .home-gallery-card.facility-card-preserve {
+    height: 430px;
+    min-height: 430px;
   }
 
   .service-area-strip {
