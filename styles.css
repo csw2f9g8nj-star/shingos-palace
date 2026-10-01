@@ -914,11 +914,12 @@ a.action-tile {
 
 .residents-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
   gap: 22px;
 }
 
 .resident-card {
+  min-width: 0;
   overflow: hidden;
   border: 1px solid rgba(36, 35, 33, 0.08);
   border-radius: 30px;
@@ -934,7 +935,8 @@ a.action-tile {
 }
 
 .resident-image {
-  height: 310px;
+  height: auto;
+  aspect-ratio: 4 / 5;
   overflow: hidden;
   background: var(--sand);
 }
@@ -953,7 +955,19 @@ a.action-tile {
 }
 
 .resident-image-chester img {
-  object-position: center 38%;
+  object-position: center 32%;
+}
+
+.resident-image-murci img {
+  object-position: center 44%;
+}
+
+.resident-image-silver img {
+  object-position: center 42%;
+}
+
+.resident-image-campanita img {
+  object-position: center 40%;
 }
 
 .resident-image-soft {
@@ -1015,8 +1029,11 @@ a.action-tile {
 .resident-copy h3 {
   margin: 0 0 18px;
   font-family: var(--display);
-  font-size: clamp(2rem, 3.2vw, 3.15rem);
+  font-size: clamp(1.85rem, 2.6vw, 2.8rem);
   line-height: 1;
+  overflow-wrap: normal;
+  word-break: normal;
+  white-space: nowrap;
 }
 
 .resident-copy p:not(.resident-role),
@@ -1934,8 +1951,11 @@ a.action-tile {
 }
 
 .club-card .dog-card-head h3 {
-  font-size: clamp(2.7rem, 4.8vw, 5rem);
+  font-size: clamp(2.25rem, 3.8vw, 4rem);
   letter-spacing: -0.01em;
+  overflow-wrap: normal;
+  word-break: normal;
+  white-space: nowrap;
 }
 
 .club-member-badge {
@@ -2080,7 +2100,7 @@ a.action-tile {
   height: 30px;
   border-radius: 50%;
   background: rgba(255, 250, 241, 0.72);
-  color: var(--aqua-deep);
+  color: var(--brand-gold-deep);
 }
 
 .club-icon svg {
@@ -2317,7 +2337,8 @@ body.modal-open {
   overflow: auto;
   border: 1px solid rgba(255, 255, 255, 0.72);
   border-radius: 34px;
-  background: var(--cream);
+  background: var(--brand-paper);
+  opacity: 1;
   box-shadow: 0 36px 90px rgba(52, 49, 45, 0.26);
   transform: translateY(16px) scale(0.98);
   transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -2375,6 +2396,8 @@ body.modal-open {
 
 .profile-modal-copy {
   padding: clamp(14px, 3vw, 28px) clamp(4px, 2vw, 18px) clamp(18px, 3vw, 30px) 0;
+  color: var(--brand-charcoal);
+  opacity: 1;
 }
 
 .profile-modal-copy > .club-member-badge {
@@ -2390,12 +2413,42 @@ body.modal-open {
   font-family: var(--display);
   font-size: clamp(3rem, 7vw, 6rem);
   line-height: 0.92;
+  color: var(--brand-charcoal);
 }
 
 .profile-modal-copy p,
 .profile-modal-copy li {
-  color: var(--muted);
+  color: #48443f;
   line-height: 1.72;
+}
+
+.profile-modal-copy strong,
+.profile-modal-copy .section-kicker,
+.profile-modal-copy .club-ratings span,
+.profile-modal-copy .club-fact-item strong,
+.profile-modal-copy .club-chip-block > strong,
+.profile-modal-copy .modal-list-block > strong {
+  color: var(--brand-charcoal);
+  font-weight: 780;
+}
+
+.profile-modal-copy .club-fact-item small {
+  color: #765a24;
+}
+
+.profile-modal-copy .club-fact-item,
+.profile-modal-copy .club-ratings > div,
+.profile-modal-copy .dog-chip,
+.profile-modal-copy .activity-list li {
+  border: 1px solid rgba(82, 68, 42, 0.2);
+  background: rgba(247, 243, 234, 0.97);
+  color: var(--brand-charcoal);
+}
+
+.profile-modal-copy .carla-note {
+  border-left-color: var(--brand-gold-deep);
+  background: #f3eadb;
+  color: var(--brand-charcoal) !important;
 }
 
 .modal-ratings {
@@ -5392,7 +5445,27 @@ textarea {
   }
 
   .resident-image {
-    height: 300px;
+    aspect-ratio: 4 / 5;
+  }
+
+  .resident-image-murci img {
+    object-position: center 44%;
+  }
+
+  .resident-image-silver img {
+    object-position: center 42%;
+  }
+
+  .resident-image-campanita img {
+    object-position: center 38%;
+  }
+
+  .resident-image-chester img {
+    object-position: center 30%;
+  }
+
+  .resident-card:hover .resident-image img {
+    transform: none;
   }
 
   .resident-copy {
@@ -5570,12 +5643,16 @@ textarea {
 
   #profileModalContent {
     grid-template-columns: 1fr;
-    padding: 12px;
+    padding: 12px 12px calc(34px + env(safe-area-inset-bottom));
   }
 
   .profile-modal-card {
-    max-height: 90vh;
+    max-height: calc(100dvh - max(28px, env(safe-area-inset-top)) - max(28px, env(safe-area-inset-bottom)));
     border-radius: 28px;
+    background: var(--brand-paper);
+    opacity: 1;
+    overscroll-behavior: contain;
+    scroll-padding-bottom: calc(28px + env(safe-area-inset-bottom));
   }
 
   .profile-modal-gallery img {
@@ -5592,7 +5669,7 @@ textarea {
   }
 
   .profile-modal-copy {
-    padding: 8px 8px 24px;
+    padding: 8px 8px 30px;
   }
 
   .club-cta {
