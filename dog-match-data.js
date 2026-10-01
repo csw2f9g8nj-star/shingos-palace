@@ -225,6 +225,221 @@ window.dogMatchData = {
       recommendedWith: ["tanner", "nola", "ria", "queenly"],
     },
     {
+      id: "cooper",
+      name: "Cooper",
+      breed: "Labrador",
+      age: "1 year",
+      size: "Large",
+      energyLevel: 5,
+      swimmingLevel: 5,
+      fetchLevel: 5,
+      filters: ["large", "high-energy", "loves-swimming", "loves-fetch"],
+      photos: ["assets/club-cooper.png"],
+      personality: {
+        en: "Incredibly friendly, smart, and happiest when there is a pool nearby.",
+        es: "Increíblemente amigable, inteligente y feliz cuando hay una pileta cerca.",
+      },
+      playStyle: {
+        en: "Cooper loves energetic games, ball play, and long pool sessions with his favorite friends.",
+        es: "Cooper ama los juegos con energía, la pelota y las largas sesiones de pileta con sus amigos favoritos.",
+      },
+      favoriteActivities: {
+        en: ["Swimming", "Ball play", "Playing with Benelli and Chester"],
+        es: ["Nadar", "Jugar con la pelota", "Jugar con Benelli y Chester"],
+      },
+      compatibilityNotes: {
+        en: "Usually plays with Benelli and Chester.",
+        es: "Suele jugar con Benelli y Chester.",
+      },
+      bestFriends: ["Benelli", "Chester"],
+      usuallyHangsOutWith: ["Benelli", "Chester"],
+      carlaObservations: {
+        en: "He is incredibly friendly and smart. Once he gets into the pool, he never wants to get out - rain or shine.",
+        es: "Es increíblemente amigable e inteligente. Una vez que entra a la pileta, no quiere salir nunca, llueva o haya sol.",
+      },
+      profileDetails: {
+        en: "Cooper brings joyful Labrador energy to every visit and turns pool time into an all-day celebration.",
+        es: "Cooper trae la energía alegre de un Labrador a cada visita y convierte la pileta en una celebración de todo el día.",
+      },
+      funFacts: {
+        en: ["Pool lover in every kind of weather", "Smart and social", "Ball-play enthusiast"],
+        es: ["Ama la pileta con cualquier clima", "Inteligente y sociable", "Fanático de la pelota"],
+      },
+      recommendedWith: ["benelli", "chester"],
+    },
+    {
+      id: "molly",
+      name: "Molly",
+      breed: "Doodle",
+      age: "2 years",
+      size: "Medium",
+      energyLevel: 5,
+      swimmingLevel: 5,
+      fetchLevel: 5,
+      filters: ["medium", "high-energy", "loves-swimming", "loves-fetch"],
+      photos: ["assets/club-molly.png"],
+      personality: {
+        en: "Playful, confident, and proudly committed to keeping an eye on every pool guest.",
+        es: "Juguetona, segura y orgullosamente comprometida con vigilar a todos en la pileta.",
+      },
+      playStyle: {
+        en: "Molly enjoys active pool play and happily joins any playful dog ready for fun.",
+        es: "Molly disfruta el juego activo en la pileta y se suma feliz a cualquier perro juguetón listo para divertirse.",
+      },
+      favoriteActivities: {
+        en: ["Pool time", "Playful rescue missions", "Playing with energetic dogs"],
+        es: ["Tiempo de pileta", "Misiones juguetonas de rescate", "Jugar con perros con energía"],
+      },
+      compatibilityNotes: {
+        en: "Usually plays with all playful dogs.",
+        es: "Suele jugar con todos los perros juguetones.",
+      },
+      bestFriends: ["All playful dogs"],
+      usuallyHangsOutWith: ["All playful dogs"],
+      carlaObservations: {
+        en: "She is the self-appointed lifeguard of the pool. She loves rescuing people and dogs, and once she starts barking, it can be hard to get her to stop.",
+        es: "Es la guardavidas autoproclamada de la pileta. Le encanta rescatar personas y perros, y cuando empieza a ladrar puede ser difícil hacer que pare.",
+      },
+      profileDetails: {
+        en: "Molly brings enthusiasm to the Club and takes her poolside lifeguard duties very seriously.",
+        es: "Molly trae entusiasmo al Club y se toma muy en serio sus tareas de guardavidas junto a la pileta.",
+      },
+      funFacts: {
+        en: ["Self-appointed lifeguard", "Loves playful dogs", "Always ready for the pool"],
+        es: ["Guardavidas autoproclamada", "Ama a los perros juguetones", "Siempre lista para la pileta"],
+      },
+      recommendedWith: [],
+    },
+    {
+      id: "jack-lab",
+      name: "Jack",
+      breed: "Labrador",
+      age: "1 year",
+      size: "Large",
+      energyLevel: 5,
+      swimmingLevel: 5,
+      fetchLevel: 5,
+      filters: ["large", "high-energy", "loves-swimming", "loves-fetch"],
+      photos: ["assets/club-jack-lab.png"],
+      personality: {
+        en: "Energetic, water-loving, and always ready for his next pool adventure.",
+        es: "Energético, amante del agua y siempre listo para su próxima aventura en la pileta.",
+      },
+      playStyle: {
+        en: "Jack loves active pool games, jumping, diving, and keeping up with Cooper and Ria.",
+        es: "Jack ama los juegos activos en la pileta, saltar, zambullirse y seguirles el ritmo a Cooper y Ria.",
+      },
+      favoriteActivities: {
+        en: ["Jumping into the pool", "Diving", "Playing with Cooper and Ria"],
+        es: ["Saltar a la pileta", "Zambullirse", "Jugar con Cooper y Ria"],
+      },
+      compatibilityNotes: {
+        en: "Usually plays with Cooper and Ria.",
+        es: "Suele jugar con Cooper y Ria.",
+      },
+      bestFriends: ["Cooper", "Ria"],
+      usuallyHangsOutWith: ["Cooper", "Ria"],
+      carlaObservations: {
+        en: "Always ready to jump and dive into the pool.",
+        es: "Siempre listo para saltar y zambullirse en la pileta.",
+      },
+      profileDetails: {
+        en: "Jack is a young Labrador whose favorite kind of day begins and ends by the pool.",
+        es: "Jack es un Labrador joven cuyo día favorito empieza y termina junto a la pileta.",
+      },
+      funFacts: {
+        en: ["Natural pool diver", "Always ready to jump", "Cooper and Ria's playmate"],
+        es: ["Zambullidor natural", "Siempre listo para saltar", "Compañero de juegos de Cooper y Ria"],
+      },
+      recommendedWith: ["cooper", "ria"],
+    },
+    {
+      id: "chester",
+      name: "Chester",
+      breed: "Pit Bull Mix",
+      age: "2 1/2 years",
+      size: "Large",
+      energyLevel: 5,
+      swimmingLevel: 0,
+      fetchLevel: 1,
+      filters: ["large", "high-energy"],
+      photos: ["assets/club-chester.png"],
+      personality: {
+        en: "Playful, energetic, and a backyard landscape designer with one very famous project.",
+        es: "Juguetón, energético y diseñador de jardines con un proyecto muy famoso.",
+      },
+      playStyle: {
+        en: "Chester prefers energetic yard play with Lexy, Frank, Benelli, and Cooper.",
+        es: "Chester prefiere el juego con energía en el patio junto a Lexy, Frank, Benelli y Cooper.",
+      },
+      favoriteActivities: {
+        en: ["Yard play", "Playing with his Club friends", "Checking on his legendary hole"],
+        es: ["Jugar en el patio", "Jugar con sus amigos del Club", "Revisar su legendario pozo"],
+      },
+      compatibilityNotes: {
+        en: "Usually plays with Lexy, Frank, Benelli, and Cooper.",
+        es: "Suele jugar con Lexy, Frank, Benelli y Cooper.",
+      },
+      bestFriends: ["Lexy", "Frank", "Benelli", "Cooper"],
+      usuallyHangsOutWith: ["Lexy", "Frank", "Benelli", "Cooper"],
+      carlaObservations: {
+        en: "Chester is the designer, creator, and proud owner of the legendary backyard hole.",
+        es: "Chester es el diseñador, creador y orgulloso dueño del legendario pozo del patio.",
+      },
+      profileDetails: {
+        en: "Chester brings big energy and an unmistakable sense of humor to daily life at the Palace.",
+        es: "Chester trae mucha energía y un sentido del humor inconfundible a la vida diaria del Palace.",
+      },
+      funFacts: {
+        en: ["Owner of the legendary backyard hole", "Big yard-play energy", "Always near his Club friends"],
+        es: ["Dueño del legendario pozo del patio", "Mucha energía para jugar afuera", "Siempre cerca de sus amigos del Club"],
+      },
+      recommendedWith: ["lexy", "frank", "benelli", "cooper"],
+    },
+    {
+      id: "lexy",
+      name: "Lexy",
+      breed: "Pit Bull Mix",
+      age: "7 1/2 years",
+      size: "Large",
+      energyLevel: 4,
+      swimmingLevel: 0,
+      fetchLevel: 2,
+      filters: ["large", "high-energy"],
+      photos: ["assets/club-lexy.png"],
+      personality: {
+        en: "Affectionate, observant, and always quietly keeping track of the whole group.",
+        es: "Cariñosa, observadora y siempre pendiente de todo el grupo con tranquilidad.",
+      },
+      playStyle: {
+        en: "Lexy enjoys lively time with Chester, Frank, Cooper, and Benelli while keeping a caring eye on everyone else.",
+        es: "Lexy disfruta momentos animados con Chester, Frank, Cooper y Benelli mientras cuida cariñosamente al resto.",
+      },
+      favoriteActivities: {
+        en: ["Watching over the group", "Playing with Club friends", "Keeping an eye on Silver"],
+        es: ["Cuidar al grupo", "Jugar con sus amigos del Club", "Estar pendiente de Silver"],
+      },
+      compatibilityNotes: {
+        en: "Usually plays with Chester, Frank, Cooper, and Benelli.",
+        es: "Suele jugar con Chester, Frank, Cooper y Benelli.",
+      },
+      bestFriends: ["Chester", "Frank", "Cooper", "Benelli"],
+      usuallyHangsOutWith: ["Chester", "Frank", "Cooper", "Benelli"],
+      carlaObservations: {
+        en: "Lexy keeps a loving eye on everyone. She even watches Silver and steps in front of him when he looks ready to make a run for it.",
+        es: "Lexy cuida a todos con cariño. Incluso vigila a Silver y se pone delante de él cuando parece listo para salir corriendo.",
+      },
+      profileDetails: {
+        en: "Lexy is a warm, watchful Club presence who balances playful moments with her natural instinct to look after the group.",
+        es: "Lexy es una presencia cálida y atenta en el Club, que combina momentos de juego con su instinto natural de cuidar al grupo.",
+      },
+      funFacts: {
+        en: ["The group's gentle lookout", "Keeps an eye on Silver", "Chester's close friend"],
+        es: ["La cuidadora cariñosa del grupo", "Está pendiente de Silver", "Gran amiga de Chester"],
+      },
+      recommendedWith: ["chester", "frank", "cooper", "benelli"],
+    },
+    {
       id: "nola",
       name: "Nola",
       breed: "Cockapoo",
@@ -528,18 +743,5 @@ window.dogMatchData = {
     },
   ],
   upcomingStays: [],
-  pendingProfiles: [
-    {
-      name: "Cooper",
-      reason: "Photo needed before publishing profile.",
-    },
-    {
-      name: "Molly",
-      reason: "Photo pending.",
-    },
-    {
-      name: "Jack Lab",
-      reason: "Photo pending.",
-    },
-  ],
+  pendingProfiles: [],
 };

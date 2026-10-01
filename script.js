@@ -195,12 +195,6 @@ const translations = {
     margotTraitOne: "Sweet",
     margotTraitTwo: "Gentle",
     margotTraitThree: "Friendly",
-    kingRole: "Playful regular",
-    kingDescription:
-      "King is one of those familiar faces who makes daycare feel alive. He enjoys the daily rhythm, the yard, and being part of the dogs everyone recognizes.",
-    kingTraitOne: "Playful",
-    kingTraitTwo: "Social",
-    kingTraitThree: "Confident",
     adoptionKicker: "Adoption support",
     adoptionHeading: "Adoption Stories",
     adoptionSubtitle: "Some dogs stay with us while they wait for the family they were always meant to find.",
@@ -211,6 +205,15 @@ const translations = {
       "Jefe spent time at Shingo's Palace while waiting for his forever home, surrounded by calm routines, affection, and safe care.",
     jefeStory:
       "His story is one of hope: a dog who needed time, patience, and the right people to see his heart. During his stay, Jefe was treated like family until the day he found one of his own.",
+    lexyStatus: "Available for Adoption",
+    lexyDetails: "Pit Bull Mix · Approximately 7 years old · Female · Not spayed yet",
+    lexyPreview: "Sweet, calm, and affectionate, Lexy is looking for a safe and loving forever home.",
+    lexyStoryOne:
+      "Lexy came into our care as a boarding guest, but her owner never returned for her. She has remained with us at Shingo's Palace while we care for her and look for the loving home she deserves.",
+    lexyStoryTwo:
+      "She is approximately 7 years old, a Pit Bull Mix, and is not currently spayed. Despite the difficult circumstances that brought her here, Lexy is a gentle, loving dog with a sweet personality and a calm presence.",
+    lexyStoryThree:
+      "We would love to find her a responsible family who can give her stability, affection, and the security of a true forever home.",
     homeGalleryKicker: "The property",
     homeGalleryHeading: "Where Dogs Stay, Play & Relax",
     homeGalleryIntro: "Everything guests need for a safe, comfortable and enjoyable stay.",
@@ -568,6 +571,11 @@ const translations = {
     galleryCaptionTwo: "Gentle welcomes and familiar routines.",
     galleryCaptionThree: "Soft, attentive care for every personality.",
     galleryCaptionFour: "Fresh air, play, and peaceful transitions.",
+    galleryCaptionFive: "Comfortable rest in a familiar home setting.",
+    galleryCaptionSix: "Refreshing outdoor enrichment on sunny days.",
+    galleryCaptionSeven: "Cozy spaces for quiet time together.",
+    galleryCaptionEight: "At-home comfort after a full day of play.",
+    galleryCaptionNine: "Friendships grow through sunny days outside.",
     reviewService: "Service",
   },
   es: {
@@ -766,12 +774,6 @@ const translations = {
     margotTraitOne: "Dulce",
     margotTraitTwo: "Gentil",
     margotTraitThree: "Amigable",
-    kingRole: "Visitante juguetón",
-    kingDescription:
-      "King es una de esas caras familiares que hacen que el daycare se sienta lleno de vida. Disfruta la rutina diaria, el patio y ser parte de los perros que todos reconocen.",
-    kingTraitOne: "Juguetón",
-    kingTraitTwo: "Sociable",
-    kingTraitThree: "Seguro",
     adoptionKicker: "Apoyo a adopciones",
     adoptionHeading: "Historias de adopción",
     adoptionSubtitle: "Algunos perros se quedan con nosotros mientras esperan encontrar la familia que siempre estuvo destinada para ellos.",
@@ -782,6 +784,15 @@ const translations = {
       "Jefe pasó tiempo en Shingo's Palace mientras esperaba su hogar definitivo, rodeado de rutinas tranquilas, cariño y cuidado seguro.",
     jefeStory:
       "Su historia es una historia de esperanza: un perro que necesitaba tiempo, paciencia y las personas correctas para ver su corazón. Durante su estadía, Jefe fue tratado como familia hasta el día en que encontró una propia.",
+    lexyStatus: "Disponible para adopción",
+    lexyDetails: "Pit Bull Mix · Aproximadamente 7 años · Hembra · Aún no está castrada",
+    lexyPreview: "Dulce, tranquila y cariñosa, Lexy está buscando un hogar seguro y lleno de amor.",
+    lexyStoryOne:
+      "Lexy llegó a nuestro cuidado como huésped de boarding, pero su dueño nunca regresó por ella. Desde entonces permanece con nosotros en Shingo's Palace, donde la cuidamos mientras buscamos el hogar amoroso que merece.",
+    lexyStoryTwo:
+      "Tiene aproximadamente 7 años, es Pit Bull Mix y actualmente no está castrada. A pesar de las circunstancias difíciles que la trajeron hasta acá, Lexy es una perrita noble, cariñosa y de carácter tranquilo.",
+    lexyStoryThree:
+      "Nos encantaría encontrarle una familia responsable que pueda darle estabilidad, cariño y la seguridad de un verdadero hogar para siempre.",
     homeGalleryKicker: "El espacio",
     homeGalleryHeading: "Donde los perros se hospedan, juegan y descansan",
     homeGalleryIntro: "Todo lo que los huéspedes necesitan para una estadía segura, cómoda y feliz.",
@@ -1144,6 +1155,11 @@ const translations = {
     galleryCaptionTwo: "Bienvenidas tranquilas y rutinas familiares.",
     galleryCaptionThree: "Cuidado atento para cada personalidad.",
     galleryCaptionFour: "Aire libre, juego y transiciones en paz.",
+    galleryCaptionFive: "Descanso cómodo en un ambiente familiar.",
+    galleryCaptionSix: "Diversión refrescante al aire libre en los días de sol.",
+    galleryCaptionSeven: "Espacios acogedores para descansar juntos.",
+    galleryCaptionEight: "Comodidad de hogar después de un día lleno de juegos.",
+    galleryCaptionNine: "Amistades que crecen durante los días de sol al aire libre.",
     reviewService: "Servicio",
   },
 };

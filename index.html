@@ -276,7 +276,7 @@
 
           <article class="resident-card">
             <div class="resident-image resident-image-chester">
-              <img src="assets/chester-adoption-story.png" alt="Chester, resident companion at Shingo's Palace" loading="lazy" />
+              <img src="assets/chester-resident.png" alt="Chester, resident companion at Shingo's Palace" loading="lazy" />
             </div>
             <div class="resident-copy">
               <span class="resident-icon" aria-hidden="true">🐾</span>
@@ -338,24 +338,6 @@
             </div>
           </article>
 
-          <article class="daily-crew-card">
-            <div class="daily-crew-photo daily-crew-photo-king">
-              <img src="assets/king-daily-crew.jpg" alt="King standing on a paddleboard in the pool at Shingo's Palace" loading="lazy" />
-            </div>
-            <div class="daily-crew-copy">
-              <p class="daily-crew-role" data-i18n="kingRole">Playful regular</p>
-              <h3>King</h3>
-              <p class="daily-crew-description" data-i18n="kingDescription">
-                King is one of those familiar faces who makes daycare feel alive. He enjoys the daily rhythm, the yard, and
-                being part of the dogs everyone recognizes.
-              </p>
-              <div class="daily-crew-tags">
-                <span data-i18n="kingTraitOne">Playful</span>
-                <span data-i18n="kingTraitTwo">Social</span>
-                <span data-i18n="kingTraitThree">Confident</span>
-              </div>
-            </div>
-          </article>
         </div>
 
         <template id="dailyCrewCardTemplate">
@@ -397,6 +379,34 @@
                 <summary data-i18n="readMoreLabel">Read More</summary>
                 <p data-i18n="jefeStory">
                   His story is one of hope: a dog who needed time, patience, and the right people to see his heart. During his stay, Jefe was treated like family until the day he found one of his own.
+                </p>
+              </details>
+            </div>
+          </article>
+
+          <article class="adoption-card">
+            <div class="adoption-photo adoption-photo-lexy">
+              <img src="assets/lexy-adoption.png" alt="Lexy, a Pit Bull Mix available for adoption" loading="lazy" />
+            </div>
+            <div class="adoption-copy">
+              <span class="adoption-status looking" data-i18n="lexyStatus">Available for Adoption</span>
+              <h3>
+                Lexy
+                <span data-i18n="lexyDetails">Pit Bull Mix · Approximately 7 years old · Female · Not spayed yet</span>
+              </h3>
+              <p class="adoption-preview" data-i18n="lexyPreview">
+                Sweet, calm, and affectionate, Lexy is looking for a safe and loving forever home.
+              </p>
+              <details class="adoption-story">
+                <summary data-i18n="readMoreLabel">Read More</summary>
+                <p data-i18n="lexyStoryOne">
+                  Lexy came into our care as a boarding guest, but her owner never returned for her. She has remained with us at Shingo's Palace while we care for her and look for the loving home she deserves.
+                </p>
+                <p data-i18n="lexyStoryTwo">
+                  She is approximately 7 years old, a Pit Bull Mix, and is not currently spayed. Despite the difficult circumstances that brought her here, Lexy is a gentle, loving dog with a sweet personality and a calm presence.
+                </p>
+                <p data-i18n="lexyStoryThree">
+                  We would love to find her a responsible family who can give her stability, affection, and the security of a true forever home.
                 </p>
               </details>
             </div>
@@ -1563,22 +1573,42 @@
         <button class="modal-close" type="button" aria-label="Close" onclick="window.closeSiteModal(this)">×</button>
         <p class="modal-kicker" data-i18n="galleryTitle">Gallery</p>
         <h2 data-i18n="galleryHeading">A closer look at the dogs, cats, pool, and daily atmosphere.</h2>
-        <div class="gallery-grid">
-          <figure class="gallery-card wide">
-            <img src="assets/pool-time-featured.png" alt="Two guest dogs enjoying supervised pool time at Shingo's Palace" />
+        <div class="gallery-grid gallery-photo-grid">
+          <figure class="gallery-card">
+            <img src="assets/gallery-01.png" alt="Happy black-and-white dog relaxing beside the pool at Shingo's Palace" />
             <figcaption data-i18n="galleryCaptionOne">Sunny social time by the pool.</figcaption>
           </figure>
           <figure class="gallery-card">
-            <img src="assets/gallery-budders.jpeg" alt="Small dog sitting next to a welcome sign" />
+            <img src="assets/gallery-02.png" alt="Two small dogs greeting a cat in the indoor play area at Shingo's Palace" />
             <figcaption data-i18n="galleryCaptionTwo">A sweet welcome at check-in.</figcaption>
           </figure>
           <figure class="gallery-card">
-            <img src="assets/gallery-cat.jpeg" alt="Cat inside a green bag" />
+            <img src="assets/gallery-03.png" alt="Two small dogs standing together beside the pool at Shingo's Palace" />
             <figcaption data-i18n="galleryCaptionThree">Gentle cat visits matter too.</figcaption>
           </figure>
-          <figure class="gallery-card wide">
-            <img src="assets/hero-pool.jpeg" alt="Dog splashing in the pool" />
+          <figure class="gallery-card">
+            <img src="assets/gallery-04.png" alt="Labrador splashing in the pool while another dog watches from the edge" />
             <figcaption data-i18n="galleryCaptionFour">Play, movement, and a lot of personality.</figcaption>
+          </figure>
+          <figure class="gallery-card">
+            <img src="assets/gallery-05.png" alt="Small dog resting comfortably on a sofa in the home at Shingo's Palace" />
+            <figcaption data-i18n="galleryCaptionFive">Comfortable rest in a familiar home setting.</figcaption>
+          </figure>
+          <figure class="gallery-card">
+            <img src="assets/gallery-06.png" alt="Happy dog enjoying outdoor water play beside a small splash pool" />
+            <figcaption data-i18n="galleryCaptionSix">Refreshing outdoor enrichment on sunny days.</figcaption>
+          </figure>
+          <figure class="gallery-card">
+            <img src="assets/gallery-08.png" alt="Two small dogs resting together on a soft bed at Shingo's Palace" />
+            <figcaption data-i18n="galleryCaptionSeven">Cozy spaces for quiet time together.</figcaption>
+          </figure>
+          <figure class="gallery-card">
+            <img src="assets/gallery-09.png" alt="Dog sleeping comfortably on a sofa at Shingo's Palace" />
+            <figcaption data-i18n="galleryCaptionEight">At-home comfort after a full day of play.</figcaption>
+          </figure>
+          <figure class="gallery-card">
+            <img src="assets/gallery-10.png" alt="Two dogs spending time together in the sunny yard beside the pool" />
+            <figcaption data-i18n="galleryCaptionNine">Friendships grow through sunny days outside.</figcaption>
           </figure>
         </div>
       </div>
