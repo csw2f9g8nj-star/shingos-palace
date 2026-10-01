@@ -255,7 +255,10 @@
               <span class="resident-icon" aria-hidden="true">🐱</span>
               <span class="resident-family-tag" data-i18n="residentFamilyTag">Family resident</span>
               <p class="resident-role" data-i18n="campanitaRole">Head of Cat Affairs</p>
-              <h3>Campanita</h3>
+              <h3>
+                Campanita
+                <span class="resident-name-alias">(Tinkerbell)</span>
+              </h3>
               <p data-i18n="campanitaBodyOne">Campanita prefers a more elegant approach to hospitality.</p>
               <div class="resident-traits" aria-label="Campanita traits">
                 <span data-i18n="campanitaTraitOne">Elegant</span>
@@ -1529,9 +1532,12 @@
               <span data-i18n="reviewCustomerNameLabel">Your name</span>
               <input name="customerName" id="reviewCustomerName" type="text" autocomplete="name" maxlength="120" required />
             </label>
-            <label>
+            <label class="review-email-field">
               <span data-i18n="fieldEmail">Email</span>
               <input name="email" id="reviewEmail" type="email" autocomplete="email" maxlength="254" required />
+              <small class="review-email-privacy" data-i18n="reviewEmailPrivacy">
+                Your email is private and will never be displayed publicly.
+              </small>
             </label>
             <label>
               <span data-i18n="reviewPetNameLabel">Pet name</span>
@@ -1649,7 +1655,7 @@
     <datalist id="accountBreedOptions"></datalist>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <script src="holiday-pricing.js" defer></script>
-    <script src="script.js" defer></script>
+    <script src="script.js?v=20261001-direct-reviews" defer></script>
     <script src="privacy-controls.js" defer></script>
   </body>
 </html>

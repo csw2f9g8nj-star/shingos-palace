@@ -1036,6 +1036,17 @@ a.action-tile {
   white-space: nowrap;
 }
 
+.resident-name-alias {
+  display: block;
+  margin-top: 7px;
+  color: var(--muted);
+  font-family: var(--body);
+  font-size: 0.42em;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+}
+
 .resident-copy p:not(.resident-role),
 .resident-activities li {
   color: var(--muted);
@@ -4010,6 +4021,13 @@ h2 {
   max-width: 620px;
 }
 
+.review-submit-card > h2 {
+  max-width: 20ch;
+  margin-bottom: 22px;
+  font-size: clamp(1.95rem, 3.1vw, 2.7rem);
+  line-height: 1.06;
+}
+
 .review-submit-form {
   display: grid;
   gap: 14px;
@@ -4023,6 +4041,19 @@ h2 {
 
 .review-direct-fields[hidden] {
   display: none;
+}
+
+.review-email-field {
+  align-content: start;
+}
+
+.review-email-privacy {
+  display: block;
+  margin-top: -3px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 500;
+  line-height: 1.4;
 }
 
 .review-honeypot {
