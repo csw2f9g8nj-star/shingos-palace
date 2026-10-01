@@ -3837,6 +3837,32 @@ h2 {
   font-size: 0.86rem;
 }
 
+.review-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.review-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 5px 10px;
+  border: 1px solid rgba(36, 35, 33, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 250, 241, 0.78);
+  color: var(--charcoal);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.review-badge.is-verified {
+  border-color: rgba(156, 120, 48, 0.3);
+  background: rgba(220, 197, 141, 0.2);
+}
+
 .public-reviews-section {
   display: grid;
   gap: clamp(22px, 4vw, 34px);
@@ -3989,6 +4015,24 @@ h2 {
   gap: 14px;
 }
 
+.review-direct-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.review-direct-fields[hidden] {
+  display: none;
+}
+
+.review-honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 .review-submit-form textarea {
   min-height: 130px;
   resize: vertical;
@@ -3997,6 +4041,12 @@ h2 {
 @media (max-width: 1100px) {
   .public-reviews-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .review-direct-fields {
+    grid-template-columns: 1fr;
   }
 }
 

@@ -534,20 +534,28 @@ function renderAdminReviews(reviews) {
       const ownerName = [review.owner?.firstName, review.owner?.lastName].filter(Boolean).join(" ") || "Pet parent";
       const petName = review.pet?.name || "Pet";
       const created = review.createdAt ? new Date(review.createdAt).toLocaleString() : "No date";
-      const pending = review.status === "pending";
+      const archived = review.status === "archived";
+      const sourceLabel = review.source === "direct" ? "Direct customer" : review.source === "rover" ? "Rover" : "Website booking";
+      const serviceLine = review.booking?.id
+        ? `${safeText(review.booking.service, "Reservation")} · ${safeText(review.booking.dropoffDate, "No date")} → ${safeText(review.booking.pickupDate, "No date")}`
+        : safeText(review.booking?.service, "Service not provided");
       return `
         <article class="admin-request-card admin-review-card" data-review-id="${escapeHtml(review.id)}">
           <div class="admin-review-topline">
             <strong>${safeText(ownerName)} · ${safeText(petName)}</strong>
             <span class="admin-review-status is-${safeText(review.status)}">${safeText(review.status)}</span>
           </div>
+          <span>${safeText(sourceLabel)}${review.verifiedCustomer ? " · Verified Customer" : ""}</span>
           <span class="admin-review-stars">${starRating(review.rating)}</span>
           <p>${safeText(review.reviewText)}</p>
-          <span>${safeText(review.booking?.service, "Reservation")} · ${safeText(review.booking?.dropoffDate, "No date")} → ${safeText(review.booking?.pickupDate, "No date")}</span>
+          <span>${serviceLine}</span>
           <span>${safeText(review.owner?.email, "No email")} · Submitted ${escapeHtml(created)}</span>
           <div class="admin-review-actions">
-            <button class="ghost-button" type="button" data-review-action="approved" ${pending ? "" : "disabled"}>Approve</button>
-            <button class="ghost-button" type="button" data-review-action="rejected" ${pending ? "" : "disabled"}>Reject</button>
+            <button class="ghost-button" type="button" data-review-action="approved" ${review.status === "approved" || archived ? "disabled" : ""}>Approve</button>
+            <button class="ghost-button" type="button" data-review-action="rejected" ${review.status === "rejected" || archived ? "disabled" : ""}>Reject</button>
+            ${review.source === "direct" ? `<button class="ghost-button" type="button" data-review-verified="${review.verifiedCustomer ? "false" : "true"}">${review.verifiedCustomer ? "Remove verification" : "Mark Verified Customer"}</button>` : ""}
+            <button class="ghost-button" type="button" data-review-action="archived" ${archived ? "disabled" : ""}>Archive</button>
+            <button class="ghost-button admin-danger-button" type="button" data-review-delete>Delete</button>
           </div>
         </article>
       `;
@@ -1038,24 +1046,38 @@ adminDuplicateWarning?.addEventListener("click", async (event) => {
 });
 
 adminReviewsEl?.addEventListener("click", async (event) => {
-  const button = event.target.closest("[data-review-action]");
+  const button = event.target.closest("[data-review-action], [data-review-verified], [data-review-delete]");
   if (!button) return;
 
   const card = button.closest("[data-review-id]");
   const reviewId = card?.dataset.reviewId || "";
   if (!reviewId) return;
 
+  if (button.hasAttribute("data-review-delete")) {
+    if (!window.confirm("Permanently delete this review? This cannot be undone.")) return;
+    button.disabled = true;
+    setStatus(adminStatus, "Deleting review...");
+    try {
+      await apiFetch(`/api/reviews?reviewId=${encodeURIComponent(reviewId)}`, { method: "DELETE" });
+      await loadDogs();
+    } catch (error) {
+      setStatus(adminStatus, error.message);
+      button.disabled = false;
+    }
+    return;
+  }
+
   button.disabled = true;
   setStatus(adminStatus, "Updating review...");
 
   try {
+    const payload = { reviewId };
+    if (button.dataset.reviewAction) payload.status = button.dataset.reviewAction;
+    if (button.dataset.reviewVerified) payload.verifiedCustomer = button.dataset.reviewVerified === "true";
     await apiFetch("/api/reviews", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        reviewId,
-        status: button.dataset.reviewAction,
-      }),
+      body: JSON.stringify(payload),
     });
     await loadDogs();
   } catch (error) {

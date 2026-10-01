@@ -311,15 +311,22 @@ const translations = {
     faqEmergencyAnswer: "The booking form includes a required veterinary authorization so Shingo's Palace can seek emergency care if the owner cannot be reached.",
     leaveReviewKicker: "Review",
     leaveReviewHeading: "Share your Shingo's Palace experience.",
-    leaveReviewIntro: "Your review will be sent to Carla for approval before appearing publicly.",
+    leaveReviewIntro: "Share a few words about your experience. Your review will appear after approval.",
+    reviewCustomerNameLabel: "Your name",
+    reviewPetNameLabel: "Pet name",
+    reviewServiceLabel: "Service used",
+    reviewServiceCatCare: "Cat Care",
+    reviewServiceOther: "Other",
     reviewPetLabel: "Pet",
     reviewRatingLabel: "Rating",
     reviewCommentLabel: "Comment",
     reviewSubmit: "Submit Review",
     reviewSubmitting: "Sending review...",
-    reviewSubmitted: "Thank you. Your review is pending approval.",
+    reviewSubmitted: "Thank you! Your review was received and will appear after approval.",
     reviewRequired: "Please choose a rating and write a short review.",
     reviewAlreadySubmitted: "A review has already been submitted for this reservation.",
+    reviewVerifiedCustomer: "Verified Customer",
+    reviewSourceRover: "Rover",
     availabilityTitle: "Check Availability",
     availabilityHeading: "Check your dates first.",
     availabilityIntro: "See if we have space before completing a full reservation request.",
@@ -649,7 +656,7 @@ const translations = {
     accountFullyPaid: "Reserva pagada completa",
     accountBalancePending: "Saldo pendiente",
     accountZellePending: "Esperando verificación del pago por Zelle",
-    accountLeaveReview: "Dejar review",
+    accountLeaveReview: "Dejar una reseña",
     accountReviewPending: "Review pendiente de aprobación",
     accountReviewApproved: "Review aprobada",
     accountReviewRejected: "Review no aprobada",
@@ -867,8 +874,8 @@ const translations = {
     publicReviewsHeading: "Lo que dicen las familias",
     publicReviewsIntro:
       "Comentarios de familias cuyas mascotas se hospedaron, jugaron y se sintieron en casa en Shingo's Palace.",
-    publicReviewsLeaveButton: "Dejar una review",
-    publicReviewsEmpty: "Las reviews de nuestros huéspedes van a aparecer aquí pronto.",
+    publicReviewsLeaveButton: "Dejar una reseña",
+    publicReviewsEmpty: "Las reseñas de nuestros huéspedes van a aparecer aquí pronto.",
     faqKicker: "Bueno saberlo",
     faqHeading: "Preguntas frecuentes",
     faqIntro: "Respuestas claras antes de la primera estadía, con cualquier política específica confirmada personalmente por Carla.",
@@ -888,17 +895,24 @@ const translations = {
     faqCatsAnswer: "Sí. Shingo's Palace acepta perros y gatos, con rutinas de cuidado y precios específicos para cada mascota.",
     faqEmergencyQuestion: "¿Qué pasa en una emergencia?",
     faqEmergencyAnswer: "El formulario de reserva incluye una autorización veterinaria requerida para que Shingo's Palace pueda buscar atención de emergencia si no se puede contactar al dueño.",
-    leaveReviewKicker: "Review",
+    leaveReviewKicker: "Reseña",
     leaveReviewHeading: "Compartí tu experiencia en Shingo's Palace.",
-    leaveReviewIntro: "Tu review será enviada a Carla para aprobación antes de aparecer públicamente.",
+    leaveReviewIntro: "Contanos brevemente sobre tu experiencia. Tu reseña aparecerá después de ser aprobada.",
+    reviewCustomerNameLabel: "Tu nombre",
+    reviewPetNameLabel: "Nombre de la mascota",
+    reviewServiceLabel: "Servicio utilizado",
+    reviewServiceCatCare: "Cuidado de gatos",
+    reviewServiceOther: "Otro",
     reviewPetLabel: "Mascota",
     reviewRatingLabel: "Calificación",
     reviewCommentLabel: "Comentario",
-    reviewSubmit: "Enviar review",
-    reviewSubmitting: "Enviando review...",
-    reviewSubmitted: "Gracias. Tu review queda pendiente de aprobación.",
+    reviewSubmit: "Enviar reseña",
+    reviewSubmitting: "Enviando reseña...",
+    reviewSubmitted: "¡Gracias! Recibimos tu reseña y aparecerá después de ser aprobada.",
     reviewRequired: "Elegí una calificación y escribí un comentario breve.",
-    reviewAlreadySubmitted: "Ya se envió una review para esta reserva.",
+    reviewAlreadySubmitted: "Ya se envió una reseña para esta reserva.",
+    reviewVerifiedCustomer: "Cliente verificado",
+    reviewSourceRover: "Rover",
     availabilityTitle: "Ver disponibilidad",
     availabilityHeading: "Primero revisá tus fechas.",
     availabilityIntro: "Confirmá si tenemos espacio antes de completar una solicitud de reserva.",
@@ -1656,7 +1670,16 @@ const accountDogSelect = document.querySelector("#accountDogSelect");
 const accountOwnerIdField = document.querySelector("#accountOwnerId");
 const accountDogIdField = document.querySelector("#accountDogId");
 const reviewForm = document.querySelector("#reviewForm");
+const reviewSource = document.querySelector("#reviewSource");
 const reviewBookingId = document.querySelector("#reviewBookingId");
+const reviewSubmissionId = document.querySelector("#reviewSubmissionId");
+const reviewDirectFields = document.querySelector("#reviewDirectFields");
+const reviewCustomerName = document.querySelector("#reviewCustomerName");
+const reviewEmail = document.querySelector("#reviewEmail");
+const reviewPetName = document.querySelector("#reviewPetName");
+const reviewServiceUsed = document.querySelector("#reviewServiceUsed");
+const reviewWebsite = document.querySelector("#reviewWebsite");
+const reviewBookingPetField = document.querySelector("#reviewBookingPetField");
 const reviewPetId = document.querySelector("#reviewPetId");
 const reviewRating = document.querySelector("#reviewRating");
 const reviewText = document.querySelector("#reviewText");
@@ -1839,29 +1862,63 @@ function starRating(rating) {
   return "★".repeat(safeRating) + "☆".repeat(5 - safeRating);
 }
 
+function reviewServiceLabel(service) {
+  const normalized = String(service || "").toLowerCase().replace(/\s+/g, "_");
+  const labels = {
+    boarding: currentLang === "es" ? "Boarding" : "Boarding",
+    daycare: currentLang === "es" ? "Daycare" : "Daycare",
+    walking: currentLang === "es" ? "Paseo de perros" : "Dog Walking",
+    dog_walking: currentLang === "es" ? "Paseo de perros" : "Dog Walking",
+    cat_care: t("reviewServiceCatCare"),
+    other: t("reviewServiceOther"),
+  };
+  return labels[normalized] || service || "";
+}
+
+function roverReviewsForPublicSection() {
+  return reviews.map((review, index) => ({
+    id: `rover-${index}`,
+    ownerFirstName: review.name,
+    petName: "",
+    rating: 5,
+    reviewText: review[currentLang],
+    displayDate: review.date,
+    service: review.service,
+    source: "rover",
+    verifiedCustomer: false,
+  }));
+}
+
 function reviewCardMarkup(review) {
   const ownerName = review.ownerFirstName || (currentLang === "es" ? "Familia" : "Pet parent");
   const petName = review.petName ? ` · ${escapeHtml(review.petName)}` : "";
-  const date = formatReviewDate(review.createdAt);
+  const date = review.displayDate || formatReviewDate(review.createdAt);
+  const service = reviewServiceLabel(review.service);
+  const badges = [
+    review.source === "rover" ? `<span class="review-badge is-rover">${t("reviewSourceRover")}</span>` : "",
+    review.verifiedCustomer ? `<span class="review-badge is-verified">${t("reviewVerifiedCustomer")}</span>` : "",
+  ].filter(Boolean).join("");
   return `
     <article class="review-card">
       <div class="review-stars" aria-label="${escapeHtml(String(review.rating || 5))} out of 5 stars">${starRating(review.rating)}</div>
       <p class="review-quote">${escapeHtml(review.reviewText)}</p>
       <strong>${escapeHtml(ownerName)}${petName}</strong>
-      ${date ? `<div class="review-meta"><span>${escapeHtml(date)}</span></div>` : ""}
+      ${badges ? `<div class="review-badges">${badges}</div>` : ""}
+      ${date || service ? `<div class="review-meta"><span>${escapeHtml(service)}</span><span>${escapeHtml(date)}</span></div>` : ""}
     </article>
   `;
 }
 
 function renderReviews() {
-  const markup = approvedReviews.map(reviewCardMarkup).join("");
+  const visibleReviews = [...roverReviewsForPublicSection(), ...approvedReviews];
+  const markup = visibleReviews.map(reviewCardMarkup).join("");
 
   if (publicReviewList) {
     publicReviewList.innerHTML = markup;
   }
 
   if (publicReviewEmpty) {
-    publicReviewEmpty.hidden = Boolean(approvedReviews.length);
+    publicReviewEmpty.hidden = Boolean(visibleReviews.length);
   }
 }
 
@@ -3270,11 +3327,45 @@ function findAccountBooking(bookingId) {
   return null;
 }
 
+function createReviewSubmissionId() {
+  if (window.crypto?.randomUUID) return window.crypto.randomUUID();
+  const bytes = new Uint8Array(16);
+  window.crypto.getRandomValues(bytes);
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const value = [...bytes].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+  return `${value.slice(0, 8)}-${value.slice(8, 12)}-${value.slice(12, 16)}-${value.slice(16, 20)}-${value.slice(20)}`;
+}
+
+function setReviewFormMode(mode) {
+  const isDirect = mode === "direct";
+  if (reviewSource) reviewSource.value = isDirect ? "direct" : "booking";
+  if (reviewDirectFields) reviewDirectFields.hidden = !isDirect;
+  if (reviewBookingPetField) reviewBookingPetField.hidden = isDirect;
+  [reviewCustomerName, reviewEmail, reviewPetName, reviewServiceUsed].forEach((field) => {
+    if (field) field.required = isDirect;
+  });
+  if (reviewPetId) reviewPetId.required = !isDirect;
+}
+
+function openDirectReviewModal() {
+  reviewForm?.reset();
+  setReviewFormMode("direct");
+  if (reviewBookingId) reviewBookingId.value = "";
+  if (reviewSubmissionId) reviewSubmissionId.value = createReviewSubmissionId();
+  if (reviewRating) reviewRating.value = "5";
+  if (reviewStatus) reviewStatus.textContent = "";
+  window.openSiteModal("leaveReviewModal");
+}
+
 function openReviewModal(bookingId, dogId = "") {
   const match = findAccountBooking(bookingId);
   if (!match || match.booking.review || bookingIsUpcoming(match.booking)) return;
 
+  reviewForm?.reset();
+  setReviewFormMode("booking");
   if (reviewBookingId) reviewBookingId.value = bookingId;
+  if (reviewSubmissionId) reviewSubmissionId.value = "";
   if (reviewRating) reviewRating.value = "5";
   if (reviewText) reviewText.value = "";
   if (reviewStatus) reviewStatus.textContent = "";
@@ -4434,7 +4525,7 @@ accountPastReservations?.addEventListener("click", (event) => {
   openReviewModal(button.dataset.bookingId, button.dataset.dogId);
 });
 
-publicLeaveReviewButton?.addEventListener("click", openAccountForReviews);
+publicLeaveReviewButton?.addEventListener("click", openDirectReviewModal);
 
 reviewForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -4444,14 +4535,28 @@ reviewForm?.addEventListener("submit", async (event) => {
     return;
   }
 
-  const body = {
-    bookingId: reviewBookingId?.value || "",
-    petId: reviewPetId?.value || "",
-    rating: Number(reviewRating?.value || 5),
-    reviewText: reviewText?.value || "",
-  };
+  const directReview = reviewSource?.value === "direct";
+  const body = directReview
+    ? {
+        source: "direct",
+        customerName: reviewCustomerName?.value || "",
+        email: reviewEmail?.value || "",
+        petName: reviewPetName?.value || "",
+        serviceUsed: reviewServiceUsed?.value || "",
+        rating: Number(reviewRating?.value || 5),
+        reviewText: reviewText?.value || "",
+        clientSubmissionId: reviewSubmissionId?.value || "",
+        website: reviewWebsite?.value || "",
+      }
+    : {
+        source: "booking",
+        bookingId: reviewBookingId?.value || "",
+        petId: reviewPetId?.value || "",
+        rating: Number(reviewRating?.value || 5),
+        reviewText: reviewText?.value || "",
+      };
 
-  if (!body.bookingId || !body.reviewText.trim()) {
+  if ((!directReview && !body.bookingId) || !body.reviewText.trim()) {
     if (reviewStatus) reviewStatus.textContent = t("reviewRequired");
     return;
   }
@@ -4463,13 +4568,29 @@ reviewForm?.addEventListener("submit", async (event) => {
   if (reviewStatus) reviewStatus.textContent = "";
 
   try {
-    await customerApiFetch(REVIEWS_ENDPOINT, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
+    if (directReview) {
+      const response = await fetch(REVIEWS_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || payload.ok === false) {
+        const error = new Error(payload.error || t("bookingError"));
+        error.code = payload.code || "review_failed";
+        throw error;
+      }
+      if (reviewForm) reviewForm.reset();
+      if (reviewSubmissionId) reviewSubmissionId.value = createReviewSubmissionId();
+    } else {
+      await customerApiFetch(REVIEWS_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      await loadCustomerAccount();
+    }
     if (reviewStatus) reviewStatus.textContent = t("reviewSubmitted");
-    await loadCustomerAccount();
   } catch (error) {
     if (reviewStatus) {
       reviewStatus.textContent = error.message || t("bookingError");

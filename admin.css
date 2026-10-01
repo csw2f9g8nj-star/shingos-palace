@@ -334,6 +334,11 @@
   color: #8f4d46;
 }
 
+.admin-review-status.is-archived {
+  background: rgba(39, 50, 47, 0.09);
+  color: var(--muted);
+}
+
 .admin-review-actions {
   display: flex;
   flex-wrap: wrap;

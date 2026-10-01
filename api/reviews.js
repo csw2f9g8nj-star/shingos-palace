@@ -33,14 +33,30 @@ function isCompletedBooking(booking) {
   return pickup < today;
 }
 
+const DIRECT_REVIEW_SERVICES = new Set(["boarding", "daycare", "walking", "cat_care", "other"]);
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+function cleanText(value, maxLength) {
+  return String(value || "").trim().replace(/\s+/g, " ").slice(0, maxLength);
+}
+
+function publicDisplayName(value) {
+  const name = cleanText(value, 120);
+  return name ? name.split(/\s+/)[0] : "Pet parent";
+}
+
 function publicReview(row) {
   return {
     id: row.id,
-    ownerFirstName: row.owner?.first_name || "Pet parent",
-    petName: row.pet?.name || "",
+    ownerFirstName: row.owner?.first_name || publicDisplayName(row.reviewer_name),
+    petName: row.pet?.name || row.pet_name || "",
     rating: Number(row.rating) || 5,
     reviewText: row.review_text || "",
     createdAt: row.created_at || "",
+    source: row.source || "booking",
+    service: row.booking?.service || row.service_used || "",
+    verifiedCustomer: Boolean(row.verified_customer),
   };
 }
 
@@ -51,18 +67,21 @@ function adminReview(row) {
     reviewText: row.review_text || "",
     status: row.status || "pending",
     createdAt: row.created_at || "",
+    source: row.source || "booking",
+    verifiedCustomer: Boolean(row.verified_customer),
+    verifiedAt: row.verified_at || "",
     owner: {
-      firstName: row.owner?.first_name || "",
+      firstName: row.owner?.first_name || row.reviewer_name || "",
       lastName: row.owner?.last_name || "",
-      email: row.owner?.email || "",
+      email: row.owner?.email || row.reviewer_email || "",
     },
     pet: {
       id: row.pet?.id || "",
-      name: row.pet?.name || "",
+      name: row.pet?.name || row.pet_name || "",
     },
     booking: {
       id: row.booking?.id || row.booking_id || "",
-      service: row.booking?.service || "",
+      service: row.booking?.service || row.service_used || "",
       dropoffDate: row.booking?.dropoff_date || "",
       pickupDate: row.booking?.pickup_date || "",
       status: row.booking?.status || "",
@@ -80,8 +99,14 @@ async function listPublicReviews(supabase, res) {
       rating,
       review_text,
       created_at,
+      source,
+      service_used,
+      reviewer_name,
+      pet_name,
+      verified_customer,
       owner:owners(first_name),
-      pet:dogs(id,name)
+      pet:dogs(id,name),
+      booking:bookings(service)
     `,
     )
     .eq("status", "approved")
@@ -115,6 +140,13 @@ async function listAdminReviews(req, supabase, res) {
       review_text,
       status,
       created_at,
+      source,
+      reviewer_name,
+      reviewer_email,
+      pet_name,
+      service_used,
+      verified_customer,
+      verified_at,
       owner:owners(first_name,last_name,email),
       pet:dogs(id,name),
       booking:bookings(id,service,dropoff_date,pickup_date,status,payment_status)
@@ -213,6 +245,9 @@ async function createCustomerReview(req, supabase, res) {
       rating,
       review_text: reviewText,
       status: "pending",
+      source: "booking",
+      verified_customer: true,
+      verified_at: new Date().toISOString(),
     })
     .select("id,status,rating,review_text,created_at")
     .single();
@@ -233,22 +268,112 @@ async function createCustomerReview(req, supabase, res) {
   sendJson(res, 201, { ok: true, review, message: "Thank you. Your review is pending approval." });
 }
 
+async function createDirectReview(req, supabase, res) {
+  const body = parseBody(req);
+  const reviewerName = cleanText(body.customerName, 120);
+  const reviewerEmail = cleanText(body.email, 254).toLowerCase();
+  const petName = cleanText(body.petName, 120);
+  const serviceUsed = cleanText(body.serviceUsed, 40).toLowerCase();
+  const rating = Number(body.rating);
+  const reviewText = String(body.reviewText || "").trim();
+  const clientSubmissionId = cleanText(body.clientSubmissionId, 36);
+  const website = cleanText(body.website, 200);
+
+  if (website) {
+    sendJson(res, 201, { ok: true, message: "Thank you. Your review was received and will appear after approval." });
+    return;
+  }
+
+  if (!reviewerName || !reviewerEmail || !petName || !DIRECT_REVIEW_SERVICES.has(serviceUsed)) {
+    throw publicApiError("Please complete your name, email, pet name, and service used.", 400, "direct_review_details_invalid");
+  }
+  if (!EMAIL_PATTERN.test(reviewerEmail)) {
+    throw publicApiError("Please enter a valid email address.", 400, "direct_review_email_invalid");
+  }
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5 || !reviewText) {
+    throw publicApiError("Please choose a rating and write a short review.", 400, "review_invalid");
+  }
+  if (reviewText.length > 3000) {
+    throw publicApiError("Please keep your review under 3,000 characters.", 400, "review_too_long");
+  }
+  if (!UUID_PATTERN.test(clientSubmissionId)) {
+    throw publicApiError("Please refresh the page and try submitting your review again.", 400, "review_submission_id_invalid");
+  }
+
+  const { data: review, error: insertError } = await supabase
+    .from("reviews")
+    .insert({
+      owner_id: null,
+      booking_id: null,
+      pet_id: null,
+      rating,
+      review_text: reviewText,
+      status: "pending",
+      source: "direct",
+      reviewer_name: reviewerName,
+      reviewer_email: reviewerEmail,
+      pet_name: petName,
+      service_used: serviceUsed,
+      verified_customer: false,
+      client_submission_id: clientSubmissionId,
+    })
+    .select("id,status,rating,created_at,source")
+    .single();
+
+  if (insertError) {
+    if (insertError.code === "23505") {
+      sendJson(res, 200, {
+        ok: true,
+        message: "Thank you! Your review was received and will appear after approval.",
+      });
+      return;
+    }
+    throw Object.assign(publicApiError("We could not save your review.", 500, "review_insert_failed"), {
+      supabaseCode: insertError.code,
+      supabaseMessage: insertError.message,
+      details: insertError.details,
+      hint: insertError.hint,
+    });
+  }
+
+  sendJson(res, 201, {
+    ok: true,
+    review,
+    message: "Thank you! Your review was received and will appear after approval.",
+  });
+}
+
 async function updateAdminReview(req, supabase, res) {
-  await requireAdminUser(req, supabase);
+  const adminUser = await requireAdminUser(req, supabase);
 
   const body = parseBody(req);
   const reviewId = String(body.reviewId || "").trim();
   const status = String(body.status || "").trim().toLowerCase();
+  const hasVerifiedCustomer = typeof body.verifiedCustomer === "boolean";
 
-  if (!reviewId || !["approved", "rejected"].includes(status)) {
-    throw publicApiError("Choose a review and either approve or reject it.", 400, "review_status_invalid");
+  if (!reviewId || (!status && !hasVerifiedCustomer)) {
+    throw publicApiError("Choose a review action.", 400, "review_update_invalid");
+  }
+  if (status && !["approved", "rejected", "archived"].includes(status)) {
+    throw publicApiError("Choose approve, reject, or archive.", 400, "review_status_invalid");
+  }
+
+  const updates = { updated_at: new Date().toISOString() };
+  if (status) {
+    updates.status = status;
+    updates.archived_at = status === "archived" ? new Date().toISOString() : null;
+  }
+  if (hasVerifiedCustomer) {
+    updates.verified_customer = body.verifiedCustomer;
+    updates.verified_at = body.verifiedCustomer ? new Date().toISOString() : null;
+    updates.verified_by = body.verifiedCustomer ? adminUser.id : null;
   }
 
   const { data, error } = await supabase
     .from("reviews")
-    .update({ status, updated_at: new Date().toISOString() })
+    .update(updates)
     .eq("id", reviewId)
-    .select("id,status")
+    .select("id,status,verified_customer,verified_at")
     .single();
 
   if (error) {
@@ -261,6 +386,25 @@ async function updateAdminReview(req, supabase, res) {
   }
 
   sendJson(res, 200, { ok: true, review: data });
+}
+
+async function deleteAdminReview(req, supabase, res) {
+  await requireAdminUser(req, supabase);
+  const reviewId = cleanText(req.query?.reviewId, 36);
+  if (!UUID_PATTERN.test(reviewId)) {
+    throw publicApiError("Choose a valid review to delete.", 400, "review_id_invalid");
+  }
+
+  const { error } = await supabase.from("reviews").delete().eq("id", reviewId);
+  if (error) {
+    throw Object.assign(publicApiError("We could not delete this review.", 500, "review_delete_failed"), {
+      supabaseCode: error.code,
+      supabaseMessage: error.message,
+      details: error.details,
+      hint: error.hint,
+    });
+  }
+  sendJson(res, 200, { ok: true });
 }
 
 module.exports = async function handler(req, res) {
@@ -279,12 +423,22 @@ module.exports = async function handler(req, res) {
 
     if (req.method === "POST") {
       if (!enforceRateLimit(req, res, { key: "reviews-create", limit: 10, windowMs: 60 * 60 * 1000 })) return;
-      await createCustomerReview(req, supabase, res);
+      const body = parseBody(req);
+      if (String(body.source || "").toLowerCase() === "direct") {
+        await createDirectReview(req, supabase, res);
+      } else {
+        await createCustomerReview(req, supabase, res);
+      }
       return;
     }
 
     if (req.method === "PATCH") {
       await updateAdminReview(req, supabase, res);
+      return;
+    }
+
+    if (req.method === "DELETE") {
+      await deleteAdminReview(req, supabase, res);
       return;
     }
 

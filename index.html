@@ -1521,8 +1521,39 @@
           Your review will be sent to Carla for approval before appearing publicly.
         </p>
         <form class="review-submit-form" id="reviewForm">
+          <input type="hidden" name="source" id="reviewSource" value="direct" />
           <input type="hidden" name="bookingId" id="reviewBookingId" />
-          <label>
+          <input type="hidden" name="clientSubmissionId" id="reviewSubmissionId" />
+          <div class="review-direct-fields" id="reviewDirectFields">
+            <label>
+              <span data-i18n="reviewCustomerNameLabel">Your name</span>
+              <input name="customerName" id="reviewCustomerName" type="text" autocomplete="name" maxlength="120" required />
+            </label>
+            <label>
+              <span data-i18n="fieldEmail">Email</span>
+              <input name="email" id="reviewEmail" type="email" autocomplete="email" maxlength="254" required />
+            </label>
+            <label>
+              <span data-i18n="reviewPetNameLabel">Pet name</span>
+              <input name="petName" id="reviewPetName" type="text" autocomplete="off" maxlength="120" required />
+            </label>
+            <label>
+              <span data-i18n="reviewServiceLabel">Service used</span>
+              <select name="serviceUsed" id="reviewServiceUsed" required>
+                <option value="" data-i18n="optionSelect">Select</option>
+                <option value="boarding" data-i18n="optionBoarding">Boarding</option>
+                <option value="daycare" data-i18n="optionDaycare">Daycare</option>
+                <option value="walking" data-i18n="optionWalking">Dog Walking</option>
+                <option value="cat_care" data-i18n="reviewServiceCatCare">Cat Care</option>
+                <option value="other" data-i18n="reviewServiceOther">Other</option>
+              </select>
+            </label>
+            <label class="review-honeypot" aria-hidden="true">
+              <span>Website</span>
+              <input name="website" id="reviewWebsite" type="text" tabindex="-1" autocomplete="off" />
+            </label>
+          </div>
+          <label id="reviewBookingPetField" hidden>
             <span data-i18n="reviewPetLabel">Pet</span>
             <select name="petId" id="reviewPetId"></select>
           </label>
@@ -1538,7 +1569,7 @@
           </label>
           <label>
             <span data-i18n="reviewCommentLabel">Comment</span>
-            <textarea name="reviewText" id="reviewText" rows="5" required></textarea>
+            <textarea name="reviewText" id="reviewText" rows="5" maxlength="3000" required></textarea>
           </label>
           <button class="submit-button" id="reviewSubmit" type="submit" data-i18n="reviewSubmit">Submit Review</button>
           <p class="status-line" id="reviewStatus"></p>
