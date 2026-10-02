@@ -258,12 +258,12 @@ window.dogMatchData = {
       filters: ["large", "high-energy", "loves-fetch"],
       photos: ["assets/club-benelli.jpeg"],
       personality: {
-        en: "Happy, goofy, tireless, and always searching for another round of play.",
-        es: "Alegre, payaso, incansable y siempre buscando otra ronda de juego.",
+        en: "Endlessly affectionate, playful, and completely at home at Shingo's Palace after so many stays with us.",
+        es: "Súper cariñoso, juguetón y completamente como en casa en Shingo's Palace después de tantas estadías con nosotros.",
       },
       playStyle: {
-        en: "Benelli loves high-energy group play and dogs who enjoy movement as much as he does.",
-        es: "Benelli ama el juego grupal de mucha energía y los perros que disfrutan moverse tanto como él.",
+        en: "Benelli is the ultimate partner in mischief. If another dog starts digging, he will happily keep the project going; if someone jumps into the pool, he is very likely to jump in too.",
+        es: "Benelli es el compañero perfecto para las travesuras. Si otro perro empieza un pozo, él lo continúa feliz; si alguien se tira a la pileta, es muy probable que él también termine adentro.",
       },
       favoriteActivities: {
         en: ["Running", "Group play", "Playing until everyone else needs a nap"],
@@ -276,16 +276,16 @@ window.dogMatchData = {
       bestFriends: ["Tanner", "Nola", "Ria"],
       usuallyHangsOutWith: ["All playful dogs"],
       carlaObservations: {
-        en: "He never stops playing.",
-        es: "Nunca deja de jugar.",
+        en: "Always ready to play and delighted to join whatever fun, silly, or adventurous thing the other dogs are doing.",
+        es: "Siempre listo para jugar y feliz de sumarse a cualquier cosa divertida, graciosa o aventurera que estén haciendo los otros perros.",
       },
       profileDetails: {
-        en: "Benelli is pure momentum. He brings young, joyful energy to the yard and does best with friends who love active play.",
-        es: "Benelli es puro movimiento. Trae energía joven y feliz al patio y se siente mejor con amigos que aman el juego activo.",
+        en: "Benelli stays with us often enough that Shingo's Palace feels like his second home. Affectionate, joyful, and full of young energy, he loves sharing every game and adventure with his Club friends.",
+        es: "Benelli se queda con nosotros tan seguido que Shingo's Palace se siente como su segundo hogar. Cariñoso, alegre y lleno de energía joven, le encanta compartir cada juego y aventura con sus amigos del Club.",
       },
       funFacts: {
-        en: ["Never stops playing", "Big puppy energy", "Always ready for one more lap"],
-        es: ["Nunca deja de jugar", "Energía de cachorro grande", "Siempre listo para una vuelta más"],
+        en: ["Ultimate partner in mischief", "Will continue a friend's digging project", "Very likely to follow a friend into the pool"],
+        es: ["Compañero perfecto para las travesuras", "Continúa el pozo que empiece un amigo", "Muy probablemente siga a un amigo hasta la pileta"],
       },
       recommendedWith: ["tanner", "nola", "ria", "queenly"],
     },
