@@ -1984,9 +1984,25 @@ function renderPublicHolidayRates() {
     return;
   }
 
-  const pricedPeriods = holidayPricingPeriods.filter((period) => (
-    period?.active !== false && Number(period?.boarding_surcharge ?? period?.surcharge) > 0
-  ));
+  const now = new Date();
+  const todayDateKey = [
+    now.getFullYear(),
+    String(now.getMonth() + 1).padStart(2, "0"),
+    String(now.getDate()).padStart(2, "0"),
+  ].join("-");
+  const pricedPeriods = holidayPricingPeriods
+    .filter((period) => {
+      const endDate = period?.end_date || period?.endDate || "";
+      return period?.active !== false
+        && Number(period?.boarding_surcharge ?? period?.surcharge) > 0
+        && endDate >= todayDateKey;
+    })
+    .sort((left, right) => {
+      const leftDate = left?.start_date || left?.startDate || "";
+      const rightDate = right?.start_date || right?.startDate || "";
+      return leftDate.localeCompare(rightDate);
+    })
+    .slice(0, 5);
 
   if (!pricedPeriods.length) {
     holidayRatesList.innerHTML = `<p class="holiday-rates-status">${escapeHtml(t("holidayRatesEmpty"))}</p>`;
