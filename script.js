@@ -245,16 +245,16 @@ const translations = {
     pricingDay: "Day",
     pricingWeek: "Week",
     pricingWalkingTitle: "DOG WALKING",
-    holidayRatesKicker: "Seasonal boarding",
+    holidayRatesKicker: "Major holiday dates",
     holidayRatesHeading: "Holiday Rates",
     holidayRatesIntro:
-      "During designated high-demand periods, Boarding includes the nightly holiday surcharge shown below. These dates and rates are reflected automatically in your booking estimate.",
+      "A $15 holiday surcharge applies only on the designated major holiday dates shown below, not during the surrounding holiday week. It is automatically reflected in your booking estimate.",
     holidayRatesBoardingOnly:
-      "Holiday pricing currently applies to Boarding only. Daycare and Dog Walking remain at their regular listed rates.",
-    holidayRatesLoading: "Loading current holiday periods...",
+      "Applies to Boarding only on Thanksgiving, Christmas Eve, Christmas Day, New Year's Eve, and New Year's Day. Daycare and Dog Walking remain at their regular listed rates.",
+    holidayRatesLoading: "Loading major holiday dates...",
     holidayRatesUnavailable:
       "Holiday pricing is temporarily unavailable. Please check your booking estimate or contact us before booking holiday dates.",
-    holidayRatesEmpty: "No holiday rate periods are currently published.",
+    holidayRatesEmpty: "No major holiday dates are currently published.",
     holidayRateNightlySurcharge: "per boarding night",
     holidayRateOneDogExample: "One-dog rate",
     additionalDogLabel: "Additional Dog",
@@ -832,16 +832,16 @@ const translations = {
     pricingDay: "Día",
     pricingWeek: "Semana",
     pricingWalkingTitle: "PASEO DE PERROS",
-    holidayRatesKicker: "Boarding de temporada",
+    holidayRatesKicker: "Fechas festivas principales",
     holidayRatesHeading: "Tarifas de feriados",
     holidayRatesIntro:
-      "Durante los períodos festivos de alta demanda, el Boarding incluye el recargo nocturno que se muestra a continuación. Estas fechas y tarifas se reflejan automáticamente en el estimado de la reserva.",
+      "Se aplica un recargo de $15 únicamente en las fechas festivas principales indicadas abajo, no durante toda la semana del feriado. Se refleja automáticamente en el estimado de la reserva.",
     holidayRatesBoardingOnly:
-      "Actualmente, las tarifas de feriados se aplican solo al Boarding. Daycare y Paseo de Perros mantienen sus tarifas regulares publicadas.",
-    holidayRatesLoading: "Cargando los períodos festivos vigentes...",
+      "Se aplica solo al Boarding en Thanksgiving, Nochebuena, Navidad, Nochevieja y Año Nuevo. Daycare y Paseo de Perros mantienen sus tarifas regulares publicadas.",
+    holidayRatesLoading: "Cargando las fechas festivas principales...",
     holidayRatesUnavailable:
       "Las tarifas de feriados no están disponibles temporalmente. Revisá el estimado de tu reserva o consultanos antes de reservar fechas festivas.",
-    holidayRatesEmpty: "Actualmente no hay períodos con tarifa de feriado publicados.",
+    holidayRatesEmpty: "Actualmente no hay fechas festivas principales publicadas.",
     holidayRateNightlySurcharge: "por noche de boarding",
     holidayRateOneDogExample: "Tarifa para un perro",
     additionalDogLabel: "Perro adicional",
