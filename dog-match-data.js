@@ -96,6 +96,71 @@ window.dogMatchData = {
       recommendedWith: ["murci", "margot"],
     },
     {
+      id: "booboo",
+      name: "BooBoo",
+      breed: "Yorkshire Terrier Mix",
+      age: "6 years",
+      size: "Small",
+      energyLevel: 4,
+      swimmingLevel: 3,
+      fetchLevel: 3.5,
+      filters: ["small", "high-energy", "loves-swimming", "loves-fetch"],
+      photos: ["assets/club-booboo.png"],
+      personality: {
+        en: "Exceptionally intelligent, observant, curious, and very aware of everything happening around him. BooBoo is one of those dogs who seems to study people and situations before deciding what he thinks.",
+        es: "Excepcionalmente inteligente, observador, curioso y muy atento a todo lo que sucede a su alrededor. BooBoo es uno de esos perros que parecen estudiar a las personas y las situaciones antes de decidir qué pensar.",
+      },
+      playStyle: {
+        en: "Social and playful, but smart about it. He enjoys being around familiar dogs, exploring what everyone is doing, and joining the action when something interests him.",
+        es: "Sociable y juguetón, pero también muy astuto. Disfruta estar con perros conocidos, observar qué hace cada uno y sumarse a la acción cuando algo le interesa.",
+      },
+      favoriteActivities: {
+        en: [
+          "Watching everything happening around him",
+          "Playing with his favorite dog friends",
+          "Exploring the house and yard",
+          "Poolside time",
+          "Playing with toys and balls",
+        ],
+        es: [
+          "Observar todo lo que sucede a su alrededor",
+          "Jugar con sus perros amigos favoritos",
+          "Explorar la casa y el patio",
+          "Pasar tiempo junto a la pileta",
+          "Jugar con juguetes y pelotas",
+        ],
+      },
+      compatibilityNotes: {
+        en: "BooBoo does especially well with social dogs who enjoy interaction and play but can also respect personal space. His intelligence and observational personality make him very adaptable to different groups.",
+        es: "BooBoo se lleva especialmente bien con perros sociables que disfrutan la interacción y el juego, pero que también respetan el espacio personal. Su inteligencia y personalidad observadora lo hacen muy adaptable a distintos grupos.",
+      },
+      bestFriends: ["King", "Chester", "Tanner", "Luna"],
+      usuallyHangsOutWith: ["King", "Chester", "Tanner", "Luna"],
+      carlaObservations: {
+        en: "He notices absolutely everything - almost like Freud reincarnated as a tiny dog with a very big personality.",
+        es: "Se da cuenta de absolutamente todo, casi como Freud reencarnado en un perro diminuto con una personalidad enorme.",
+      },
+      profileDetails: {
+        en: "BooBoo is one of the most observant personalities in the Shingo's Palace Club. He watches, analyzes, and seems to understand much more than anyone expects. Sweet, clever, and full of character, he has the personality of a much bigger dog packed into a small body.",
+        es: "BooBoo es una de las personalidades más observadoras del Club de Shingo's Palace. Mira, analiza y parece entender mucho más de lo que cualquiera espera. Dulce, inteligente y lleno de carácter, tiene la personalidad de un perro mucho más grande dentro de un cuerpo pequeño.",
+      },
+      funFacts: {
+        en: [
+          "Extremely intelligent and observant",
+          "Notices absolutely everything",
+          "Almost like Freud reincarnated as a tiny dog",
+          "Small dog, very big personality",
+        ],
+        es: [
+          "Extremadamente inteligente y observador",
+          "Se da cuenta de absolutamente todo",
+          "Casi como Freud reencarnado en un perro diminuto",
+          "Perro pequeño, personalidad enorme",
+        ],
+      },
+      recommendedWith: ["king", "chester", "tanner", "luna"],
+    },
+    {
       id: "tanner",
       name: "Tanner",
       breed: "Mini Schnauzer",
